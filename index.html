@@ -213,7 +213,7 @@ h4 { font-size: 28px; }
 .about .stats span { display: block; margin-top: 6px; }
 .complex { font-size: clamp(26px, 3.2vw, 42px); font-weight: 500; line-height: 140%; color: var(--dark); }
 .complex .pimg { display: inline-block; vertical-align: middle; height: 64px; width: 200px; border-radius: 70px; overflow: hidden; margin: 0 12px 6px 0; background: var(--soft); }
-.complex .pimg img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform var(--ease); }
+.complex .pimg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; transition: transform var(--ease); }
 .complex .pimg:hover img { transform: scale(1.05); }
 .complex .pimg.nothumb { display: none; }
 .about .row > * { min-width: 0; }
@@ -224,9 +224,11 @@ h4 { font-size: 28px; }
 /* Work sections */
 .org { padding: 120px 0 60px; border-top: 1px solid var(--line); }
 .org.soft { background: var(--soft); border-top: 0; }
-.org-head { display: grid; grid-template-columns: 5fr 7fr; gap: 30px 60px; align-items: end; margin-bottom: 90px; }
+.org-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 30px 60px; align-items: end; margin-bottom: 90px; }
 .org-head .num { display: block; margin-bottom: 18px; color: var(--dark); }
 .org-head .num i { font-style: normal; color: var(--text); margin-left: 12px; }
+.org-meta { margin-top: 36px; }
+.org-right { display: flex; justify-content: flex-end; align-items: flex-end; }
 .org-head p.intro { font-size: 18px; line-height: 170%; max-width: 52ch; }
 .group { margin-bottom: 60px; }
 .group > .upper { display: block; color: var(--dark); margin-bottom: 8px; }
@@ -257,7 +259,7 @@ h4 { font-size: 28px; }
 .sect.plain .body { grid-template-rows: 1fr; }
 .sect.plain .body > .inner { visibility: visible; }
 .sect.plain .info { border-top: 0; }
-.org-tools { margin-top: 26px; }
+.org-tools { margin-top: 0; }
 .link { cursor: pointer; background: none; border: 0; display: inline-flex; align-items: center; text-transform: uppercase; font-size: 12px; font-weight: 500; letter-spacing: 2px; color: var(--dark); }
 .link svg { margin-left: 15px; width: 40px; height: 40px; padding: 10px; border-radius: 50%; background: rgba(0,0,0,.08); transition: var(--ease); }
 .link svg path { fill: var(--dark); }
@@ -432,15 +434,14 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
 .pframe.nophoto .mono { display: grid; }
 .atext .sup::before { display: none; }
 .atext .sup { margin-bottom: 40px; }
-.sig { display: flex; align-items: center; gap: 18px; margin-top: 44px; padding-top: 30px; border-top: 1px solid var(--line); }
-.sig .av { flex: none; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: var(--soft); }
-.sig .av img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
-.sig.nophoto .av { display: none; }
-.sig b { display: block; font-size: 20px; font-weight: 500; color: var(--dark); line-height: 130%; }
-.sig span { display: block; margin-top: 4px; font-size: 14px; color: var(--text-soft); }
 .about .stats { margin-top: 110px; grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 992px) { .about .row2 { grid-template-columns: minmax(0, 1fr); gap: 70px; } .aphoto { max-width: 380px; } .about .stats { margin-top: 70px; grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .aphoto .lines { inset: 18px -14px -18px 14px; } .pframe .mono { font-size: 110px; } .sig b { font-size: 18px; } .about .stats { margin-top: 56px; } }
+@media (max-width: 560px) { .aphoto .lines { inset: 18px -14px -18px 14px; } .pframe .mono { font-size: 110px; } .about .stats { margin-top: 56px; } }
+/* Work sections slide in from the right */
+.org { overflow-x: clip; }
+.js .rv.r { transform: translateX(110px); }
+.js .rv.r.in { transform: none; }
+@media (max-width: 560px) { .js .rv.r { transform: translateX(60px); } }
 @media (prefers-reduced-motion: reduce) {
   .body { transition: none; }
   .track { animation: none; width: auto; justify-content: center; flex-wrap: wrap; padding: 0 30px; }
@@ -449,6 +450,7 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-delay: 0s !important; }
   .js .rv { opacity: 1; transform: none; }
+  .js .rv.r { opacity: 1; transform: none; }
   .gem svg, .scroll-cue .ct { animation: none; }
 }
 </style>
@@ -544,10 +546,6 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
           <span class="upper sup">About</span>
           <p class="complex" id="complex"></p>
           <p class="lede" style="margin-top:40px;max-width:58ch;font-size:18px;line-height:170%">I specialize in digital marketing, including creative strategy and paid media buying on Meta, Google, LinkedIn and TikTok. I pair that with content creation, cross-sector collaboration and multilingual community engagement to drive measurable service utilization for public benefit and private organizations.</p>
-          <div class="sig" id="sig">
-            <span class="av"><img id="avatar" alt="" width="64" height="64" referrerpolicy="no-referrer"></span>
-            <div><b>Joseph Daniel Gomez de la Mora</b><span>Tacoma, Washington · English and Spanish</span></div>
-          </div>
         </div>
       </div>
       <ul class="stats rv" id="facts"></ul>
@@ -1052,22 +1050,24 @@ function render() {
     const sec = el("section", { class: "org" + (n % 2 === 1 ? " soft" : ""), id: org.slug });
     const orgSects = [];
     const c = el("div", { class: "container" });
-    c.appendChild(el("div", { class: "org-head rv" }, [
-      el("div", {}, [
+    c.appendChild(el("div", { class: "org-head rv r" }, [
+      el("div", { class: "org-left" }, [
         el("span", { class: "upper sup num", html: "0" + n + "<i></i>" }),
-        el("h2", { text: org.name })
+        el("h2", { text: org.name }),
+        el("div", { class: "org-meta" }, [el("p", { class: "upper", text: org.role, style: "color:#000;margin-bottom:14px" }), el("p", { class: "intro", text: org.intro })])
       ]),
-      el("div", { class: "org-right" }, [el("p", { class: "upper", text: org.role, style: "color:#000;margin-bottom:14px" }), el("p", { class: "intro", text: org.intro })])
+      el("div", { class: "org-right" })
     ]));
     const rightCol = c.querySelector(".org-right");
     org.groups.forEach(g => {
       const gEl = el("div", { class: "group" });
-      if (g.title) gEl.appendChild(el("span", { class: "upper", text: g.title }));
+      if (g.title) gEl.appendChild(el("span", { class: "upper rv r", text: g.title }));
       g.sections.forEach(s => {
         const subs = s.subs || [{ title: "", items: s.items }];
         const list = subs.flatMap(sb => sb.items.map(([type, id, title]) => ({ type, id, title })));
         const collapsible = !!s.title;
-        const info = el("div", { class: "info rv" });
+        const info = el("div", { class: "info rv r" });
+        info.style.transitionDelay = ((secN % 3) * 70) + "ms";
         const bodyId = "sect-" + org.slug + "-" + (++secN);
         const label = s.title || (g.title || org.name);
         const countTxt = list.length ? list.length + (list.length === 1 ? " piece" : " pieces") : "";
@@ -1137,7 +1137,7 @@ function render() {
   /* Intro line with a small pill image pulled from Drive */
   const cx = document.getElementById("complex");
   const pill = el("span", { class: "pimg" });
-  const pimg = el("img", { src: D.thumb("1_p-CuczC01LbfUe9EwzPMeHGfwynbcPs"), alt: "", loading: "lazy", referrerpolicy: "no-referrer" });
+  const pimg = el("img", { src: "rainier.jpg", alt: "", width: 200, height: 64, loading: "lazy" });
   pimg.addEventListener("error", () => pill.classList.add("nothumb"));
   pill.appendChild(pimg);
   cx.appendChild(pill);
@@ -1326,12 +1326,9 @@ addEventListener("scroll", onScroll, { passive: true }); onScroll();
   const gems = [...document.querySelectorAll(".gem")];
   gems.forEach((g, i) => { g.innerHTML = gemSVG(+g.dataset.n || 5, i + 3); });
 
-  const hs = document.getElementById("headshot"), av = document.getElementById("avatar");
-  const pf = document.getElementById("pframe"), sig = document.getElementById("sig");
+  const hs = document.getElementById("headshot"), pf = document.getElementById("pframe");
   hs.addEventListener("error", () => pf.classList.add("nophoto"));
-  av.addEventListener("error", () => sig.classList.add("nophoto"));
   hs.src = "https://drive.google.com/thumbnail?id=1WiSReZCZqfRLNte8D0RTagH6DYTWZD6S&sz=w1000";
-  av.src = "https://drive.google.com/thumbnail?id=1WiSReZCZqfRLNte8D0RTagH6DYTWZD6S&sz=w200";
 
   if (reduced) return;
   const zoom = [...document.querySelectorAll("[data-zoom]")];
