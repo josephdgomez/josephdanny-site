@@ -842,6 +842,8 @@ function useDrivePlayer(it, tok) {
   stopVideo();
   frame.src = it.type === "d" ? D.docPreview(it.id) : D.preview(it.id);
 }
+const DBG = new URLSearchParams(location.search).has("vd");
+function dbg(t) { if (DBG) document.getElementById("vpos").textContent = t; }
 function playNative(it) {
   const tok = ++vtoken;
   stopVideo();
@@ -849,28 +851,40 @@ function playNative(it) {
   dlgBox.classList.add("nv");
   vid.hidden = false;
   vid.poster = D.thumb(it.id);
-  const fail = () => { if (vid.getAttribute("src")) useDrivePlayer(it, tok); };
-  vid.onerror = fail;
-  vid.onloadedmetadata = () => { if (tok === vtoken) clearTimeout(vtimer); };
-  vtimer = setTimeout(fail, 8000);
-  vid.src = "https://drive.usercontent.google.com/download?id=" + it.id + "&export=download&confirm=t";
-  const pr = vid.play(); if (pr && pr.catch) pr.catch(() => {});
+  const urls = [
+    "https://drive.usercontent.google.com/download?id=" + it.id + "&export=download&confirm=t",
+    "https://drive.google.com/uc?export=download&id=" + it.id
+  ];
+  let n = 0;
+  const attempt = () => {
+    if (tok !== vtoken) return;
+    if (n >= urls.length) { dbg("fallback to Drive player"); return useDrivePlayer(it, tok); }
+    const k = n++;
+    clearTimeout(vtimer);
+    vid.onerror = () => { if (tok !== vtoken || !vid.getAttribute("src")) return; dbg("src" + (k + 1) + " error " + (vid.error ? vid.error.code : "?")); attempt(); };
+    vid.onloadedmetadata = () => { if (tok === vtoken) { clearTimeout(vtimer); dbg("src" + (k + 1) + " ok"); } };
+    vtimer = setTimeout(() => { dbg("src" + (k + 1) + " timeout net" + vid.networkState + " rs" + vid.readyState); attempt(); }, 9000);
+    vid.src = urls[k];
+    dbg("trying src" + (k + 1));
+    const pr = vid.play(); if (pr && pr.catch) pr.catch(() => {});
+  };
+  attempt();
 }
 function show() {
   const it = state.list[state.i];
   document.getElementById("vtitle").textContent = it.title;
   document.getElementById("vopen").href = it.type === "f" ? D.folder(it.id) : it.type === "d" ? D.docView(it.id) : D.view(it.id);
   vtoken++;
-  if (NATIVE && it.type === "v") playNative(it);
-  else { stopVideo(); frame.src = it.type === "f" ? D.folderEmbed(it.id) : it.type === "d" ? D.docPreview(it.id) : D.preview(it.id); }
+  if (!(NATIVE && it.type === "v")) { stopVideo(); frame.src = it.type === "f" ? D.folderEmbed(it.id) : it.type === "d" ? D.docPreview(it.id) : D.preview(it.id); }
   document.getElementById("vpos").textContent = state.list.length > 1 ? (state.i + 1) + " of " + state.list.length : KIND[it.type];
+  if (NATIVE && it.type === "v") playNative(it);
   document.getElementById("vprev").disabled = state.i === 0;
   document.getElementById("vnext").disabled = state.i === state.list.length - 1;
 }
 function openViewer(list, i, opener) {
   state.list = list; state.i = i; state.opener = opener || null;
-  show();
   if (!dlg.open) dlg.showModal();
+  show();
 }
 function step(d) {
   const j = state.i + d;
