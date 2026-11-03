@@ -1,0 +1,1261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Joseph Daniel Gomez de la Mora | Portfolio</title>
+<meta name="description" content="Marketing and communications leader supporting population health and health equity in Pierce County. Paid media, creative strategy, and multilingual community engagement.">
+<link rel="canonical" href="https://josephdanny.co/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Ctext x='19' y='47' font-family='Arial,sans-serif' font-size='44' font-weight='700' fill='%23fff'%3EJ%3C/text%3E%3Ccircle cx='47' cy='44' r='5' fill='%23FF9800'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#000000">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://josephdanny.co/">
+<meta property="og:title" content="Joseph Daniel Gomez de la Mora | Portfolio">
+<meta property="og:description" content="Marketing and communications leader supporting population health and health equity in Pierce County. Paid media, creative strategy, and multilingual community engagement.">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap">
+<noscript><style>.preloader{display:none!important}.rv{opacity:1!important;transform:none!important}</style></noscript>
+<style>
+/* Look: modeled on the "Ashley" template. Outfit type, white and soft-grey sections,
+   orange accent, pill buttons with a circle arrow, full-screen dark menu, dark footer.
+   Nothing is hosted here: every file opens from Google Drive. */
+:root {
+  --dark: #000;
+  --light: #fff;
+  --accent: #FF9800;
+  --text: rgba(0,0,0,.62);
+  --text-soft: rgba(0,0,0,.5);
+  --line: rgba(0,0,0,.1);
+  --soft: #F2F2F2;
+  --on-dark: rgba(255,255,255,.9);
+  --on-dark-soft: rgba(255,255,255,.62);
+  --font: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ease: .4s cubic-bezier(0, 0, .3642, 1);
+  --ease-sm: .2s cubic-bezier(0, 0, .3642, 1);
+  --pad: 60px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 40px; }
+body {
+  font: 300 16px/150% var(--font);
+  color: var(--text);
+  background: var(--light);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+body.lock { overflow: hidden; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+img { display: block; }
+:focus-visible { outline: 2px solid var(--dark); outline-offset: 3px; }
+.on-dark :focus-visible, .menu :focus-visible, dialog :focus-visible { outline-color: var(--accent); }
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 30px; }
+@media (max-width: 992px) { :root { --pad: 30px; } }
+
+h1, h2, h3, h4, h5 { font-family: var(--font); color: var(--dark); font-weight: 500; line-height: 120%; }
+h1 { font-size: clamp(46px, 7.2vw, 86px); letter-spacing: -.02em; }
+h2 { font-size: clamp(36px, 5.2vw, 68px); letter-spacing: -.015em; }
+h3 { font-size: clamp(26px, 3.2vw, 42px); }
+h4 { font-size: 28px; }
+.upper { text-transform: uppercase; font-size: 12px; font-weight: 500; letter-spacing: 2px; }
+.marker { background: var(--accent); color: var(--dark); padding: 0 .12em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* Reveal on scroll (only active when JS adds .js) */
+.js .rv { opacity: 0; transform: translateY(30px); transition: opacity .7s cubic-bezier(0,0,.3642,1), transform .7s cubic-bezier(0,0,.3642,1); }
+.js .rv.in { opacity: 1; transform: none; }
+
+/* Preloader */
+.preloader {
+  position: fixed; inset: 0; z-index: 100; background: var(--dark); color: var(--light);
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px;
+  transition: opacity .6s ease .1s, visibility 0s linear .8s;
+}
+.preloader .pname { font-size: clamp(22px, 4vw, 34px); font-weight: 500; padding: 0 22px; position: relative; }
+.preloader .pname::before { content: ""; position: absolute; inset: 0; background: var(--accent); transform-origin: left; transform: scaleX(0); animation: reveal 1s cubic-bezier(.7,0,.2,1) .15s forwards; z-index: -1; }
+.preloader .pname span { position: relative; z-index: 1; color: var(--light); animation: ink 1s steps(1) .15s forwards; }
+.preloader .pmeta { opacity: .6; }
+.preloader.done { opacity: 0; visibility: hidden; pointer-events: none; }
+@keyframes reveal { 0% { transform: scaleX(0); transform-origin: left; } 50% { transform: scaleX(1); transform-origin: left; } 51% { transform-origin: right; } 100% { transform: scaleX(0); transform-origin: right; } }
+@keyframes ink { to { color: var(--light); } }
+
+/* Scroll progress (right edge) */
+.progress { position: fixed; right: 0; top: 0; bottom: 0; width: 4px; z-index: 5; pointer-events: none; }
+.progress i { display: block; width: 100%; height: 0; background: var(--accent); }
+@media (max-width: 992px) { .progress { width: 3px; } }
+
+/* Cursor ball */
+.ball {
+  position: fixed; left: 0; top: 0; z-index: 60; width: 20px; height: 20px; margin: -10px 0 0 -10px; border-radius: 50%;
+  background: var(--dark); opacity: .15; pointer-events: none; display: none;
+  align-items: center; justify-content: center; text-align: center;
+  transition: width var(--ease), height var(--ease), margin var(--ease), background-color var(--ease), opacity var(--ease);
+  font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: transparent;
+}
+.ball.big { width: 96px; height: 96px; margin: -48px 0 0 -48px; background: var(--accent); opacity: 1; color: var(--dark); }
+@media (hover: hover) and (pointer: fine) and (min-width: 1200px) { .has-ball .ball { display: flex; } }
+
+/* Frame: logo + menu button */
+.frame { position: fixed; top: 0; left: 0; width: 100%; z-index: 40; padding: 40px var(--pad); display: flex; justify-content: space-between; align-items: center; pointer-events: none; transition: background-color var(--ease), padding var(--ease), border-color var(--ease); }
+.frame > * { pointer-events: all; }
+.logo { font-size: 42px; font-weight: 500; line-height: 100%; color: var(--dark); transition: color var(--ease); }
+.logo i { font-style: normal; color: var(--accent); }
+.mbtn { height: 28px; width: 44px; background: none; border: 0; cursor: pointer; display: flex; align-items: center; justify-content: flex-end; }
+.mbtn span, .mbtn span::before, .mbtn span::after { content: ""; display: block; width: 28px; height: 2.5px; background: var(--dark); transition: var(--ease); backface-visibility: hidden; }
+.mbtn span { position: relative; }
+.mbtn span::before, .mbtn span::after { position: absolute; right: 0; }
+.mbtn span::before { top: -9px; }
+.mbtn span::after { width: 18px; top: 9px; }
+.mbtn.open span { transform: rotate(45deg); background: var(--light); }
+.mbtn.open span::before { transform: translate(0, 9px) rotate(-90deg); background: var(--light); }
+.mbtn.open span::after { opacity: 0; }
+.menu-open .logo { color: var(--light); }
+.frame.solid { padding-top: 18px; padding-bottom: 18px; background: rgba(255,255,255,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.frame.solid .logo { font-size: 32px; }
+.menu-open .frame.solid { background: transparent; border-color: transparent; backdrop-filter: none; }
+@media (max-width: 992px) { .frame { padding: 24px var(--pad); } .logo { font-size: 34px; } .frame.solid .logo { font-size: 30px; } }
+
+/* Full-screen menu */
+.menu { position: fixed; inset: 0; z-index: 30; background: var(--dark); color: var(--light); opacity: 0; visibility: hidden; transition: opacity var(--ease), visibility 0s linear .4s; overflow-y: auto; }
+.menu.open { opacity: 1; visibility: visible; transition-delay: 0s; }
+.menu .mwrap { min-height: 100vh; display: grid; grid-template-columns: 5fr 7fr; align-items: stretch; }
+.menu nav { padding: 150px 60px 60px var(--pad); display: flex; align-items: center; }
+.menu nav ul { list-style: none; padding-left: 90px; }
+.menu nav li { margin-bottom: 6px; opacity: 0; transform: translateX(-30px); transition: var(--ease); }
+.menu.open nav li { opacity: 1; transform: none; }
+.menu.open nav li:nth-child(1) { transition-delay: .25s; } .menu.open nav li:nth-child(2) { transition-delay: .32s; } .menu.open nav li:nth-child(3) { transition-delay: .39s; } .menu.open nav li:nth-child(4) { transition-delay: .46s; } .menu.open nav li:nth-child(5) { transition-delay: .53s; } .menu.open nav li:nth-child(6) { transition-delay: .6s; }
+.menu nav a { display: inline-block; font-size: clamp(32px, 3.4vw, 50px); font-weight: 500; line-height: 150%; color: var(--on-dark); transition: color var(--ease), transform var(--ease); }
+.menu nav a:hover, .menu nav a:focus-visible, .menu nav a.cur { color: var(--accent); }
+.menu nav a:hover { transform: translateX(10px); }
+.menu aside { position: relative; overflow: hidden; border-left: 1px solid rgba(255,255,255,.1); padding: 150px var(--pad) 60px 80px; display: flex; flex-direction: column; justify-content: center; gap: 56px; opacity: 0; transform: translateY(30px); transition: var(--ease); }
+.menu.open aside { opacity: 1; transform: none; transition-delay: .45s; }
+.menu .poly { position: absolute; top: -90px; right: 40px; width: 560px; max-width: 70%; pointer-events: none; opacity: .9; }
+.menu .poly * { fill: none; stroke: rgba(255,255,255,.12); stroke-width: 1; }
+.mcols { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 40px 40px; }
+.mcols h6 { font-size: 22px; font-weight: 500; line-height: 120%; color: var(--light); margin-bottom: 26px; }
+.mcols ul { list-style: none; }
+.mcols li { margin-bottom: 14px; }
+.mcols a, .mcols button { background: none; border: 0; padding: 0; cursor: pointer; text-align: left; font-size: 18px; font-weight: 300; line-height: 150%; color: var(--on-dark-soft); transition: color var(--ease-sm); }
+.mcols a:hover, .mcols button:hover { color: var(--accent); }
+.mrule { position: relative; height: 1px; background: rgba(255,255,255,.1); }
+.minfo { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.minfo h6 { font-size: 22px; font-weight: 500; line-height: 120%; color: var(--light); margin-bottom: 18px; }
+.minfo p, .minfo a { font-size: 18px; line-height: 160%; color: var(--on-dark-soft); }
+.minfo a:hover { color: var(--accent); }
+@media (max-width: 992px) {
+  .menu .mwrap { grid-template-columns: 1fr; }
+  .menu nav { padding: 110px var(--pad) 30px; }
+  .menu nav ul { padding-left: 0; }
+  .menu aside { border-left: 0; border-top: 1px solid rgba(255,255,255,.1); padding: 40px var(--pad) 60px; gap: 40px; }
+  .menu .poly { display: none; }
+}
+@media (max-width: 560px) { .mcols, .minfo { grid-template-columns: 1fr; } }
+
+/* Pill button */
+.btn { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; border: 0; background: var(--accent); color: var(--dark); border-radius: 70px; padding: 0 15px 0 50px; height: 70px; text-transform: uppercase; font-size: 12px; font-weight: 500; letter-spacing: 2px; transition: var(--ease); white-space: nowrap; }
+.btn svg { margin-left: 30px; width: 40px; height: 40px; padding: 10px; border-radius: 50%; background: var(--dark); transition: var(--ease); flex: none; }
+.btn svg path { fill: var(--accent); }
+.btn:hover { transform: scale(1.015); filter: brightness(110%); }
+.btn:hover svg { transform: scale(1.15); }
+.btn.down svg { transform: rotate(90deg); }
+.btn.down:hover svg { transform: scale(1.15) rotate(90deg); }
+@media (max-width: 992px) { .btn { height: 60px; padding: 0 10px 0 40px; } }
+
+/* Hero */
+.hero { display: flex; align-items: flex-end; position: relative; overflow: hidden; background: var(--light); }
+.hero::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(var(--line), var(--line)) 25% 0 / 1px 100% no-repeat, linear-gradient(var(--line), var(--line)) 50% 0 / 1px 100% no-repeat, linear-gradient(var(--line), var(--line)) 75% 0 / 1px 100% no-repeat; opacity: .6; }
+.hero .container { position: relative; padding-bottom: 90px; padding-top: 150px; }
+.hero .upper { color: var(--dark); display: block; margin-bottom: 24px; }
+.hero h1 { max-width: 16ch; }
+.hero .grid2 { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px 60px; margin-top: 60px; flex-wrap: wrap; }
+.hero .lede { max-width: 46ch; font-size: 18px; line-height: 170%; }
+.hero .es { margin-top: 10px; font-size: 16px; font-style: italic; }
+@media (max-width: 992px) { .hero .container { padding-top: 124px; padding-bottom: 60px; } .hero .grid2 { margin-top: 36px; } .hero .lede { font-size: 17px; } }
+@media (max-width: 560px) { .hero .container { padding-top: 112px; padding-bottom: 50px; } .hero .btn { width: 100%; justify-content: space-between; } .hero .upper { font-size: 11px; letter-spacing: 1.6px; } }
+
+
+/* Hero badges (style set by data-style: pictogram | mono | medal | laurel | text) */
+.marquee { overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 30px 0; background: var(--light); -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+.track { display: flex; width: max-content; animation: scroll var(--dur, 40s) linear infinite; will-change: transform; }
+.marquee:hover .track, .marquee:focus-within .track { animation-play-state: paused; }
+.half { list-style: none; display: flex; flex: none; }
+.half li { flex: none; padding-right: 48px; }
+@media (max-width: 560px) { .half li { padding-right: 28px; } .marquee { padding: 22px 0; } }
+@keyframes scroll { to { transform: translateX(-50%); } }
+.badge { all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; padding: 7px 20px 7px 7px; border: 1px solid var(--line); border-radius: 70px; background: var(--light); transition: var(--ease); }
+.badge:hover { border-color: var(--dark); transform: translateY(-2px); }
+.badge:focus-visible { outline: 2px solid var(--dark); outline-offset: 3px; }
+.badge.static { cursor: default; }
+.badge.static:hover { border-color: var(--line); transform: none; }
+.badge .em { flex: none; width: 46px; height: 46px; border-radius: 50%; background: var(--dark); color: var(--accent); display: grid; place-items: center; transition: var(--ease); }
+.badge:not(.static):hover .em { background: var(--accent); color: var(--dark); }
+.badge .em svg { width: 24px; height: 24px; display: block; }
+.badge .em .mono { font-weight: 600; font-size: 16px; letter-spacing: -.02em; line-height: 1; }
+.badge .bt { display: block; }
+.badge .bt .upper { display: block; font-size: 10.5px; color: var(--text); margin: 0; letter-spacing: 1.6px; }
+.badge .bt b { display: block; font-size: 14.5px; font-weight: 500; line-height: 130%; color: var(--dark); margin-top: 2px; }
+.badges[data-style="medal"] .em, .badges[data-style="laurel"] .em { background: none; width: 50px; height: 50px; }
+.badges[data-style="medal"] .badge:hover .em, .badges[data-style="laurel"] .badge:hover .em { background: none; transform: scale(1.06); }
+.badges[data-style="medal"] .em svg, .badges[data-style="laurel"] .em svg { width: 50px; height: 50px; }
+.badges[data-style="text"] .badge { padding: 13px 22px 13px 20px; gap: 12px; }
+.badges[data-style="text"] .em { width: 9px; height: 9px; background: var(--accent); }
+.badges[data-style="text"] .badge:not(.static):hover .em { background: var(--dark); }
+
+/* About strip */
+.about { padding: 120px 0; }
+.about .row { display: grid; grid-template-columns: 5fr 7fr; gap: 60px; align-items: start; }
+.sup { position: relative; display: block; margin-bottom: 60px; color: var(--dark); }
+.sup::before { content: ""; position: absolute; right: calc(100% + 30px); top: 10px; width: 600px; height: 1px; background: var(--dark); opacity: .1; }
+.about .stats { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+.about .stats li { border-top: 1px solid var(--line); padding-top: 18px; }
+.about .stats b { display: block; font-size: 56px; font-weight: 500; line-height: 110%; color: var(--dark); }
+.about .stats span { display: block; margin-top: 6px; }
+.complex { font-size: clamp(26px, 3.2vw, 42px); font-weight: 500; line-height: 140%; color: var(--dark); }
+.complex .pimg { display: inline-block; vertical-align: middle; height: 64px; width: 200px; border-radius: 70px; overflow: hidden; margin: 0 12px 6px 0; background: var(--soft); }
+.complex .pimg img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform var(--ease); }
+.complex .pimg:hover img { transform: scale(1.05); }
+.complex .pimg.nothumb { display: none; }
+.about .row > * { min-width: 0; }
+@media (max-width: 992px) { .about { padding: 90px 0; } .about .row { grid-template-columns: minmax(0, 1fr); gap: 40px; } .complex .pimg { display: none; } }
+@media (max-width: 560px) { .about .stats b { font-size: 40px; } .about .stats { gap: 24px 16px; } }
+@media (max-width: 768px) { .sup::before { display: none; } }
+
+/* Work sections */
+.org { padding: 120px 0 60px; border-top: 1px solid var(--line); }
+.org.soft { background: var(--soft); border-top: 0; }
+.org-head { display: grid; grid-template-columns: 5fr 7fr; gap: 30px 60px; align-items: end; margin-bottom: 90px; }
+.org-head .num { display: block; margin-bottom: 18px; color: var(--dark); }
+.org-head .num i { font-style: normal; color: var(--text); margin-left: 12px; }
+.org-head p.intro { font-size: 18px; line-height: 170%; max-width: 52ch; }
+.group { margin-bottom: 60px; }
+.group > .upper { display: block; color: var(--dark); margin-bottom: 8px; }
+.sect { margin-bottom: 70px; }
+.sect { margin-bottom: 0; }
+.info { display: flex; align-items: center; justify-content: space-between; gap: 10px 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.sect:first-child .info { border-top: 1px solid var(--line); }
+.info h4 { font-size: 26px; flex: 1; min-width: 0; }
+.toggle { all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: 20px; width: 100%; min-height: 84px; padding: 14px 0; font-size: 26px; font-weight: 500; line-height: 120%; color: var(--dark); }
+.toggle:focus-visible { outline: 2px solid var(--dark); outline-offset: 2px; }
+.toggle .pm { position: relative; flex: none; width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,.08); transition: var(--ease); }
+.toggle .pm::before, .toggle .pm::after { content: ""; position: absolute; left: 50%; top: 50%; width: 14px; height: 2px; margin: -1px 0 0 -7px; background: var(--dark); transition: var(--ease); }
+.toggle .pm::after { transform: rotate(90deg); }
+.toggle:hover .pm { background: var(--accent); }
+.sect.open .toggle .pm { background: var(--accent); }
+.sect.open .toggle .pm::after { transform: rotate(0deg); }
+.info .count { margin-left: 14px; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: 500; color: var(--text); white-space: nowrap; }
+.body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s cubic-bezier(0,0,.3642,1); }
+.sect.open > .body { grid-template-rows: 1fr; }
+.body > .inner { min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 0s linear .5s; }
+.sect.open > .body > .inner { visibility: visible; transition-delay: 0s; }
+.body .cards { padding: 40px 0 70px; }
+.body .subhead { display: flex; align-items: baseline; gap: 14px; padding-top: 40px; }
+.body .subhead .upper { color: var(--dark); }
+.body .subhead .count { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: 500; color: var(--text); }
+.body .subhead + .cards { padding-top: 24px; padding-bottom: 20px; }
+.body .inner > .cards:last-child { padding-bottom: 70px; }
+.sect.plain .body { grid-template-rows: 1fr; }
+.sect.plain .body > .inner { visibility: visible; }
+.sect.plain .info { border-top: 0; }
+.org-tools { margin-top: 26px; }
+.link { cursor: pointer; background: none; border: 0; display: inline-flex; align-items: center; text-transform: uppercase; font-size: 12px; font-weight: 500; letter-spacing: 2px; color: var(--dark); }
+.link svg { margin-left: 15px; width: 40px; height: 40px; padding: 10px; border-radius: 50%; background: rgba(0,0,0,.08); transition: var(--ease); }
+.link svg path { fill: var(--dark); }
+.link:hover svg { transform: scale(1.15); background: var(--accent); }
+.org.soft .link svg { background: rgba(0,0,0,.08); }
+
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px 30px; }
+@media (max-width: 992px) { .cards { grid-template-columns: repeat(2, 1fr); gap: 50px 24px; } .org { padding: 90px 0 30px; } .org-head { grid-template-columns: 1fr; margin-bottom: 60px; } }
+@media (max-width: 560px) { .cards { grid-template-columns: 1fr; } .info h4, .toggle { font-size: 21px; } .toggle { gap: 14px; } }
+.card { all: unset; box-sizing: border-box; display: block; cursor: pointer; min-width: 0; }
+.card:focus-visible { outline: 2px solid var(--dark); outline-offset: 6px; }
+.cover { position: relative; overflow: hidden; padding-bottom: 65%; margin-bottom: 24px; background: #e4e4e4; }
+.cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform var(--ease); }
+.card:hover .cover img { transform: scale(1.05); }
+.cover .tag { position: absolute; left: 0; top: 0; background: var(--light); color: var(--dark); padding: 7px 14px; font-size: 11px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+.cover .play { position: absolute; right: 16px; bottom: 16px; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; transition: transform var(--ease); }
+.cover .play svg { width: 16px; height: 16px; margin-left: 2px; }
+.card:hover .play { transform: scale(1.12); }
+.cover .fb { position: absolute; inset: 0; display: none; place-items: center; font-size: 14px; font-weight: 500; letter-spacing: 2px; color: var(--text-soft); }
+.cover.nothumb .fb { display: grid; }
+.cover.nothumb img { display: none; }
+.card h5 { font-size: 20px; line-height: 130%; transition: color var(--ease); }
+.card:hover h5 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+.card .meta { display: block; margin-top: 6px; }
+
+
+/* Services */
+.svc { padding: 120px 0; }
+.svc h2 { max-width: 14ch; margin-bottom: 80px; }
+.svc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 60px; }
+.svc-card { border-top: 1px solid var(--line); padding: 34px 0 56px; display: grid; grid-template-columns: 64px 1fr; }
+.svc-card .n { color: var(--dark); padding-top: 8px; }
+.svc-card h4 { margin-bottom: 14px; font-size: 28px; }
+.svc-card p { max-width: 44ch; font-size: 17px; line-height: 170%; }
+@media (max-width: 992px) { .svc { padding: 90px 0; } .svc-grid { grid-template-columns: 1fr; } .svc h2 { margin-bottom: 50px; } }
+
+/* Portfolio heading */
+.ph { padding: 120px 0 90px; border-top: 1px solid var(--line); }
+.ph .row { display: grid; grid-template-columns: 5fr 7fr; gap: 30px 60px; align-items: end; }
+.ph p.intro { font-size: 18px; line-height: 170%; max-width: 52ch; }
+@media (max-width: 992px) { .ph { padding: 90px 0 60px; } .ph .row { grid-template-columns: 1fr; } }
+
+
+/* Testimonials */
+.tst { padding: 120px 0; border-top: 1px solid var(--line); }
+.tst .row { display: grid; grid-template-columns: 5fr 7fr; gap: 40px 60px; align-items: start; }
+.tst h2 { max-width: 12ch; }
+.qicon { width: 64px; height: 64px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; margin-bottom: 36px; }
+.qicon svg { width: 28px; height: 28px; }
+.qicon svg path { fill: var(--dark); }
+.slides { display: grid; }
+.slide { grid-area: 1 / 1; opacity: 0; visibility: hidden; transform: translateX(30px); transition: opacity .5s ease, transform .5s ease, visibility 0s linear .5s; min-width: 0; }
+.slide.on { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.slide blockquote { font-size: clamp(22px, 2.5vw, 32px); line-height: 150%; font-weight: 400; color: var(--dark); margin-bottom: 30px; }
+.slide .who b { display: block; font-size: 18px; font-weight: 500; color: var(--dark); }
+.slide .who span { display: block; font-size: 16px; }
+.slide .ctx { margin-top: 14px; font-size: 16px; line-height: 165%; max-width: 52ch; }
+.slide .link { margin-top: 26px; }
+.tctl { display: flex; align-items: center; gap: 14px; margin-top: 44px; padding-top: 30px; border-top: 1px solid var(--line); }
+.arrow { cursor: pointer; width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--line); background: var(--light); display: grid; place-items: center; transition: var(--ease); }
+.arrow svg { width: 22px; height: 22px; }
+.arrow svg path { fill: var(--dark); }
+.arrow:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.06); }
+#tcount { margin-left: 10px; color: var(--dark); }
+@media (max-width: 992px) { .tst { padding: 90px 0; } .tst .row { grid-template-columns: minmax(0, 1fr); } .qicon { margin-bottom: 28px; } }
+@media (max-width: 560px) { .tst { padding: 64px 0; } .tst h2 { margin-bottom: 8px; } .arrow { width: 50px; height: 50px; } }
+
+/* Experience */
+.exp { padding: 120px 0; background: var(--soft); }
+.exp h2 { margin-bottom: 80px; }
+.job { display: grid; grid-template-columns: 4fr 8fr; gap: 20px 60px; border-top: 1px solid var(--line); padding: 40px 0 50px; }
+.job .when { color: var(--dark); display: block; margin-bottom: 8px; }
+.job .org-n { font-size: 18px; color: var(--text); }
+.job h4 { margin-bottom: 14px; }
+.job p.sum { max-width: 60ch; font-size: 17px; line-height: 170%; margin-bottom: 18px; }
+.job ul { list-style: none; max-width: 60ch; }
+.job li { position: relative; padding-left: 24px; margin-bottom: 10px; font-size: 16px; line-height: 160%; }
+.job li::before { content: ""; position: absolute; left: 0; top: .6em; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.job li b { color: var(--dark); font-weight: 500; }
+.early { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 30px; border-top: 1px solid var(--line); padding-top: 40px; margin-top: 10px; }
+.early h5, .more h5 { font-size: 18px; margin-bottom: 6px; }
+.more { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 30px; border-top: 1px solid var(--line); padding-top: 40px; margin-top: 50px; }
+.more .upper { display: block; color: var(--dark); margin-bottom: 14px; }
+.more p { font-size: 16px; line-height: 165%; }
+.exp .rbtn { margin-top: 60px; }
+@media (max-width: 992px) { .exp { padding: 90px 0; } .exp h2 { margin-bottom: 50px; } .job { grid-template-columns: 1fr; } .early, .more { grid-template-columns: 1fr; } }
+
+
+/* Small-screen polish */
+@media (max-width: 560px) {
+  .about, .svc, .exp { padding: 64px 0; }
+  .ph { padding: 64px 0 40px; }
+  .org { padding: 64px 0 20px; }
+  .org-head { margin-bottom: 44px; }
+  .svc h2, .exp h2 { margin-bottom: 36px; }
+  .sup { margin-bottom: 36px; }
+  .about .stats b { font-size: 34px; }
+  .svc-card { grid-template-columns: 40px 1fr; padding: 26px 0 36px; }
+  .svc-card h4 { font-size: 24px; }
+  .job { padding: 30px 0 36px; }
+  footer { padding: 64px 0 36px; }
+  footer .fmenu a { font-size: 24px; }
+  footer .copy { margin-top: 56px; }
+}
+
+/* Dark footer */
+footer { background: var(--dark); color: var(--on-dark-soft); padding: 120px 0 60px; position: relative; }
+.foot { display: grid; grid-template-columns: 6fr 6fr; gap: 60px; }
+footer h2 { color: var(--light); margin-bottom: 30px; max-width: 14ch; }
+footer .fmenu ul { list-style: none; }
+footer .fmenu li { margin-bottom: 26px; }
+footer .fmenu a { display: block; font-size: 28px; font-weight: 500; color: var(--on-dark); transition: var(--ease); }
+footer .fmenu a:hover { transform: translateX(10px); color: var(--accent); }
+footer .ftag { max-width: 34ch; font-size: 18px; line-height: 170%; margin-bottom: 30px; }
+footer .contacts { list-style: none; display: flex; flex-wrap: wrap; gap: 16px 30px; margin-top: 10px; }
+footer .contacts a { color: var(--accent); text-transform: uppercase; font-size: 12px; font-weight: 500; letter-spacing: 2px; border-bottom: 1px solid currentColor; padding-bottom: 3px; }
+footer .copy { margin-top: 90px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,.1); display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
+@media (max-width: 992px) { footer { padding: 90px 0 40px; } .foot { grid-template-columns: 1fr; } }
+
+/* Viewer */
+dialog { border: 0; padding: 0; background: #0b0b0b; color: var(--on-dark); width: min(1080px, 94vw); max-height: 94vh; overflow: hidden; margin: auto; }
+dialog::backdrop { background: rgba(0,0,0,.86); }
+.dlg-top { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.dlg-top h5 { flex: 1; min-width: 0; color: var(--light); font-size: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dlg-top a, .dlg-top button, .dlg-bot button { font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--on-dark); background: none; border: 1px solid rgba(255,255,255,.25); border-radius: 40px; padding: 11px 20px; cursor: pointer; white-space: nowrap; transition: var(--ease-sm); }
+.dlg-top a:hover, .dlg-top button:hover, .dlg-bot button:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: var(--dark); }
+.dlg iframe { width: 100%; height: min(72vh, 700px); border: 0; background: #000; display: block; }
+.dlg-bot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; border-top: 1px solid rgba(255,255,255,.1); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--on-dark-soft); }
+.dlg-bot button:disabled { opacity: .3; cursor: default; }
+@media (max-width: 560px) { .dlg-top a { display: none; } .dlg iframe { height: 62vh; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .body { transition: none; }
+  .track { animation: none; width: auto; justify-content: center; flex-wrap: wrap; padding: 0 30px; }
+  .half + .half { display: none; }
+  .half { flex-wrap: wrap; justify-content: center; gap: 12px 0; }
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-delay: 0s !important; }
+  .js .rv { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="pname"><span>Joseph Gomez de la Mora</span></div>
+  <div class="pmeta upper">Paid media · Video · Design</div>
+</div>
+
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+<div class="ball" id="ball" aria-hidden="true"></div>
+
+<div class="frame" id="frame">
+  <a class="logo" href="#top" aria-label="Joseph Gomez de la Mora, back to top">J<i>.</i></a>
+  <button class="mbtn" id="mbtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><span></span></button>
+</div>
+
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="mwrap">
+    <nav aria-label="Main">
+      <ul id="menulist">
+        <li><a href="#top" data-sec="top">Homepage</a></li>
+        <li><a href="#portfolio" data-sec="portfolio">Portfolio</a></li>
+        <li><a href="#services" data-sec="services">Services</a></li>
+        <li><a href="#testimonials" data-sec="testimonials">Testimonials</a></li>
+        <li><a href="#experience" data-sec="experience">Experience</a></li>
+        <li><a href="#contact" data-sec="contact">Contact</a></li>
+      </ul>
+    </nav>
+    <aside>
+      <svg class="poly" viewBox="0 0 560 520" aria-hidden="true"><g><polygon points="150,90 300,20 430,70 470,200 380,300 220,290 120,200"/><polyline points="300,20 330,160 470,200"/><polyline points="150,90 330,160 380,300"/><polyline points="120,200 330,160"/><polyline points="220,290 330,160"/><polyline points="430,70 330,160"/></g></svg>
+      <div class="mcols">
+        <div><h6>Projects</h6><ul id="projlist"></ul></div>
+        <div><h6>Useful links</h6><ul id="usefullist"></ul></div>
+      </div>
+      <div class="mrule"></div>
+      <div class="minfo">
+        <div><h6>Based in</h6><p>Tacoma, Washington<br>Pierce County</p></div>
+        <div><h6>Languages</h6><p>English<br>Spanish</p></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<main id="top">
+  <section class="hero">
+    <div class="container">
+      <span class="upper rv">Marketing and communications leader</span>
+      <h1 class="rv">Joseph Daniel <span class="marker">Gomez de la Mora</span></h1>
+      <div class="grid2 rv">
+        <div>
+          <p class="lede">Hi, I'm Joseph. A marketing and communications leader with 5+ years of experience supporting population health and health equity initiatives across Pierce County.</p>
+          <p class="es">Campañas, video y diseño en inglés y español.</p>
+        </div>
+        <a class="btn down" href="#about"><span>See the work</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="marquee" aria-label="Awards and certifications">
+    <div class="track badges" id="badges" data-style="pictogram">
+      <ul class="half" id="half1"></ul>
+      <ul class="half" id="half2" aria-hidden="true"></ul>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="container">
+      <div class="row">
+        <div>
+          <span class="upper sup rv">About</span>
+          <ul class="stats rv" id="facts"></ul>
+        </div>
+        <div class="rv">
+          <p class="complex" id="complex"></p>
+          <p class="lede" style="margin-top:40px;max-width:58ch;font-size:18px;line-height:170%">I specialize in digital marketing, including creative strategy and paid media buying on Meta, Google, LinkedIn and TikTok. I pair that with content creation, cross-sector collaboration and multilingual community engagement to drive measurable service utilization for public benefit and private organizations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="svc" id="services">
+    <div class="container">
+      <span class="upper sup rv">Services</span>
+      <h2 class="rv">What I can do for your team.</h2>
+      <div class="svc-grid" id="svcgrid"></div>
+    </div>
+  </section>
+
+  <section class="ph" id="portfolio">
+    <div class="container">
+      <div class="row rv">
+        <div><span class="upper sup">Portfolio</span><h2>Selected work</h2></div>
+        <p class="intro">Campaigns, video, and print from Elevate Health, Blue Zones Project, and independent clients. Click any piece to view it; each one opens straight from Google Drive.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="work"></div>
+
+  <section class="tst" id="testimonials" aria-roledescription="carousel" aria-label="Testimonials">
+    <div class="container">
+      <div class="row">
+        <div class="rv">
+          <span class="upper sup">Testimonials</span>
+          <h2>What colleagues and partners say.</h2>
+        </div>
+        <div class="rv">
+          <div class="qicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.2 17.5c-1.5-1.2-2.2-2.9-2.2-5 0-3.6 2.2-6.4 6-7.5l.6 1.3C8.4 7.5 7.6 9 7.5 10.8c.3-.1.7-.2 1.1-.2 1.4 0 2.5 1.1 2.5 2.7 0 1.6-1.3 2.9-2.9 2.9-.7 0-1.3-.2-1.9-.6zm8.5 0c-1.5-1.2-2.2-2.9-2.2-5 0-3.6 2.2-6.4 6-7.5l.6 1.3c-2.2.7-3 2.2-3.1 4 .3-.1.7-.2 1.1-.2 1.4 0 2.5 1.1 2.5 2.7 0 1.6-1.3 2.9-2.9 2.9-.7 0-1.3-.2-1.9-.6z"/></svg></div>
+          <div class="slides" id="slides" aria-live="polite"></div>
+          <div class="tctl">
+            <button class="arrow" type="button" id="tprev" aria-label="Previous testimonial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5l1.4 1.4L7.8 11H20v2H7.8l4.6 4.6L11 19l-7-7z"/></svg></button>
+            <button class="arrow" type="button" id="tnext" aria-label="Next testimonial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg></button>
+            <span class="upper" id="tcount"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="exp" id="experience">
+    <div class="container">
+      <span class="upper sup rv">Experience</span>
+      <h2 class="rv">Where I've done the work.</h2>
+      <div id="jobs"></div>
+      <div class="early rv" id="early"></div>
+      <div class="more rv" id="more"></div>
+      <button class="btn rbtn rv" type="button" id="resumebtn"><span>View full resume</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg></button>
+    </div>
+  </section>
+</main>
+
+<footer id="contact">
+  <div class="container">
+    <div class="foot">
+      <div class="rv">
+        <h2>Let's work together.</h2>
+        <p class="ftag">Campaigns, video, and design in English and Spanish.</p>
+        <ul class="contacts" id="contactlist"></ul>
+      </div>
+      <div class="fmenu rv"><ul id="footlist"></ul></div>
+    </div>
+    <div class="copy">
+      <span>© <span id="yr"></span> Joseph Daniel Gomez de la Mora</span>
+      <span>Every file opens from Google Drive</span>
+    </div>
+  </div>
+</footer>
+
+<dialog id="viewer" aria-labelledby="vtitle">
+  <div class="dlg">
+    <div class="dlg-top">
+      <h5 id="vtitle"></h5>
+      <a id="vopen" href="#" target="_blank" rel="noopener">Open in Drive</a>
+      <button type="button" id="vclose" aria-label="Close viewer">Close</button>
+    </div>
+    <iframe id="vframe" title="Google Drive preview" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+    <div class="dlg-bot">
+      <button type="button" id="vprev">Previous</button>
+      <span id="vpos"></span>
+      <button type="button" id="vnext">Next</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+document.documentElement.classList.add("js");
+/* ------------------------------------------------------------------
+   CONTENT. To add a piece, add one line: [type, driveFileId, "Title"].
+   Types: "v" video, "p" PDF, "i" image.
+   Each section's `folder` powers a "Browse folder" link that always
+   shows whatever is in that Drive folder, including new uploads.
+   Set contact details below; leave blank to hide them.
+------------------------------------------------------------------- */
+const CONTACT = { email: "josephdanielgomez13@gmail.com", linkedin: "https://linkedin.com/josephdgomez", website: "" };
+
+/* ------------------------------------------------------------------
+   CONTENT. To add a piece, add one line: [type, driveFileId, "Title"].
+   Types: "v" video, "p" PDF, "i" image.
+   Each section's `folder` powers a "Browse folder" link that always
+   shows whatever is in that Drive folder, including new uploads.
+   Set contact details below; leave blank to hide the contact section.
+------------------------------------------------------------------- */
+
+const WORK = [
+  {
+    slug: "elevate-health",
+    name: "Elevate Health",
+    role: "Communications Manager, 2025 to present",
+    intro: "An Accountable Community of Health in Pierce County, Washington. Paid campaigns, a video explainer series, and translated print materials.",
+    groups: [
+      { title: "Paid ad campaigns", sections: [
+        { title: "Apple Health campaign", folder: "1TIfWuOAAUhPgvKo53wg8HdyC2Kp_VHoH", items: [
+          ["v", "1XNNYuRPQtPNnfL_FjGF_AnTzq4iEhuuw", "Big Changes Are Coming"],
+          ["v", "1KoTOxcifN4v54dwmPdTEBbWtin2Nc3gd", "If You Use Apple Health"],
+          ["i", "1_p-CuczC01LbfUe9EwzPMeHGfwynbcPs", "Graphic ad 1"],
+          ["i", "10aQPzK9rTBUhyFXtyu86kQ3j5u2Nqvvc", "Graphic ad 2"],
+          ["p", "1QKrd26NuARg1a3QUdbzOUXijm2GVgWHi", "HR1 changes web page"]
+        ]},
+        { title: "Multilingual transit ads", folder: "1sszsEjz3gWEOmssOFul9Gdk2W_iN16jd", items: [
+          ["i", "1m1HxBea6s565oYG3E-K3gz1ynczSySvg", "Spanish, in-bus card"],
+          ["i", "1rC6PVVSm3Fkxthb3suwh82o8iTqcE0K7", "Vietnamese, in-bus card"],
+          ["i", "1c4hzMSe5v4JsxTcpK9KVAYEKFcUQuRQf", "Russian, in-bus card"],
+          ["i", "1uXIBGNtbhCPIxqAWWoPJKP-6zF2WdCKz", "Tagalog, in-bus card"],
+          ["p", "1yO5rNipXS8lxEcryha_zQSGj8No21yU9", "Interior bus cards"]
+        ]},
+        { title: "Community care hub referral campaign", folder: "1OmiKeCzyslbf_e3_wCe_Q1gH_HfFhZMq", subs: [
+          { title: "Results and overview", items: [
+            ["p", "1Z_02JSRwyX7V895XB3Qb1Co6QsMBRRWy", "10-day results"],
+            ["p", "1gP1FBTA2daAA0cQLRRZm3UgginFV5zj0", "6-month results"],
+            ["p", "1zmTsJRwoGaLzpazCZwfNlchDAjPY3ewI", "Campaign overview presentation"]
+          ]},
+          { title: "Launch announcement and graphic ads", items: [
+            ["p", "1QzmUrxuS0WNs37SwGG4jenGh7lYpNtRk", "Launch announcement"],
+            ["p", "1bQERDNUcfxpaacoC5ijpVKUPdMnzP1Hd", "All graphic ads"]
+          ]},
+          { title: "Video ads, round 1", items: [
+            ["v", "11Oi797r4Xwt5cWlesk3dTV77wuTfrW3Q", "Joseph: Fill out the form"],
+            ["v", "1ihe4KtKa9vl_rIrQ-nOT8XK9OxnUWMvF", "Alli: Fill out the form"],
+            ["v", "1rINY1G49o2vnpKS751C-AY0J5brMbd9C", "Ariana: Fill out the form"]
+          ]},
+          { title: "Video ads, round 2", items: [
+            ["v", "1iNfkxovQNhLcL8Y-CdhsSf5Wlnuj5ddD", "Sara: Fill out the form"],
+            ["v", "1gTlQMzYXRJAY6plFRhYz6kSybq9MayvT", "Derrick: Fill out the form"],
+            ["v", "19kiWZ9TvwPcNGIvflnrpGC8t21WOaYCf", "Joseph: Give us a call"],
+            ["v", "18gl_ZZgUhpRt4niiKE6ghj-nCm-4paNH", "Paloma: Give us a call"],
+            ["v", "1-C1DvuS0efbzG4G_8L4NsGYWM6tuOoPg", "Julia: Give us a call"],
+            ["v", "1qFsb3n004_98XbywFg9nFrOvVvuUqpvQ", "Zach: Give us a call"]
+          ]},
+          { title: "Praise for campaign success", items: [
+            ["i", "1okFJ2CjySxcXabHZdhYTgbHVGpUyKv6j", "Program lead on results"],
+            ["i", "1k32PxWyuIHrUcXbTX9ENANYM8g5exU9E", "Comms director on quality"],
+            ["i", "1nQLPOuuWrcsGLHZLKWVjlNylNfHvQEdk", "Comms director on success"],
+            ["i", "1ujB4oy1jUdkwuhMDQQA1saVs4DCsRc0X", "Executive director on results"],
+            ["i", "1rs_VlkmV0PLCgtJz1ztFCNOEJdlEFCNo", "Product manager on targeting"],
+            ["i", "1pDb9JnPAucXlHR6FVJaEmCTgRUugEITO", "Program lead on referral increase"],
+            ["i", "1LdpqvoW6OqGsmR9Z9aKx-Eo-2z5w5nj8", "Needing to increase capacity"]
+          ]}
+        ]}
+      ]},
+      { title: "Social media content", sections: [
+        { title: "Joseph Explains", folder: "1dPI6HKA8VodZpHzqtDgnFqLhKwN7KU08", items: [
+          ["v", "1iUZzFCwyq_g_WGtfIVux5-ji6VRC8a8_", "How to apply for Apple Health"],
+          ["v", "1ixJUWEauV2_fnKjSWAp2tuzHiNUhd3IV", "Save on Wi-Fi"],
+          ["v", "1G7RxkUmbIQd_xelqDD2YONvwUrvKfPt6", "Primary care"],
+          ["v", "1e7mZsm2BxSJhVapLkeLrmxMH_XeazcJ1", "Why immunizations matter"],
+          ["v", "1AEZlm_CXgWPP_lkGtAZkUx0p_jeiLe4q", "Emergency planning"],
+          ["v", "1ktCMcxxK1hZsVS6F9TLWaqhMMFe3K9j5", "What is a CBW"],
+          ["v", "1CBneZSbrGQf8-9H3_6qe5tWmNZkGT_MB", "Mental health resources"]
+        ]}
+      ]},
+      { title: "Graphic design", sections: [
+        { title: "Print materials", folder: "1_lxYo4O5ufXfmoAarcdjHhlyA9sBnkSq", items: [
+          ["p", "1jjSjGMm6EPoYFXBT2N1p-znrVtP5Y9hE", "One Pierce one-pager"],
+          ["p", "11xit7LAdKvsImIbTAkGMGxvZmFKxfyXs", "One Pierce brochure"],
+          ["p", "107OVCv3RkQShEib6GK27-shv89z_jSrC", "Translated notecards"],
+          ["p", "1srCU0PlatwvoryxwatOYIDllXnspte_8", "Translated posters"],
+          ["p", "1UaViaPy8cIUjdHWPpVc1ufpcb78R1gr-", "Translated brochures"]
+        ]}
+      ]}
+    ]
+  },
+  {
+    slug: "joseph-danny-llc",
+    name: "Joseph Danny, LLC",
+    role: "Independent practice",
+    intro: "Paid social campaigns for insurance and church clients, plus brochure design.",
+    groups: [
+      { title: "Paid ad campaigns", sections: [
+        { title: "Veitch Agency, insurance", folder: "1yGhf05GwD7I2Ra5gEZbSydEMne5HTWc3", items: [
+          ["v", "1o7aNz2atJmIYZ4RbAgZ2rqvcpmvgDiHp", "Micah: COI"],
+          ["v", "12lxX73qgMsx_dbk5YgaAQ7O8oYonpz0P", "Micah: Lawsuit"],
+          ["v", "1OnS2Eqg9lPIAToVj5i1VQowmuoYNypVh", "Connor: A decade of experience"],
+          ["v", "1JviiKYRGpS772mdT2hATjQamZkLpaviN", "Connor: Tailored underwriting"],
+          ["v", "1yIn3AZ0sGQWfZlYxAjjGvMFpxyPDsXxR", "Connor: Hundreds of policies"]
+        ]},
+        { title: "The Table Church", folder: "191qPlq5IZaVFe4PH3GHBBSSsxyxDsJ2T", items: [
+          ["v", "1_PjpbcRldxNdc2YxiCFZXFe2ZikCh1ez", "Pastor Beth"],
+          ["v", "1z-IGcYYTMBDbcunqinSzLgrv-lt19kwr", "Pastor Jen"],
+          ["v", "1G_XD12kkAEaEpV6Wl2cvODvWZQLcGaxD", "Pastor Arianna"],
+          ["v", "1K73-3KiCemj4waVmQXnwOVjbB6nG3QCK", "Tabitha"],
+          ["v", "1Pzl9y_ABjHif3POVWJHoA_w6Sy6N830l", "Joseph"]
+        ]}
+      ]},
+      { title: "Graphic design", sections: [
+        { title: "Brochures", items: [
+          ["p", "1qbQg0vmDeiHs8l10iqDakNbuXueqCglC", "NWMN brochure"],
+          ["p", "1AJhk1MB-Tim8LzTTwOlO1ydVQkkbd-uf", "Hope Givers brochure"]
+        ]}
+      ]}
+    ]
+  },
+  {
+    slug: "blue-zones-project",
+    name: "Blue Zones Project",
+    role: "Marketing and Engagement Lead, 2023 to 2025",
+    intro: "Interview films, short-form video, newsletters, signage, presentations, and ad creative for the Blue Zones Project.",
+    groups: [
+      { title: "Video projects", sections: [
+        { title: "Long-form interviews", folder: "1XBCjGuTmwEW3JwrOF91NZe9oQ0bp6H8k", items: [
+          ["v", "1tPg44UT_ZHEFMBuc5jPR5Nde5jt1ZTQh", "Dan Burden"],
+          ["v", "1sqgeQ1sfjYn7LrLcWgqYeCtzRBCOnwhv", "Jani Hitchen"],
+          ["v", "1XfWgW67ePfoKQSEkdlIGa2Dtkm183Ixz", "Rachel Kelly"],
+          ["v", "1OA-NMxgpgCKA2ZT5Es1oHEn0Iqnf1INh", "Marianne Lincoln"],
+          ["v", "1wHqwIAvYaSFDeMBifJWQ3qmrLQF9XKZX", "Susan Armbruster"]
+        ]},
+        { title: "Short-form", folder: "1dKoxs3wyRl8i8yOOPdkJvv6357ybvT1C", items: [
+          ["v", "1gsiLyO47mGCHCtvVQ0mNNFPJG5t3fIpR", "Zumba invite"],
+          ["v", "1WZC-KcWGNA5CgArm-FqQBLdL8zv5HDZc", "H4H reel"],
+          ["v", "1NSxTjBgpv9VNUIAfM2nmj2C4kONUg1Y2", "BZ Friends tweet video"],
+          ["v", "1OvKHK0JwWIHCB9EQ7f8T_0ev3xmw68Rv", "Christmas picture"]
+        ]}
+      ]},
+      { title: "Paid ads", sections: [
+        { title: "Video ads", folder: "1UPSUoNg5vYhLKuUT6QSlvQJ6Bc61vako", items: [
+          ["v", "1ou79kUVM-s5Ji13NU_Dk-2VkzWISwihN", "Zumba ad"],
+          ["v", "1Gca8gQegw9o_wNAUFyoB6QgPAxH4lK3o", "Cooking ad, version 1"],
+          ["v", "1yvrYxG2IndcTV6I2am2UU4DbDBXQGovr", "Cooking ad, version 2"]
+        ]},
+        { title: "Graphic ads", folder: "18soe9KAv10cBOr-rWzTzG1bJSpWGVmd8", items: [
+          ["i", "1hw8GiYjGBOMNRzKPanW2nO-R2Jo14qNQ", "Yoga"],
+          ["i", "1HT2MKRaGFaYnUcpOpXNBHW2bu4QdV3yT", "Cooking"],
+          ["i", "1nveGWd3TzGdRIe9878tOUTkRCu2SVFFG", "Zumba"]
+        ]}
+      ]},
+      { title: "Graphic design", sections: [
+        { title: "Design", folder: "1vGowKlP9f-MdVg4L8xMvNgSynaEZBrSZ", items: [
+          ["i", "14emNQ-dolgH5KsX_d1sDFQH-x_mvboUo", "Design 1"],
+          ["i", "1s6JQfSc9P6aGnKt6zRjGMpVVwhcUqkk6", "Design 2"],
+          ["i", "1aYQzB7BdPrq-r8e0aEIYPonvc61qrtxX", "Design 3"],
+          ["i", "1FkPfKJ3ZuuhA3bEff6ixI2T8VZpqaWj9", "Design 4"],
+          ["i", "1bs1fozsiGK41yuYapESLRlfuXHgn_u3q", "Design 5"]
+        ]},
+        { title: "Signage", folder: "1UeSixPcXmQSpxvxgR-JDjzf9jxqzS9eS", items: [
+          ["i", "1Vsw4EvPNQpNrunTJO9r4OBfLiZ5AUCEi", "Walking School Bus sign"],
+          ["i", "1Y-KBdTudw0IcPHN5NJZVXzdavfhF-9pi", "Healthy Cooking sign"],
+          ["i", "1rooQHicUsfOCnP_kwB72gVJFGMWQb0A1", "BZ Day sign"],
+          ["i", "1nRDmPpjp2ydJSz8kyqVZ4sAsIJnxjefd", "Parking sign, blue"],
+          ["i", "1dyiIswNu6fP5mDBJOJ8F91A2GJXpYK4U", "Parking sign, white"]
+        ]},
+        { title: "Social media graphics", folder: "1zxl3Nyck8GvceOUAOnNbOp9sWraepNxT", items: [
+          ["i", "1Qv6cXN2W6uT-oVbUUhS7VSGo_C5JkcON", "Graphic 1"],
+          ["i", "1DzMwOR9VXyXYqrPKTgG4gwyN4NyHyeG0", "Graphic 2"],
+          ["i", "1hGzKdNccbSEicIQ7g3Fp9Ob-h0EUxKwd", "Graphic 3"],
+          ["i", "1mofZAwBn9iktdo-6bpYUrc6WwtXq0VT8", "Graphic 4"],
+          ["i", "1OxGSypfN9S6Lq483JbRBykUgkwphxd-4", "Graphic 5"]
+        ]},
+        { title: "Newsletters", folder: "1RZ58XSOBM2igVWiYy36NVdLS4bNJAuT1", items: [
+          ["p", "1ZPZY88wWrBNJWOhQ6RKTXaadYSKiXj0I", "November newsletter"],
+          ["p", "1ozS00wl494GTkpWwgC9Pmns2qNEdRZTe", "February newsletter"]
+        ]},
+        { title: "Presentations", folder: "1vscLDnNAQqshtIPG7zwKENsZYIKQtJvV", items: [
+          ["p", "1duv6-3mdUPjqD5_O8qypxt0VOaQ2wM2g", "BZP story speech"],
+          ["p", "1weviQnJdV9sGCw6R5jOCSJgg0Vut1YNX", "Healthy Cooking Made Simple: Tofu"]
+        ]}
+      ]},
+      { title: "Articles", sections: [
+        { title: "Press and features", folder: "1NCPiMrlAeT0Y4aSkys513xncIjUpYPld", items: [
+          ["p", "1AhFyOcYtyAU7ZeG0jvRHVT36gObSJKQ1", "New executive director, South Sound Magazine"],
+          ["p", "1E57JTKUPVq-J7GRQgoHHatWvRGFtBfMg", "New executive director, The Suburban Times"],
+          ["p", "1DU_PWPbLCyVl3SHUKcPMDTTKq4FVhXLo", "New executive director, Showcase Media"],
+          ["p", "1oJQdTKhmlupEBysnGR83TzZ2phuwG0i-", "Brookdale Elementary, The Suburban Times"],
+          ["p", "1IZpbKA9gI7G8rUe_hkm1rffZpMqrB9Bv", "Berta Rivera, Blue Zones"]
+        ]}
+      ]}
+    ]
+  },
+  {
+    slug: "certifications",
+    name: "Awards and certifications",
+    role: "Credentials",
+    intro: "Recognition and platform certifications.",
+    groups: [
+      { title: "", sections: [
+        { title: "", folder: "13ZSABT4229OQ5ncuKvY__gLjw05RYk9I", items: [
+          ["i", "1o50VhUOpHNvDtcc1aFs02Hse_CBb2BMn", "40 Under 40 Award"],
+          ["p", "1rBZQz9ED8cthxfq0f7KhdVKdv_a5J1lE", "Meta Certified Media Buying Professional"],
+          ["p", "1SoUQ_lkaOC24alWBHCUgAtRh8PASW8G4", "Google Ads Video Certification"]
+        ]}
+      ]}
+    ]
+  }
+];
+
+
+/* ------------------------------------------------------------------ */
+const D = {
+  preview: id => "https://drive.google.com/file/d/" + id + "/preview",
+  view: id => "https://drive.google.com/file/d/" + id + "/view",
+  thumb: id => "https://drive.google.com/thumbnail?id=" + id + "&sz=w800",
+  folderEmbed: id => "https://drive.google.com/embeddedfolderview?id=" + id + "#grid",
+  folder: id => "https://drive.google.com/drive/folders/" + id,
+  docPreview: id => "https://docs.google.com/document/d/" + id + "/preview",
+  docView: id => "https://docs.google.com/document/d/" + id + "/edit"
+};
+const RESUME_ID = "1kia_8wKuOrGpDp3uzUiFT2xI9fVxtSvapqBMX_5C3LM";
+const KIND = { v: "Video", p: "PDF", i: "Image", f: "Folder", d: "Resume" };
+const PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13l11-6.5z" fill="#000"/></svg>';
+const ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg>';
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function el(tag, props, kids) {
+  const n = document.createElement(tag);
+  Object.entries(props || {}).forEach(([k, v]) => {
+    if (k === "class") n.className = v; else if (k === "text") n.textContent = v; else if (k === "html") n.innerHTML = v; else n.setAttribute(k, v);
+  });
+  (kids || []).forEach(c => n.appendChild(c));
+  return n;
+}
+
+/* Viewer */
+const dlg = document.getElementById("viewer");
+const frame = document.getElementById("vframe");
+const state = { list: [], i: 0, opener: null };
+
+function show() {
+  const it = state.list[state.i];
+  document.getElementById("vtitle").textContent = it.title;
+  document.getElementById("vopen").href = it.type === "f" ? D.folder(it.id) : it.type === "d" ? D.docView(it.id) : D.view(it.id);
+  frame.src = it.type === "f" ? D.folderEmbed(it.id) : it.type === "d" ? D.docPreview(it.id) : D.preview(it.id);
+  document.getElementById("vpos").textContent = state.list.length > 1 ? (state.i + 1) + " of " + state.list.length : KIND[it.type];
+  document.getElementById("vprev").disabled = state.i === 0;
+  document.getElementById("vnext").disabled = state.i === state.list.length - 1;
+}
+function openViewer(list, i, opener) {
+  state.list = list; state.i = i; state.opener = opener || null;
+  show();
+  if (!dlg.open) dlg.showModal();
+}
+function step(d) {
+  const j = state.i + d;
+  if (j >= 0 && j < state.list.length) { state.i = j; show(); }
+}
+document.getElementById("vprev").addEventListener("click", () => step(-1));
+document.getElementById("vnext").addEventListener("click", () => step(1));
+document.getElementById("vclose").addEventListener("click", () => dlg.close());
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+dlg.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") step(-1);
+  if (e.key === "ArrowRight") step(1);
+});
+dlg.addEventListener("close", () => {
+  frame.src = "about:blank";
+  if (state.opener) state.opener.focus();
+});
+
+/* Homepage content (from the resume and LinkedIn bio) */
+const SERVICES = [
+  ["Paid media", "Campaigns on Meta, Google, LinkedIn and TikTok, built around measurable service utilization and reported on a steady cadence."],
+  ["Creative strategy and content", "Concepts, video, graphics and print materials that carry a campaign from idea to finished asset."],
+  ["Multilingual community engagement", "Outreach that meets people in their language, including a transit campaign across five languages."],
+  ["Reporting and automation", "Tracking dashboards, intake workflows and marketing automation that guide budget and staffing decisions."]
+];
+const JOBS = [
+  { when: "May 2025 to present", org: "Elevate Health of Pierce County", role: "Communications Manager",
+    sum: "Leads marketing and communications strategy for Pierce County's Accountable Community of Health, working with healthcare providers, tribal nations, community organizations, and public stakeholders.",
+    pts: ["Launched a digital demand campaign that increased referrals by <b>250%+ in 10 days</b> using <b>less than 20% of budget</b>.", "Advised executive leadership on a phased digital demand framework, adopted as the primary county-wide campaign strategy.", "Directed a <b>multilingual transit campaign across five languages</b> to improve language access."] },
+  { when: "April 2023 to May 2025", org: "Blue Zones, Parkland, WA", role: "Marketing and Engagement Lead",
+    sum: "Led multi-channel marketing and community engagement across Parkland-Spanaway, working with local government, employers, schools, and nonprofits.",
+    pts: ["Directed a <b>$120K annual marketing budget</b> across paid digital and social platforms.", "Engaged <b>10,000+ residents</b> and met 100% of monthly event registration targets for two years.", "Ran <b>72 community events</b>, earned <b>15 regional media placements</b>, and gave <b>50+ keynote presentations</b>."] },
+  { when: "July 2022 to April 2023", org: "El Centro de La Raza, Seattle, WA", role: "Marketing Program Manager",
+    sum: "Led marketing and growth strategy for community-based social service programs serving historically underserved populations.",
+    pts: ["Built a marketing automation system that took two programs to <b>117%</b> and <b>110%</b> of annual targets in six months with no ad spend.", "Automated intake with Salesforce, <b>saving 30+ hours a month</b> of manual work."] }
+];
+const EARLY = [
+  ["Marketing Specialist", "InstaMortgage, 2021 to 2022"],
+  ["Social Media Intern", "Mighty Pursuit, 2020 to 2021"],
+  ["Marketing Program Manager", "Northwest University, 2019 to 2020"]
+];
+const MORE = [
+  ["Education", "Bachelor of Arts in Business Marketing, Digital Marketing Concentration, Northwest University. Act Six Leadership Alum."],
+  ["Awards and activities", "40 Under 40 Honoree, South Sound Business (2025). Leadership Tomorrow Alum (2025-26)."],
+  ["Platforms and tools", "Meta Ads Manager, LinkedIn Campaign Manager, Google Ads, Google Tag Manager, GA4, Looker Studio, HubSpot, Salesforce, GoHighLevel, Zapier, n8n, Adobe Premiere Pro, Photoshop, Illustrator, Canva, and more."]
+];
+
+/* Awards and certifications shown in the hero. Leave id as "" until the file is in Drive (the badge then shows without a link). */
+const BADGES = [
+  { type: "p", id: "", title: "Google Ads Search Certification", top: "Google Ads", main: "Search Certification", icon: "search", mono: "G" },
+  { type: "p", id: "1SoUQ_lkaOC24alWBHCUgAtRh8PASW8G4", title: "Google Ads Video Certification", top: "Google Ads", main: "Video Certification", icon: "video", mono: "G" },
+  { type: "p", id: "1rBZQz9ED8cthxfq0f7KhdVKdv_a5J1lE", title: "Meta Certified Media Buying Professional", top: "Meta", main: "Certified Media Buying Professional", icon: "target", mono: "M" },
+  { type: "i", id: "1o50VhUOpHNvDtcc1aFs02Hse_CBb2BMn", title: "40 Under 40 Honoree, South Sound Business", top: "South Sound Business", main: "40 Under 40 Honoree, 2025", icon: "trophy", mono: "40" }
+];
+const BADGE_STYLE = "pictogram"; /* pictogram | mono | medal | laurel | text */
+
+/*EMBLEMS*/
+const PICTO = {
+  search: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.2"/><path d="M15.3 15.3L21 21"/></svg>',
+  video: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M10 9v6l5-3z" fill="currentColor"/></svg>',
+  target: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.6"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>',
+  trophy: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h10V9a5 5 0 0 1-10 0z" fill="currentColor"/><path d="M7 5.5H3.8V7A3.4 3.4 0 0 0 7 10.4M17 5.5h3.2V7a3.4 3.4 0 0 1-3.2 3.4M12 14v4M8.2 20.5h7.6M9.6 18h4.8"/></svg>'
+};
+function medalSvg(letter) {
+  return '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M15 29l-5 15 8-4.5 5 4.5 2.5-15z" fill="#000"/><path d="M33 29l5 15-8-4.5-5 4.5-2.5-15z" fill="#000"/><circle cx="24" cy="19" r="15" fill="#FF9800"/><circle cx="24" cy="19" r="10.8" fill="none" stroke="#000" stroke-width="1.6"/><text x="24" y="24" text-anchor="middle" font-size="' + (letter.length > 1 ? 12 : 15) + '" font-weight="600" fill="#000" font-family="Outfit, sans-serif">' + letter + '</text></svg>';
+}
+function laurelSvg(letter) {
+  let leaves = "";
+  for (let i = 0; i < 7; i++) {
+    const a = (118 + i * 21) * Math.PI / 180;
+    const cx = 24 + 17.5 * Math.cos(a), cy = 24 + 17.5 * Math.sin(a);
+    const rot = (118 + i * 21) + 90 - 32;
+    leaves += '<ellipse cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" rx="2" ry="4.6" transform="rotate(' + rot.toFixed(0) + ' ' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ')"/>';
+  }
+  return '<svg viewBox="0 0 48 48" aria-hidden="true"><g fill="#FF9800">' + leaves + '</g><g fill="#FF9800" transform="translate(48 0) scale(-1 1)">' + leaves + '</g><text x="24" y="' + (letter.length > 1 ? 28.5 : 29.5) + '" text-anchor="middle" font-size="' + (letter.length > 1 ? 13 : 17) + '" font-weight="600" fill="#000" font-family="Outfit, sans-serif">' + letter + '</text></svg>';
+}
+function emblem(style, b) {
+  if (style === "mono") return '<span class="mono">' + b.mono + '</span>';
+  if (style === "medal") return medalSvg(b.mono);
+  if (style === "laurel") return laurelSvg(b.mono);
+  if (style === "text") return "";
+  return PICTO[b.icon];
+}
+/*END EMBLEMS*/
+
+const TESTIMONIALS = [
+  { q: "More than double the amount of referrals the [community care hub] has ever received in one month [even at the height of] COVID.",
+    who: "Operations Manager", org: "Connect Pierce, Elevate Health", ctx: "On the first 11-day Meta campaign in October 2025.",
+    src: { type: "p", id: "1zmTsJRwoGaLzpazCZwfNlchDAjPY3ewI", title: "Campaign overview presentation" } },
+  { q: "Joseph is the driving force behind this new social media campaign - it's been so well designed and the first week execution has been awesome. Really nice work, Joseph!",
+    who: "Communications Director", org: "Elevate Health", ctx: "Shared with the team in the first week of the campaign.",
+    src: { type: "i", id: "1k32PxWyuIHrUcXbTX9ENANYM8g5exU9E", title: "Comms director on quality" } },
+  { q: "Huge thanks to Comms for their social media push that [drove] the self referrals!",
+    who: "Operations Manager", org: "Connect Pierce, Elevate Health", ctx: "Posted the same week: 199 client referrals, just 41 short of the entire month of September.",
+    src: { type: "i", id: "1okFJ2CjySxcXabHZdhYTgbHVGpUyKv6j", title: "Program lead on results" } },
+  { q: "Yes, thank you, Joseph! Really amazing results.",
+    who: "Executive Director", org: "Elevate Health", ctx: "Replying to the campaign results update.",
+    src: { type: "i", id: "1ujB4oy1jUdkwuhMDQQA1saVs4DCsRc0X", title: "Executive director on results" } },
+  { q: "The geographic targeting is a LOT tighter than I expected!",
+    who: "Product Manager", org: "Reviewing the campaign's referral data", ctx: "",
+    src: { type: "i", id: "1rs_VlkmV0PLCgtJz1ztFCNOEJdlEFCNo", title: "Product manager on targeting" } },
+  { q: "HopeSparks wanted me to thank you for the work on the meta-ad campaign and any other outreach and marketing campaigns you have done as they have seen an increase in referrals for their program.",
+    who: "Community Care Hub Program Manager", org: "Elevate Health, passing along thanks from partner HopeSparks", ctx: "The partner increased its caseload by 38.8%.",
+    src: { type: "i", id: "1pDb9JnPAucXlHR6FVJaEmCTgRUugEITO", title: "Program lead on referral increase" } }
+];
+
+/* Cards */
+function card(item, list, i, meta) {
+  const [type, id, title] = item;
+  const cover = el("div", { class: "cover" });
+  if (type !== "f") {
+    const img = el("img", { src: D.thumb(id), alt: "", loading: "lazy", referrerpolicy: "no-referrer" });
+    img.addEventListener("error", () => cover.classList.add("nothumb"));
+    cover.appendChild(img);
+  } else {
+    cover.classList.add("nothumb");
+  }
+  cover.appendChild(el("span", { class: "fb", text: KIND[type] }));
+  cover.appendChild(el("span", { class: "tag", text: KIND[type] }));
+  if (type === "v") cover.appendChild(el("span", { class: "play", html: PLAY }));
+  const btn = el("button", { class: "card", type: "button", "data-ball": type === "v" ? "Play" : "View", "aria-label": (type === "v" ? "Play " : "View ") + title }, [
+    cover, el("h5", { text: title })
+  ]);
+  if (meta) btn.appendChild(el("span", { class: "meta upper", text: meta }));
+  btn.addEventListener("click", () => openViewer(list, i, btn));
+  return btn;
+}
+
+/* Page */
+let secN = 0;
+function setSect(wrap, open) {
+  wrap.classList.toggle("open", open);
+  const tg = wrap.querySelector(".toggle");
+  if (tg) tg.setAttribute("aria-expanded", String(open));
+  const body = wrap.querySelector(".body");
+  if (body) body.inert = !open;
+  wrap.dispatchEvent(new Event("sectchange"));
+}
+
+function render() {
+  const work = document.getElementById("work");
+  const projs = document.getElementById("projlist");
+  const foot = document.getElementById("footlist");
+  let pieces = 0, orgs = 0, n = 0;
+
+  WORK.forEach(org => {
+    n++;
+    const sec = el("section", { class: "org" + (n % 2 === 1 ? " soft" : ""), id: org.slug });
+    const orgSects = [];
+    const c = el("div", { class: "container" });
+    c.appendChild(el("div", { class: "org-head rv" }, [
+      el("div", {}, [
+        el("span", { class: "upper sup num", html: "0" + n + "<i></i>" }),
+        el("h2", { text: org.name })
+      ]),
+      el("div", { class: "org-right" }, [el("p", { class: "upper", text: org.role, style: "color:#000;margin-bottom:14px" }), el("p", { class: "intro", text: org.intro })])
+    ]));
+    const rightCol = c.querySelector(".org-right");
+    org.groups.forEach(g => {
+      const gEl = el("div", { class: "group" });
+      if (g.title) gEl.appendChild(el("span", { class: "upper", text: g.title }));
+      g.sections.forEach(s => {
+        const subs = s.subs || [{ title: "", items: s.items }];
+        const list = subs.flatMap(sb => sb.items.map(([type, id, title]) => ({ type, id, title })));
+        const collapsible = !!s.title;
+        const info = el("div", { class: "info rv" });
+        const bodyId = "sect-" + org.slug + "-" + (++secN);
+        const label = s.title || (g.title || org.name);
+        const countTxt = list.length ? list.length + (list.length === 1 ? " piece" : " pieces") : "";
+        const wrap = el("div", { class: "sect" + (collapsible ? "" : " plain") });
+        if (collapsible) {
+          const tg = el("button", { class: "toggle", type: "button", "aria-expanded": "false", "aria-controls": bodyId }, [el("span", { class: "pm", "aria-hidden": "true" }), el("span", { text: label })]);
+          if (countTxt) tg.appendChild(el("span", { class: "count", text: countTxt }));
+          tg.addEventListener("click", () => setSect(wrap, !wrap.classList.contains("open")));
+          info.appendChild(el("h4", {}, [tg]));
+          orgSects.push(wrap);
+        } else {
+          info.appendChild(el("h4", { text: label }));
+        }
+        wrap.appendChild(info);
+        const inner = el("div", { class: "inner" });
+        if (list.length) {
+          let off = 0;
+          subs.forEach(sb => {
+            if (!sb.items.length) return;
+            const grid = el("div", { class: "cards" });
+            sb.items.forEach((it, j) => { const k = card(it, list, off + j); k.classList.add("rv"); grid.appendChild(k); });
+            if (sb.title) inner.appendChild(el("div", { class: "subhead rv" }, [el("span", { class: "upper", text: sb.title }), el("span", { class: "count", text: sb.items.length + (sb.items.length === 1 ? " piece" : " pieces") })]));
+            inner.appendChild(grid);
+            off += sb.items.length;
+          });
+          pieces += list.length;
+        } else if (s.folder) {
+          const grid = el("div", { class: "cards" });
+          const fl = [{ type: "f", id: s.folder, title: s.title }];
+          const k = card(["f", s.folder, "Open the campaign folder"], fl, 0, "Google Drive");
+          k.classList.add("rv");
+          grid.appendChild(k);
+          inner.appendChild(grid);
+        }
+        const body = el("div", { class: "body", id: bodyId }, [inner]);
+        if (collapsible) body.inert = true;
+        wrap.appendChild(body);
+        gEl.appendChild(wrap);
+      });
+      c.appendChild(gEl);
+    });
+    if (orgSects.length > 1) {
+      const all = el("button", { class: "link org-tools", type: "button", html: "<span>Expand all</span>" + ARROW });
+      all.addEventListener("click", () => {
+        const open = !orgSects.every(s => s.classList.contains("open"));
+        orgSects.forEach(s => setSect(s, open));
+        all.firstChild.textContent = open ? "Collapse all" : "Expand all";
+      });
+      orgSects.forEach(s => s.addEventListener("sectchange", () => {
+        all.firstChild.textContent = orgSects.every(x => x.classList.contains("open")) ? "Collapse all" : "Expand all";
+      }));
+      rightCol.appendChild(all);
+    }
+    sec.appendChild(c);
+    work.appendChild(sec);
+    if (org.slug !== "certifications") orgs++;
+    const label = org.slug === "certifications" ? "Certifications" : org.name;
+    projs.appendChild(el("li", {}, [el("a", { href: "#" + org.slug, text: label })]));
+    foot.appendChild(el("li", {}, [el("a", { href: "#" + org.slug, text: label })]));
+  });
+
+  const facts = document.getElementById("facts");
+  [["10,000+", "Pierce County residents engaged through programming"], ["100+", "Pierce County events planned and managed"], ["50+", "live keynotes and presentations delivered"], ["1,000s", "of leads generated through paid ad strategy"]].forEach(([a, b]) => {
+    facts.appendChild(el("li", {}, [el("b", { text: String(a) }), el("span", { text: b })]));
+  });
+
+  /* Intro line with a small pill image pulled from Drive */
+  const cx = document.getElementById("complex");
+  const pill = el("span", { class: "pimg" });
+  const pimg = el("img", { src: D.thumb("1_p-CuczC01LbfUe9EwzPMeHGfwynbcPs"), alt: "", loading: "lazy", referrerpolicy: "no-referrer" });
+  pimg.addEventListener("error", () => pill.classList.add("nothumb"));
+  pill.appendChild(pimg);
+  cx.appendChild(pill);
+  cx.appendChild(document.createTextNode("Campaigns that connect people to health services, in the languages they speak."));
+
+  const items = [];
+  if (CONTACT.email) items.push(el("li", {}, [el("a", { href: "mailto:" + CONTACT.email, text: CONTACT.email })]));
+  if (CONTACT.linkedin) items.push(el("li", {}, [el("a", { href: CONTACT.linkedin, target: "_blank", rel: "noopener", text: "LinkedIn" })]));
+  if (CONTACT.website) items.push(el("li", {}, [el("a", { href: CONTACT.website, target: "_blank", rel: "noopener", text: "Website" })]));
+  const cl = document.getElementById("contactlist");
+  if (items.length) items.forEach(i => cl.appendChild(i));
+  else cl.remove();
+  document.getElementById("yr").textContent = new Date().getFullYear();
+}
+render();
+
+(function () {
+  const sg = document.getElementById("svcgrid");
+  SERVICES.forEach(([title, text], i) => sg.appendChild(el("div", { class: "svc-card rv" }, [
+    el("span", { class: "upper n", text: "0" + (i + 1) }),
+    el("div", {}, [el("h4", { text: title }), el("p", { text: text })])
+  ])));
+  const jobs = document.getElementById("jobs");
+  JOBS.forEach(j => {
+    const ul = el("ul");
+    j.pts.forEach(p => ul.appendChild(el("li", { html: p })));
+    jobs.appendChild(el("div", { class: "job rv" }, [
+      el("div", {}, [el("span", { class: "upper when", text: j.when }), el("span", { class: "org-n", text: j.org })]),
+      el("div", {}, [el("h4", { text: j.role }), el("p", { class: "sum", text: j.sum }), ul])
+    ]));
+  });
+  const early = document.getElementById("early");
+  EARLY.forEach(([a, b]) => early.appendChild(el("div", {}, [el("h5", { text: a }), el("p", { text: b })])));
+  const more = document.getElementById("more");
+  MORE.forEach(([a, b]) => more.appendChild(el("div", {}, [el("span", { class: "upper", text: a }), el("p", { text: b })])));
+
+  /* Testimonials */
+  (function () {
+    const wrap = document.getElementById("slides");
+    const count = document.getElementById("tcount");
+    const slides = TESTIMONIALS.map((x, i) => {
+      const kids = [
+        el("blockquote", { text: "\u201C" + x.q + "\u201D" }),
+        el("div", { class: "who" }, [el("b", { text: x.who }), el("span", { text: x.org })])
+      ];
+      if (x.ctx) kids.push(el("p", { class: "ctx", text: x.ctx }));
+      const src = el("button", { class: "link", type: "button", html: "<span>View the original</span>" + ARROW });
+      src.addEventListener("click", () => openViewer([x.src], 0, src));
+      kids.push(src);
+      const s = el("figure", { class: "slide", role: "group", "aria-roledescription": "slide", "aria-label": (i + 1) + " of " + TESTIMONIALS.length }, kids);
+      wrap.appendChild(s);
+      return s;
+    });
+    let cur = 0;
+    function go(n) {
+      cur = (n + slides.length) % slides.length;
+      slides.forEach((s, i) => { s.classList.toggle("on", i === cur); s.inert = i !== cur; });
+      count.textContent = String(cur + 1).padStart(2, "0") + " / " + String(slides.length).padStart(2, "0");
+    }
+    document.getElementById("tprev").addEventListener("click", () => go(cur - 1));
+    document.getElementById("tnext").addEventListener("click", () => go(cur + 1));
+    const sec = document.getElementById("testimonials");
+    sec.addEventListener("keydown", e => { if (e.key === "ArrowLeft") go(cur - 1); if (e.key === "ArrowRight") go(cur + 1); });
+    let x0 = null;
+    wrap.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
+    wrap.addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); });
+    go(0);
+  })();
+
+  const bl = document.getElementById("badges");
+  const qs = new URLSearchParams(location.search).get("badges");
+  const bStyle = ["pictogram", "mono", "medal", "laurel", "text"].includes(qs) ? qs : BADGE_STYLE;
+  bl.setAttribute("data-style", bStyle);
+  const half1 = document.getElementById("half1"), half2 = document.getElementById("half2");
+  const bList = BADGES.filter(b => b.id).map(b => ({ type: b.type, id: b.id, title: b.title }));
+  function badgeSet(clone) {
+    return BADGES.map(b => {
+      const inner = [
+        el("span", { class: "em", html: emblem(bStyle, b) }),
+        el("span", { class: "bt" }, [el("span", { class: "upper", text: b.top }), el("b", { text: b.main })])
+      ];
+      let node;
+      if (b.id) {
+        node = el("button", { class: "badge", type: "button", "aria-label": "View " + b.title }, inner);
+        if (clone) node.setAttribute("tabindex", "-1");
+        node.addEventListener("click", () => openViewer(bList, bList.findIndex(x => x.id === b.id), node));
+      } else {
+        node = el("span", { class: "badge static" }, inner);
+      }
+      return el("li", {}, [node]);
+    });
+  }
+  function fillBanner() {
+    half1.textContent = ""; half2.textContent = "";
+    badgeSet(false).forEach(li => half1.appendChild(li));
+    if (reduced) return;
+    const w = half1.getBoundingClientRect().width || 1;
+    const sets = Math.max(1, Math.ceil(innerWidth / w));
+    for (let i = 1; i < sets; i++) badgeSet(true).forEach(li => { li.firstChild.setAttribute("tabindex", "-1"); half1.appendChild(li); });
+    for (let i = 0; i < sets; i++) badgeSet(true).forEach(li => half2.appendChild(li));
+    bl.style.setProperty("--dur", Math.max(20, half1.getBoundingClientRect().width / 55) + "s");
+  }
+  fillBanner();
+  let rzT; addEventListener("resize", () => { clearTimeout(rzT); rzT = setTimeout(fillBanner, 250); });
+
+  const rb = document.getElementById("resumebtn");
+  rb.addEventListener("click", () => openViewer([{ type: "d", id: RESUME_ID, title: "Resume" }], 0, rb));
+
+  const ul = document.getElementById("usefullist");
+  const rl = el("button", { type: "button", text: "Resume" });
+  rl.addEventListener("click", () => { setMenu(false); openViewer([{ type: "d", id: RESUME_ID, title: "Resume" }], 0, rl); });
+  ul.appendChild(el("li", {}, [rl]));
+  if (CONTACT.linkedin) ul.appendChild(el("li", {}, [el("a", { href: CONTACT.linkedin, target: "_blank", rel: "noopener", text: "LinkedIn" })]));
+  if (CONTACT.email) ul.appendChild(el("li", {}, [el("a", { href: "mailto:" + CONTACT.email, text: "Email" })]));
+  ul.appendChild(el("li", {}, [el("a", { href: "#contact", text: "Contact" })]));
+})();
+
+/* Menu */
+const menuEl = document.getElementById("menu");
+const mbtn = document.getElementById("mbtn");
+function setMenu(open) {
+  menuEl.classList.toggle("open", open);
+  mbtn.classList.toggle("open", open);
+  mbtn.setAttribute("aria-expanded", String(open));
+  mbtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  document.body.classList.toggle("lock", open);
+  document.body.classList.toggle("menu-open", open);
+  menuEl.inert = !open;
+}
+menuEl.inert = true;
+mbtn.addEventListener("click", () => setMenu(!menuEl.classList.contains("open")));
+menuEl.addEventListener("click", e => { if (e.target.closest("a")) setMenu(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && menuEl.classList.contains("open")) { setMenu(false); mbtn.focus(); } });
+
+/* Header solidifies on scroll; progress bar */
+const frameEl = document.getElementById("frame");
+const bar = document.getElementById("bar");
+function onScroll() {
+  const y = window.scrollY, max = document.documentElement.scrollHeight - innerHeight;
+  frameEl.classList.toggle("solid", y > 40);
+  bar.style.height = (max > 0 ? Math.min(100, y / max * 100) : 0) + "%";
+}
+addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+/* Highlight the current section in the menu */
+(function () {
+  const links = [...document.querySelectorAll("#menulist a")];
+  const ids = links.map(a => a.dataset.sec);
+  function spy() {
+    let cur = "top", best = -Infinity;
+    ids.forEach(id => {
+      if (id === "top") return;
+      const n = document.getElementById(id); if (!n) return;
+      const top = n.getBoundingClientRect().top;
+      if (top <= innerHeight * .4 && top > best) { best = top; cur = id; }
+    });
+    // Individual organizations count as Portfolio
+    document.querySelectorAll(".org").forEach(o => { const r = o.getBoundingClientRect(); if (r.top <= innerHeight * .4 && r.bottom > innerHeight * .4) cur = "portfolio"; });
+    links.forEach(a => a.classList.toggle("cur", a.dataset.sec === cur));
+  }
+  addEventListener("scroll", spy, { passive: true }); spy();
+})();
+
+/* Reveal on scroll */
+const rv = document.querySelectorAll(".rv");
+if ("IntersectionObserver" in window && !reduced) {
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+  rv.forEach(n => io.observe(n));
+} else rv.forEach(n => n.classList.add("in"));
+
+/* Cursor ball (fine pointers, wide screens only) */
+if (matchMedia("(hover: hover) and (pointer: fine) and (min-width: 1200px)").matches && !reduced) {
+  document.body.classList.add("has-ball");
+  const ball = document.getElementById("ball");
+  let tx = innerWidth / 2, ty = innerHeight / 2, x = tx, y = ty;
+  addEventListener("mousemove", e => { tx = e.clientX; ty = e.clientY; });
+  (function tick() { x += (tx - x) * .18; y += (ty - y) * .18; ball.style.transform = "translate(" + x + "px," + y + "px)"; requestAnimationFrame(tick); })();
+  document.addEventListener("mouseover", e => {
+    const t = e.target.closest && e.target.closest("[data-ball]");
+    ball.classList.toggle("big", !!t);
+    ball.textContent = t ? t.getAttribute("data-ball") : "";
+  });
+}
+
+/* Preloader */
+(function () {
+  const p = document.getElementById("preloader");
+  const hide = () => { p.classList.add("done"); };
+  const wait = reduced ? 0 : 1300;
+  const t0 = Date.now();
+  const go = () => setTimeout(hide, Math.max(0, wait - (Date.now() - t0)));
+  if (document.readyState === "complete") go(); else addEventListener("load", go);
+  setTimeout(hide, 3500);
+})();
+</script>
+</body>
+</html>
