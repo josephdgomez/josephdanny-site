@@ -393,10 +393,14 @@ dialog::backdrop { background: rgba(0,0,0,.86); }
 .dlg-bot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; border-top: 1px solid rgba(255,255,255,.1); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--on-dark-soft); }
 .dlg-bot button:disabled { opacity: .3; cursor: default; }
 @media (max-width: 560px) { .dlg-top a { display: none; } .dlg iframe { height: 62vh; } }
-.dlg video { width: 100%; height: min(72vh, 700px); background: #000; display: block; }
-.dlg video[hidden] { display: none; }
-.dlg.nv iframe { display: none; }
-@media (max-width: 560px) { .dlg video { height: 62vh; } }
+.dlg.pv iframe { display: none; }
+.vposter { position: relative; display: block; height: min(72vh, 700px); background: #000; overflow: hidden; }
+.vposter[hidden] { display: none; }
+.vposter img { width: 100%; height: 100%; object-fit: contain; opacity: .8; }
+.vp-play { position: absolute; left: 50%; top: 46%; width: 84px; height: 84px; margin: -42px 0 0 -42px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; }
+.vp-play svg { width: 28px; height: 28px; margin-left: 4px; fill: #000; }
+.vp-label { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; color: #fff; font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 1px 8px rgba(0,0,0,.8); }
+@media (max-width: 560px) { .vposter { height: 62vh; } }
 
 /* Background line art, scroll cue, About with photo */
 .fx { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
@@ -672,7 +676,7 @@ body.sub .ph .container { position: relative; z-index: 1; }
       <button type="button" id="vclose" aria-label="Close viewer">Close</button>
     </div>
     <iframe id="vframe" title="Google Drive preview" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
-    <video id="vvideo" controls playsinline preload="metadata" hidden></video>
+    <a id="vposter" class="vposter" href="#" target="_blank" rel="noopener" hidden><img alt=""><span class="vp-play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13l11-6.5z"/></svg></span><span class="vp-label">Watch in Google Drive</span></a>
     <div class="dlg-bot">
       <button type="button" id="vprev">Previous</button>
       <span id="vpos"></span>

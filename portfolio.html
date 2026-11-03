@@ -393,10 +393,14 @@ dialog::backdrop { background: rgba(0,0,0,.86); }
 .dlg-bot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; border-top: 1px solid rgba(255,255,255,.1); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--on-dark-soft); }
 .dlg-bot button:disabled { opacity: .3; cursor: default; }
 @media (max-width: 560px) { .dlg-top a { display: none; } .dlg iframe { height: 62vh; } }
-.dlg video { width: 100%; height: min(72vh, 700px); background: #000; display: block; }
-.dlg video[hidden] { display: none; }
-.dlg.nv iframe { display: none; }
-@media (max-width: 560px) { .dlg video { height: 62vh; } }
+.dlg.pv iframe { display: none; }
+.vposter { position: relative; display: block; height: min(72vh, 700px); background: #000; overflow: hidden; }
+.vposter[hidden] { display: none; }
+.vposter img { width: 100%; height: 100%; object-fit: contain; opacity: .8; }
+.vp-play { position: absolute; left: 50%; top: 46%; width: 84px; height: 84px; margin: -42px 0 0 -42px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; }
+.vp-play svg { width: 28px; height: 28px; margin-left: 4px; fill: #000; }
+.vp-label { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; color: #fff; font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 1px 8px rgba(0,0,0,.8); }
+@media (max-width: 560px) { .vposter { height: 62vh; } }
 
 /* Background line art, scroll cue, About with photo */
 .fx { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
@@ -571,7 +575,7 @@ body.sub .ph .container { position: relative; z-index: 1; }
       <button type="button" id="vclose" aria-label="Close viewer">Close</button>
     </div>
     <iframe id="vframe" title="Google Drive preview" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
-    <video id="vvideo" controls playsinline preload="metadata" hidden></video>
+    <a id="vposter" class="vposter" href="#" target="_blank" rel="noopener" hidden><img alt=""><span class="vp-play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13l11-6.5z"/></svg></span><span class="vp-label">Watch in Google Drive</span></a>
     <div class="dlg-bot">
       <button type="button" id="vprev">Previous</button>
       <span id="vpos"></span>
@@ -830,54 +834,34 @@ const dlg = document.getElementById("viewer");
 const frame = document.getElementById("vframe");
 const state = { list: [], i: 0, opener: null };
 
-const vid = document.getElementById("vvideo");
 const dlgBox = dlg.querySelector(".dlg");
-// On phones Drive's own player draws two control layers, so videos play in the
-// browser's native player straight from Drive, falling back to Drive's player if that fails.
+const poster = document.getElementById("vposter");
+poster.querySelector("img").addEventListener("error", e => { e.target.style.visibility = "hidden"; });
+// Drive's embedded video player draws two sets of controls on iPhones and the site can't
+// change that, so on phones a video opens in Drive's own player from a poster instead.
 const NATIVE = matchMedia("(max-width: 700px), (pointer: coarse)").matches;
-let vtoken = 0, vtimer = 0;
-function stopVideo() { clearTimeout(vtimer); vid.onerror = null; vid.onloadedmetadata = null; vid.pause(); vid.removeAttribute("src"); vid.removeAttribute("poster"); vid.hidden = true; vid.load(); dlgBox.classList.remove("nv"); }
-function useDrivePlayer(it, tok) {
-  if (tok !== vtoken) return;
-  stopVideo();
-  frame.src = it.type === "d" ? D.docPreview(it.id) : D.preview(it.id);
-}
-const DBG = new URLSearchParams(location.search).has("vd");
-function dbg(t) { if (DBG) document.getElementById("vpos").textContent = t; }
-function playNative(it) {
-  const tok = ++vtoken;
-  stopVideo();
+function usePoster(it) {
   frame.src = "about:blank";
-  dlgBox.classList.add("nv");
-  vid.hidden = false;
-  vid.poster = D.thumb(it.id);
-  const urls = [
-    "https://drive.usercontent.google.com/download?id=" + it.id + "&export=download&confirm=t",
-    "https://drive.google.com/uc?export=download&id=" + it.id
-  ];
-  let n = 0;
-  const attempt = () => {
-    if (tok !== vtoken) return;
-    if (n >= urls.length) { dbg("fallback to Drive player"); return useDrivePlayer(it, tok); }
-    const k = n++;
-    clearTimeout(vtimer);
-    vid.onerror = () => { if (tok !== vtoken || !vid.getAttribute("src")) return; dbg("src" + (k + 1) + " error " + (vid.error ? vid.error.code : "?")); attempt(); };
-    vid.onloadedmetadata = () => { if (tok === vtoken) { clearTimeout(vtimer); dbg("src" + (k + 1) + " ok"); } };
-    vtimer = setTimeout(() => { dbg("src" + (k + 1) + " timeout net" + vid.networkState + " rs" + vid.readyState); attempt(); }, 9000);
-    vid.src = urls[k];
-    dbg("trying src" + (k + 1));
-    const pr = vid.play(); if (pr && pr.catch) pr.catch(() => {});
-  };
-  attempt();
+  dlgBox.classList.add("pv");
+  poster.hidden = false;
+  poster.href = D.view(it.id);
+  poster.querySelector("img").style.visibility = "";
+  poster.querySelector("img").src = D.thumb(it.id);
+  poster.setAttribute("aria-label", "Watch " + it.title + " in Google Drive");
+}
+function useFrame(src) {
+  dlgBox.classList.remove("pv");
+  poster.hidden = true;
+  poster.querySelector("img").removeAttribute("src");
+  frame.src = src;
 }
 function show() {
   const it = state.list[state.i];
   document.getElementById("vtitle").textContent = it.title;
   document.getElementById("vopen").href = it.type === "f" ? D.folder(it.id) : it.type === "d" ? D.docView(it.id) : D.view(it.id);
-  vtoken++;
-  if (!(NATIVE && it.type === "v")) { stopVideo(); frame.src = it.type === "f" ? D.folderEmbed(it.id) : it.type === "d" ? D.docPreview(it.id) : D.preview(it.id); }
+  if (NATIVE && it.type === "v") usePoster(it);
+  else useFrame(it.type === "f" ? D.folderEmbed(it.id) : it.type === "d" ? D.docPreview(it.id) : D.preview(it.id));
   document.getElementById("vpos").textContent = state.list.length > 1 ? (state.i + 1) + " of " + state.list.length : KIND[it.type];
-  if (NATIVE && it.type === "v") playNative(it);
   document.getElementById("vprev").disabled = state.i === 0;
   document.getElementById("vnext").disabled = state.i === state.list.length - 1;
 }
@@ -899,7 +883,6 @@ dlg.addEventListener("keydown", e => {
   if (e.key === "ArrowRight") step(1);
 });
 dlg.addEventListener("close", () => {
-  vtoken++; stopVideo();
   frame.src = "about:blank";
   if (state.opener) state.opener.focus();
 });
