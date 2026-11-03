@@ -505,6 +505,47 @@ body.sub .ph .container { position: relative; z-index: 1; }
 .jump a:hover { background: var(--accent); border-color: var(--accent); }
 @media (max-width: 560px) { .jump { gap: 10px; } .jump a { padding: 11px 18px; font-size: 11px; letter-spacing: 1.5px; } }
 @media (max-width: 992px) { body.sub .ph { padding: 140px 0 40px; } .ph .g1 { width: 280px; height: 280px; right: -110px; } .ph .g2 { display: none; } .jump { margin-top: 36px; } }
+/* Testimonials: 3D avatar carousel */
+.tst .container { text-align: center; }
+.tst .sup { margin-bottom: 28px; }
+.tst .sup::before { display: none; }
+.tst h2 { max-width: 18ch; margin: 0 auto 56px; font-weight: 300; }
+.tst .slides { display: block; position: relative; }
+.tst .slide { grid-area: auto; position: absolute; top: 0; left: 0; right: 0; }
+.tst .slide.on { position: relative; }
+.tst h2 b { font-weight: 500; }
+.tring { position: relative; height: 210px; margin: 0 auto 28px; perspective: 1000px; perspective-origin: 50% 40%; transform-style: preserve-3d; }
+.av { all: unset; box-sizing: border-box; position: absolute; left: 50%; top: 40px; width: 112px; height: 112px; margin-left: -56px; border-radius: 50%; cursor: pointer; background: var(--soft); overflow: hidden; display: grid; place-items: center; transition: transform .8s cubic-bezier(.2,.7,.2,1), opacity .6s ease, box-shadow .5s ease; will-change: transform; -webkit-tap-highlight-color: transparent; }
+.av img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.av .mono { font-size: 30px; font-weight: 500; color: var(--dark); letter-spacing: 1px; }
+.av.on { cursor: default; overflow: visible; background: none; }
+.av.on img, .av.on .mono, .av.on .ph0 { border-radius: 50%; }
+.av .ring { position: absolute; inset: -9px; border-radius: 50%; border: 3px solid var(--accent); opacity: 0; transition: opacity .5s ease; pointer-events: none; }
+.av.on .ring { opacity: 1; }
+.av:focus-visible { outline: 2px solid var(--dark); outline-offset: 6px; }
+.av.off { pointer-events: none; }
+.tstage { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; gap: 28px; max-width: 1040px; margin: 0 auto; }
+.tstage .slides { max-width: 760px; margin: 0 auto; }
+.tst .slide { text-align: center; }
+.tst .slide .qm { width: 44px; height: 44px; margin: 0 auto 18px; }
+.tst .slide .qm path { fill: var(--accent); }
+.tst .slide .who { margin-bottom: 26px; }
+.tst .slide .who b { font-size: 20px; }
+.tst .slide .who span { margin-top: 6px; font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+.tst .slide blockquote { font-size: clamp(20px, 2vw, 26px); line-height: 175%; font-weight: 300; color: var(--text); margin-bottom: 22px; }
+.tst .slide .ctx { margin: 0 auto; }
+.tst .slide .link { margin-top: 20px; }
+.tcount { margin-top: 36px; color: var(--text); }
+@media (max-width: 700px) {
+  .tring { height: 160px; }
+  .av { width: 78px; height: 78px; margin-left: -39px; top: 30px; }
+  .av .mono { font-size: 22px; }
+  .tstage { grid-template-columns: 1fr 1fr; grid-template-areas: "s s" "p n"; gap: 26px 0; }
+  .tstage .slides { grid-area: s; }
+  #tprev { grid-area: p; justify-self: end; margin-right: 10px; }
+  #tnext { grid-area: n; justify-self: start; margin-left: 10px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .body { transition: none; }
   .track { animation-duration: var(--dur, 40s) !important; animation-iteration-count: infinite !important; }
@@ -643,21 +684,15 @@ body.sub .ph .container { position: relative; z-index: 1; }
 
   <section class="tst" id="testimonials" aria-roledescription="carousel" aria-label="Testimonials">
     <div class="container">
-      <div class="row">
-        <div class="rv">
-          <span class="upper sup">Testimonials</span>
-          <h2>What colleagues and partners say.</h2>
-        </div>
-        <div class="rv">
-          <div class="qicon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.2 17.5c-1.5-1.2-2.2-2.9-2.2-5 0-3.6 2.2-6.4 6-7.5l.6 1.3C8.4 7.5 7.6 9 7.5 10.8c.3-.1.7-.2 1.1-.2 1.4 0 2.5 1.1 2.5 2.7 0 1.6-1.3 2.9-2.9 2.9-.7 0-1.3-.2-1.9-.6zm8.5 0c-1.5-1.2-2.2-2.9-2.2-5 0-3.6 2.2-6.4 6-7.5l.6 1.3c-2.2.7-3 2.2-3.1 4 .3-.1.7-.2 1.1-.2 1.4 0 2.5 1.1 2.5 2.7 0 1.6-1.3 2.9-2.9 2.9-.7 0-1.3-.2-1.9-.6z"/></svg></div>
-          <div class="slides" id="slides" aria-live="polite"></div>
-          <div class="tctl">
-            <button class="arrow" type="button" id="tprev" aria-label="Previous testimonial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5l1.4 1.4L7.8 11H20v2H7.8l4.6 4.6L11 19l-7-7z"/></svg></button>
-            <button class="arrow" type="button" id="tnext" aria-label="Next testimonial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg></button>
-            <span class="upper" id="tcount"></span>
-          </div>
-        </div>
+      <span class="upper sup rv">Testimonials</span>
+      <h2 class="rv"><b>What colleagues</b> and partners say.</h2>
+      <div class="tring rv" id="tring" role="group" aria-label="Choose a testimonial"></div>
+      <div class="tstage rv">
+        <button class="arrow" type="button" id="tprev" aria-label="Previous testimonial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5l1.4 1.4L7.8 11H20v2H7.8l4.6 4.6L11 19l-7-7z"/></svg></button>
+        <div class="slides" id="slides" aria-live="polite"></div>
+        <button class="arrow" type="button" id="tnext" aria-label="Next testimonial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg></button>
       </div>
+      <div class="upper tcount" id="tcount"></div>
     </div>
   </section>
 

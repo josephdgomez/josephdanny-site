@@ -505,6 +505,47 @@ body.sub .ph .container { position: relative; z-index: 1; }
 .jump a:hover { background: var(--accent); border-color: var(--accent); }
 @media (max-width: 560px) { .jump { gap: 10px; } .jump a { padding: 11px 18px; font-size: 11px; letter-spacing: 1.5px; } }
 @media (max-width: 992px) { body.sub .ph { padding: 140px 0 40px; } .ph .g1 { width: 280px; height: 280px; right: -110px; } .ph .g2 { display: none; } .jump { margin-top: 36px; } }
+/* Testimonials: 3D avatar carousel */
+.tst .container { text-align: center; }
+.tst .sup { margin-bottom: 28px; }
+.tst .sup::before { display: none; }
+.tst h2 { max-width: 18ch; margin: 0 auto 56px; font-weight: 300; }
+.tst .slides { display: block; position: relative; }
+.tst .slide { grid-area: auto; position: absolute; top: 0; left: 0; right: 0; }
+.tst .slide.on { position: relative; }
+.tst h2 b { font-weight: 500; }
+.tring { position: relative; height: 210px; margin: 0 auto 28px; perspective: 1000px; perspective-origin: 50% 40%; transform-style: preserve-3d; }
+.av { all: unset; box-sizing: border-box; position: absolute; left: 50%; top: 40px; width: 112px; height: 112px; margin-left: -56px; border-radius: 50%; cursor: pointer; background: var(--soft); overflow: hidden; display: grid; place-items: center; transition: transform .8s cubic-bezier(.2,.7,.2,1), opacity .6s ease, box-shadow .5s ease; will-change: transform; -webkit-tap-highlight-color: transparent; }
+.av img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.av .mono { font-size: 30px; font-weight: 500; color: var(--dark); letter-spacing: 1px; }
+.av.on { cursor: default; overflow: visible; background: none; }
+.av.on img, .av.on .mono, .av.on .ph0 { border-radius: 50%; }
+.av .ring { position: absolute; inset: -9px; border-radius: 50%; border: 3px solid var(--accent); opacity: 0; transition: opacity .5s ease; pointer-events: none; }
+.av.on .ring { opacity: 1; }
+.av:focus-visible { outline: 2px solid var(--dark); outline-offset: 6px; }
+.av.off { pointer-events: none; }
+.tstage { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; align-items: center; gap: 28px; max-width: 1040px; margin: 0 auto; }
+.tstage .slides { max-width: 760px; margin: 0 auto; }
+.tst .slide { text-align: center; }
+.tst .slide .qm { width: 44px; height: 44px; margin: 0 auto 18px; }
+.tst .slide .qm path { fill: var(--accent); }
+.tst .slide .who { margin-bottom: 26px; }
+.tst .slide .who b { font-size: 20px; }
+.tst .slide .who span { margin-top: 6px; font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+.tst .slide blockquote { font-size: clamp(20px, 2vw, 26px); line-height: 175%; font-weight: 300; color: var(--text); margin-bottom: 22px; }
+.tst .slide .ctx { margin: 0 auto; }
+.tst .slide .link { margin-top: 20px; }
+.tcount { margin-top: 36px; color: var(--text); }
+@media (max-width: 700px) {
+  .tring { height: 160px; }
+  .av { width: 78px; height: 78px; margin-left: -39px; top: 30px; }
+  .av .mono { font-size: 22px; }
+  .tstage { grid-template-columns: 1fr 1fr; grid-template-areas: "s s" "p n"; gap: 26px 0; }
+  .tstage .slides { grid-area: s; }
+  #tprev { grid-area: p; justify-self: end; margin-right: 10px; }
+  #tnext { grid-area: n; justify-self: start; margin-left: 10px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .body { transition: none; }
   .track { animation-duration: var(--dur, 40s) !important; animation-iteration-count: infinite !important; }
@@ -987,7 +1028,7 @@ const TESTIMONIALS = [
   { q: "Huge thanks to Comms for their social media push that [drove] the self referrals!",
     who: "Operations Manager", org: "Connect Pierce, Elevate Health", ctx: "Posted the same week: 199 client referrals, just 41 short of the entire month of September.",
     src: { type: "i", id: "1okFJ2CjySxcXabHZdhYTgbHVGpUyKv6j", title: "Program lead on results" } },
-  { q: "Yes, thank you, Joseph! Really amazing results.",
+  { q: "Really amazing results.",
     who: "Executive Director", org: "Elevate Health", ctx: "Replying to the campaign results update.",
     src: { type: "i", id: "1ujB4oy1jUdkwuhMDQQA1saVs4DCsRc0X", title: "Executive director on results" } },
   { q: "The geographic targeting is a LOT tighter than I expected!",
@@ -1211,37 +1252,72 @@ render();
   MORE.forEach(([a, b]) => more.appendChild(el("div", {}, [el("span", { class: "upper", text: a }), el("p", { text: b })])));
   })();
 
-  /* Testimonials */
+  /* Testimonials: slides plus a 3D ring of avatars */
   (function () {
     const wrap = document.getElementById("slides");
     if (!wrap) return;
     const count = document.getElementById("tcount");
-    const slides = TESTIMONIALS.map((x, i) => {
-      const kids = [
-        el("blockquote", { text: "\u201C" + x.q + "\u201D" }),
-        el("div", { class: "who" }, [el("b", { text: x.who }), el("span", { text: x.org })])
-      ];
+    const ring = document.getElementById("tring");
+    const QM = '<svg class="qm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.2 17.5c-1.5-1.2-2.2-2.9-2.2-5 0-3.6 2.2-6.4 6-7.5l.6 1.3C8.4 7.5 7.6 9 7.5 10.8c.3-.1.7-.2 1.1-.2 1.4 0 2.5 1.1 2.5 2.7 0 1.6-1.3 2.9-2.9 2.9-.7 0-1.3-.2-1.9-.6zm8.5 0c-1.5-1.2-2.2-2.9-2.2-5 0-3.6 2.2-6.4 6-7.5l.6 1.3c-2.2.7-3 2.2-3.1 4 .3-.1.7-.2 1.1-.2 1.4 0 2.5 1.1 2.5 2.7 0 1.6-1.3 2.9-2.9 2.9-.7 0-1.3-.2-1.9-.6z"/></svg>';
+    const initials = t => t.replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+    const n = TESTIMONIALS.length;
+    const slides = [], avs = [];
+    TESTIMONIALS.forEach((x, i) => {
+      const name = x.name || x.who;
+      const head = el("div", { class: "who" }, [el("b", { text: name }), el("span", { text: x.name ? x.who + ", " + x.org : x.org })]);
+      const kids = [el("div", { html: QM }), head, el("blockquote", { text: "\u201C" + x.q + "\u201D" })];
       if (x.ctx) kids.push(el("p", { class: "ctx", text: x.ctx }));
       const src = el("button", { class: "link", type: "button", html: "<span>View the original</span>" + ARROW });
       src.addEventListener("click", () => openViewer([x.src], 0, src));
       kids.push(src);
-      const s = el("figure", { class: "slide", role: "group", "aria-roledescription": "slide", "aria-label": (i + 1) + " of " + TESTIMONIALS.length }, kids);
-      wrap.appendChild(s);
-      return s;
+      const s = el("figure", { class: "slide", role: "group", "aria-roledescription": "slide", "aria-label": (i + 1) + " of " + n }, kids);
+      wrap.appendChild(s); slides.push(s);
+
+      const av = el("button", { class: "av", type: "button", "aria-label": "Show the testimonial from " + name });
+      const inner = x.photo ? el("img", { src: x.photo, alt: "", width: 112, height: 112, loading: "lazy", decoding: "async" }) : el("span", { class: "mono", text: initials(x.who) });
+      if (x.photo) inner.addEventListener("error", () => { inner.replaceWith(el("span", { class: "mono", text: initials(x.who) })); });
+      av.appendChild(inner); av.appendChild(el("span", { class: "ring" }));
+      av.addEventListener("click", () => go(i));
+      ring.appendChild(av); avs.push(av);
     });
     let cur = 0;
-    function go(n) {
-      cur = (n + slides.length) % slides.length;
+    function layout() {
+      const mob = innerWidth <= 700;
+      const dx = mob ? [0, 94, 152] : [0, 152, 256];
+      avs.forEach((a, i) => {
+        let d = i - cur; if (d > n / 2) d -= n; if (d < -n / 2) d += n;
+        const ad = Math.abs(d), sg = d < 0 ? -1 : 1;
+        const vis = ad <= 2;
+        const x = vis ? sg * dx[ad] : sg * dx[2];
+        const z = ad === 0 ? 40 : -ad * 90;
+        const ry = ad === 0 ? 0 : -sg * (ad === 1 ? 34 : 48);
+        const sc = ad === 0 ? 1.28 : ad === 1 ? .88 : .7;
+        const y = ad === 0 ? 14 : ad === 1 ? 0 : -8;
+        a.style.transform = "translate3d(" + x + "px," + y + "px," + z + "px) rotateY(" + ry + "deg) scale(" + sc + ")";
+        a.style.opacity = !vis ? 0 : ad === 0 ? 1 : ad === 1 ? .9 : .5;
+        a.style.zIndex = String(10 - ad);
+        a.classList.toggle("on", ad === 0);
+        a.classList.toggle("off", !vis);
+        a.tabIndex = vis ? 0 : -1;
+        if (ad === 0) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
+      });
+    }
+    function go(k) {
+      cur = (k + n) % n;
       slides.forEach((s, i) => { s.classList.toggle("on", i === cur); s.inert = i !== cur; });
-      count.textContent = String(cur + 1).padStart(2, "0") + " / " + String(slides.length).padStart(2, "0");
+      count.textContent = String(cur + 1).padStart(2, "0") + " / " + String(n).padStart(2, "0");
+      layout();
     }
     document.getElementById("tprev").addEventListener("click", () => go(cur - 1));
     document.getElementById("tnext").addEventListener("click", () => go(cur + 1));
     const sec = document.getElementById("testimonials");
     sec.addEventListener("keydown", e => { if (e.key === "ArrowLeft") go(cur - 1); if (e.key === "ArrowRight") go(cur + 1); });
     let x0 = null;
-    wrap.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
-    wrap.addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); });
+    [wrap, ring].forEach(t => {
+      t.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
+      t.addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); });
+    });
+    addEventListener("resize", layout);
     go(0);
   })();
 
