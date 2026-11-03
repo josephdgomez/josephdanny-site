@@ -503,8 +503,10 @@ addEventListener("scroll", onScroll, { passive: true }); onScroll();
   gems.forEach((g, i) => { g.innerHTML = gemSVG(+g.dataset.n || 5, i + 3); });
 
   const hs = document.getElementById("headshot"), pf = document.getElementById("pframe");
-  if (hs) hs.addEventListener("error", () => pf.classList.add("nophoto"));
-  if (hs) hs.src = "https://drive.google.com/thumbnail?id=1WiSReZCZqfRLNte8D0RTagH6DYTWZD6S&sz=w1000";
+  if (hs) {
+    hs.addEventListener("error", () => pf.classList.add("nophoto"));
+    if (hs.complete && !hs.naturalWidth) pf.classList.add("nophoto");
+  }
 
   if (reduced) return;
   const zoom = [...document.querySelectorAll("[data-zoom]")];
@@ -535,7 +537,7 @@ addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
 /* Reveal on scroll */
 const rv = document.querySelectorAll(".rv");
-if ("IntersectionObserver" in window && !reduced) {
+if ("IntersectionObserver" in window) {
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
   rv.forEach(n => io.observe(n));
 } else rv.forEach(n => n.classList.add("in"));

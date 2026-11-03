@@ -421,7 +421,7 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
 .scroll-cue .go svg { width: 26px; height: 26px; transform: rotate(90deg); }
 .scroll-cue .go path { fill: var(--dark); }
 .scroll-cue:hover .go { transform: scale(1.12); }
-@media (max-width: 992px) { .scroll-cue { position: relative; right: auto; bottom: auto; width: 124px; height: 124px; margin-top: 44px; } .scroll-cue text { font-size: 17px; } .scroll-cue .go { width: 46px; height: 46px; } .scroll-cue .go svg { width: 22px; height: 22px; } .hero .g1 { width: 340px; height: 340px; right: -130px; top: 30px; } .hero .g2 { display: none; } .hero .g3 { display: none; } .about .g1 { width: 280px; height: 280px; right: -110px; top: 2%; } .about .g2 { display: none; } footer .g1 { width: 300px; height: 300px; right: -120px; } }
+@media (max-width: 992px) { .scroll-cue { position: relative; right: auto; bottom: auto; width: 124px; height: 124px; margin-top: 44px; } .scroll-cue text { font-size: 17px; } .scroll-cue .go { width: 46px; height: 46px; } .scroll-cue .go svg { width: 22px; height: 22px; } .hero .g1 { width: 340px; height: 340px; right: -130px; top: 30px; } .hero .g2 { width: 190px; height: 190px; right: -60px; left: auto; top: auto; bottom: 3%; opacity: .45; } .hero .g3 { display: none; } .about .g1 { width: 280px; height: 280px; right: -110px; top: 2%; } .about .g2 { display: none; } footer .g1 { width: 300px; height: 300px; right: -120px; } }
 
 .about .container { position: relative; z-index: 1; }
 .about .row2 { display: grid; grid-template-columns: 5fr 6fr; gap: 100px; align-items: center; }
@@ -441,7 +441,7 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
 @media (max-width: 992px) { .about .row2 { grid-template-columns: minmax(0, 1fr); gap: 70px; } .aphoto { max-width: 380px; } .about .stats { margin-top: 70px; grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .about .stats .gi { width: 70px; height: 70px; top: 10px; } .aphoto .lines { inset: 18px -14px -18px 14px; } .pframe .mono { font-size: 110px; } .about .stats { margin-top: 56px; } }
 /* Work sections slide in from the right */
-.org { overflow-x: clip; }
+.org { overflow-x: hidden; overflow-x: clip; }
 .js .rv.r { transform: translateX(110px); }
 .js .rv.r.in { transform: none; }
 @media (max-width: 560px) { .js .rv.r { transform: translateX(60px); } }
@@ -481,9 +481,10 @@ body.sub .ph .container { position: relative; z-index: 1; }
   .half { flex-wrap: wrap; justify-content: center; gap: 12px 0; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-delay: 0s !important; }
-  .js .rv { opacity: 1; transform: none; }
-  .js .rv.r { opacity: 1; transform: none; }
-  .gem svg, .scroll-cue .ct { animation: none; }
+  .js .rv, .js .rv.r { transform: none; }
+  .js .rv { transition: opacity .6s ease !important; transition-duration: .6s !important; }
+  .gem svg { animation-duration: 140s !important; animation-iteration-count: infinite !important; }
+  .scroll-cue .ct { animation-duration: 40s !important; }
 }
 </style>
 <script>try{if(sessionStorage.getItem("pl"))document.documentElement.classList.add("nopl")}catch(e){}</script>
@@ -572,7 +573,7 @@ body.sub .ph .container { position: relative; z-index: 1; }
         <div class="aphoto rv">
           <div class="lines" aria-hidden="true"></div>
           <div class="pframe" id="pframe">
-            <img id="headshot" alt="Portrait of Joseph Daniel Gomez de la Mora" width="800" height="1000" data-zoom decoding="async" referrerpolicy="no-referrer">
+            <img id="headshot" src="/headshot.jpg" alt="Portrait of Joseph Daniel Gomez de la Mora" width="800" height="800" data-zoom decoding="async">
             <span class="mono" aria-hidden="true"><b>J<i>.</i></b></span>
           </div>
         </div>
@@ -1381,8 +1382,10 @@ addEventListener("scroll", onScroll, { passive: true }); onScroll();
   gems.forEach((g, i) => { g.innerHTML = gemSVG(+g.dataset.n || 5, i + 3); });
 
   const hs = document.getElementById("headshot"), pf = document.getElementById("pframe");
-  if (hs) hs.addEventListener("error", () => pf.classList.add("nophoto"));
-  if (hs) hs.src = "https://drive.google.com/thumbnail?id=1WiSReZCZqfRLNte8D0RTagH6DYTWZD6S&sz=w1000";
+  if (hs) {
+    hs.addEventListener("error", () => pf.classList.add("nophoto"));
+    if (hs.complete && !hs.naturalWidth) pf.classList.add("nophoto");
+  }
 
   if (reduced) return;
   const zoom = [...document.querySelectorAll("[data-zoom]")];
@@ -1413,7 +1416,7 @@ addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
 /* Reveal on scroll */
 const rv = document.querySelectorAll(".rv");
-if ("IntersectionObserver" in window && !reduced) {
+if ("IntersectionObserver" in window) {
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
   rv.forEach(n => io.observe(n));
 } else rv.forEach(n => n.classList.add("in"));
