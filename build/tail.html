@@ -444,7 +444,7 @@ render();
     const sec = document.getElementById("testimonials");
     sec.addEventListener("keydown", e => { if (e.key === "ArrowLeft") go(cur - 1); if (e.key === "ArrowRight") go(cur + 1); });
     let x0 = null;
-    [wrap, ring].forEach(t => {
+    [wrap, ring.parentNode].forEach(t => {
       t.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
       t.addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); });
     });
