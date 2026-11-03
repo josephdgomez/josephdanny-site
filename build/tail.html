@@ -434,7 +434,7 @@ render();
     const sets = Math.max(1, Math.ceil(innerWidth / w));
     for (let i = 1; i < sets; i++) badgeSet(true).forEach(li => { li.firstChild.setAttribute("tabindex", "-1"); half1.appendChild(li); });
     for (let i = 0; i < sets; i++) badgeSet(true).forEach(li => half2.appendChild(li));
-    bl.style.setProperty("--dur", Math.max(20, half1.getBoundingClientRect().width / 55) + "s");
+    bl.style.setProperty("--dur", Math.max(18, half1.getBoundingClientRect().width / (innerWidth < 700 ? 110 : 55)) + "s");
   }
   fillBanner();
   let rzT; addEventListener("resize", () => { clearTimeout(rzT); rzT = setTimeout(fillBanner, 250); });

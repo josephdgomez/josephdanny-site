@@ -484,7 +484,7 @@ body.sub .ph .container { position: relative; z-index: 1; }
 @media (max-width: 992px) { body.sub .ph { padding: 140px 0 40px; } .ph .g1 { width: 280px; height: 280px; right: -110px; } .ph .g2 { display: none; } .jump { margin-top: 36px; } }
 @media (prefers-reduced-motion: reduce) {
   .body { transition: none; }
-  .track { animation-duration: calc(var(--dur, 40s) * 1.4) !important; animation-iteration-count: infinite !important; }
+  .track { animation-duration: var(--dur, 40s) !important; animation-iteration-count: infinite !important; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-delay: 0s !important; }
   .js .rv, .js .rv.r { transform: none; }
