@@ -208,7 +208,9 @@ h4 { font-size: 28px; }
 .sup { position: relative; display: block; margin-bottom: 60px; color: var(--dark); }
 .sup::before { content: ""; position: absolute; right: calc(100% + 30px); top: 10px; width: 600px; height: 1px; background: var(--dark); opacity: .1; }
 .about .stats { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
-.about .stats li { border-top: 1px solid var(--line); padding-top: 18px; }
+.about .stats li { position: relative; isolation: isolate; overflow: hidden; border-top: 1px solid var(--line); padding-top: 18px; }
+.about .stats .gi { position: absolute; z-index: -1; right: 0; top: 14px; width: 96px; height: 96px; color: var(--dark); opacity: .07; pointer-events: none; }
+.about .stats .gi svg { display: block; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
 .about .stats b { display: block; font-size: 56px; font-weight: 500; line-height: 110%; color: var(--dark); }
 .about .stats span { display: block; margin-top: 6px; }
 .complex { font-size: clamp(26px, 3.2vw, 42px); font-weight: 500; line-height: 140%; color: var(--dark); }
@@ -407,7 +409,7 @@ dialog::backdrop { background: rgba(0,0,0,.86); }
 .hero .g3 { width: 250px; height: 250px; left: 47%; top: 50%; --spin: 90s; }
 .about { position: relative; overflow: hidden; }
 .about .g1 { width: 420px; height: 420px; right: -210px; top: 4%; --spin: 120s; }
-.about .g2 { width: 120px; height: 120px; right: 10%; bottom: 9%; --spin: 45s; --dir: reverse; }
+.about .g2 { width: 120px; height: 120px; right: 6%; bottom: 3%; --spin: 45s; --dir: reverse; }
 footer { overflow: hidden; }
 footer .container { position: relative; z-index: 1; }
 footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130s; }
@@ -437,7 +439,7 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
 .atext .sup { margin-bottom: 40px; }
 .about .stats { margin-top: 110px; grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 992px) { .about .row2 { grid-template-columns: minmax(0, 1fr); gap: 70px; } .aphoto { max-width: 380px; } .about .stats { margin-top: 70px; grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .aphoto .lines { inset: 18px -14px -18px 14px; } .pframe .mono { font-size: 110px; } .about .stats { margin-top: 56px; } }
+@media (max-width: 560px) { .about .stats .gi { width: 70px; height: 70px; top: 10px; } .aphoto .lines { inset: 18px -14px -18px 14px; } .pframe .mono { font-size: 110px; } .about .stats { margin-top: 56px; } }
 /* Work sections slide in from the right */
 .org { overflow-x: clip; }
 .js .rv.r { transform: translateX(110px); }
@@ -1141,8 +1143,15 @@ function render() {
   });
 
   const facts = document.getElementById("facts");
-  [["10,000+", "Pierce County residents engaged through programming"], ["100+", "Pierce County events planned and managed"], ["50+", "live keynotes and presentations delivered"], ["1,000s", "of leads generated through paid ad strategy"]].forEach(([a, b]) => {
-    facts.appendChild(el("li", {}, [el("b", { text: String(a) }), el("span", { text: b })]));
+  const GI = {
+    users: '<circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.5c.4-3.3 3-5.3 6.2-5.3s5.8 2 6.2 5.3"/><circle cx="17.2" cy="9" r="2.6"/><path d="M16.4 14.4c2.6-.2 4.5 1.5 4.8 4.4"/>',
+    cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M9 15.2l2.2 2.2 3.9-4.2"/>',
+    mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.2M8.5 21.2h7"/>',
+    funnel: '<path d="M3.5 5h17l-6.5 7.8v5.7l-4 2v-7.7z"/>'
+  };
+  [["10,000+", "Pierce County residents engaged through programming", "users"], ["100+", "Pierce County events planned and managed", "cal"], ["50+", "live keynotes and presentations delivered", "mic"], ["1,000s", "of leads generated through paid ad strategy", "funnel"]].forEach(([a, b, ic]) => {
+    const g = el("span", { class: "gi", "aria-hidden": "true", html: '<svg viewBox="0 0 24 24">' + GI[ic] + "</svg>" });
+    facts.appendChild(el("li", {}, [g, el("b", { text: String(a) }), el("span", { text: b })]));
   });
 
   /* Intro line with a small pill image pulled from Drive */
