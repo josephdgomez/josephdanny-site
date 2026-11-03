@@ -393,6 +393,10 @@ dialog::backdrop { background: rgba(0,0,0,.86); }
 .dlg-bot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; border-top: 1px solid rgba(255,255,255,.1); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--on-dark-soft); }
 .dlg-bot button:disabled { opacity: .3; cursor: default; }
 @media (max-width: 560px) { .dlg-top a { display: none; } .dlg iframe { height: 62vh; } }
+.dlg video { width: 100%; height: min(72vh, 700px); background: #000; display: block; }
+.dlg video[hidden] { display: none; }
+.dlg.nv iframe { display: none; }
+@media (max-width: 560px) { .dlg video { height: 62vh; } }
 
 /* Background line art, scroll cue, About with photo */
 .fx { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
@@ -476,9 +480,7 @@ body.sub .ph .container { position: relative; z-index: 1; }
 @media (max-width: 992px) { body.sub .ph { padding: 140px 0 40px; } .ph .g1 { width: 280px; height: 280px; right: -110px; } .ph .g2 { display: none; } .jump { margin-top: 36px; } }
 @media (prefers-reduced-motion: reduce) {
   .body { transition: none; }
-  .track { animation: none; width: auto; justify-content: center; flex-wrap: wrap; padding: 0 30px; }
-  .half + .half { display: none; }
-  .half { flex-wrap: wrap; justify-content: center; gap: 12px 0; }
+  .track { animation-duration: calc(var(--dur, 40s) * 1.4) !important; animation-iteration-count: infinite !important; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-delay: 0s !important; }
   .js .rv, .js .rv.r { transform: none; }
@@ -650,6 +652,7 @@ body.sub .ph .container { position: relative; z-index: 1; }
       <button type="button" id="vclose" aria-label="Close viewer">Close</button>
     </div>
     <iframe id="vframe" title="Google Drive preview" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
+    <video id="vvideo" controls playsinline preload="metadata" hidden></video>
     <div class="dlg-bot">
       <button type="button" id="vprev">Previous</button>
       <span id="vpos"></span>
@@ -908,11 +911,39 @@ const dlg = document.getElementById("viewer");
 const frame = document.getElementById("vframe");
 const state = { list: [], i: 0, opener: null };
 
+const vid = document.getElementById("vvideo");
+const dlgBox = dlg.querySelector(".dlg");
+// On phones Drive's own player draws two control layers, so videos play in the
+// browser's native player straight from Drive, falling back to Drive's player if that fails.
+const NATIVE = matchMedia("(max-width: 700px), (pointer: coarse)").matches;
+let vtoken = 0, vtimer = 0;
+function stopVideo() { clearTimeout(vtimer); vid.onerror = null; vid.onloadedmetadata = null; vid.pause(); vid.removeAttribute("src"); vid.removeAttribute("poster"); vid.hidden = true; vid.load(); dlgBox.classList.remove("nv"); }
+function useDrivePlayer(it, tok) {
+  if (tok !== vtoken) return;
+  stopVideo();
+  frame.src = it.type === "d" ? D.docPreview(it.id) : D.preview(it.id);
+}
+function playNative(it) {
+  const tok = ++vtoken;
+  stopVideo();
+  frame.src = "about:blank";
+  dlgBox.classList.add("nv");
+  vid.hidden = false;
+  vid.poster = D.thumb(it.id);
+  const fail = () => { if (vid.getAttribute("src")) useDrivePlayer(it, tok); };
+  vid.onerror = fail;
+  vid.onloadedmetadata = () => { if (tok === vtoken) clearTimeout(vtimer); };
+  vtimer = setTimeout(fail, 8000);
+  vid.src = "https://drive.usercontent.google.com/download?id=" + it.id + "&export=download&confirm=t";
+  const pr = vid.play(); if (pr && pr.catch) pr.catch(() => {});
+}
 function show() {
   const it = state.list[state.i];
   document.getElementById("vtitle").textContent = it.title;
   document.getElementById("vopen").href = it.type === "f" ? D.folder(it.id) : it.type === "d" ? D.docView(it.id) : D.view(it.id);
-  frame.src = it.type === "f" ? D.folderEmbed(it.id) : it.type === "d" ? D.docPreview(it.id) : D.preview(it.id);
+  vtoken++;
+  if (NATIVE && it.type === "v") playNative(it);
+  else { stopVideo(); frame.src = it.type === "f" ? D.folderEmbed(it.id) : it.type === "d" ? D.docPreview(it.id) : D.preview(it.id); }
   document.getElementById("vpos").textContent = state.list.length > 1 ? (state.i + 1) + " of " + state.list.length : KIND[it.type];
   document.getElementById("vprev").disabled = state.i === 0;
   document.getElementById("vnext").disabled = state.i === state.list.length - 1;
@@ -935,6 +966,7 @@ dlg.addEventListener("keydown", e => {
   if (e.key === "ArrowRight") step(1);
 });
 dlg.addEventListener("close", () => {
+  vtoken++; stopVideo();
   frame.src = "about:blank";
   if (state.opener) state.opener.focus();
 });
