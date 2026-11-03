@@ -5,3 +5,12 @@
 
 /index.html
   Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/portfolio
+  Cache-Control: public, max-age=0, must-revalidate
+
+/portfolio.html
+  Cache-Control: public, max-age=0, must-revalidate

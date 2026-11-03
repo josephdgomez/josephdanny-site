@@ -456,6 +456,24 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
 .tst .slide .ctx { margin-left: auto; margin-right: auto; }
 .tst .tctl { justify-content: center; max-width: 860px; margin-left: auto; margin-right: auto; }
 @media (max-width: 560px) { .tst h2 { margin-bottom: 44px; } .tst .qicon { margin-bottom: 28px; } }
+/* Two-page layout: hero buttons, portfolio header */
+.nopl .preloader { display: none !important; }
+h1.h2 { font-size: clamp(36px, 5.2vw, 68px); letter-spacing: -.015em; }
+.cta { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 40px; }
+.btn.alt { background: transparent; box-shadow: inset 0 0 0 1px var(--dark); }
+.btn.alt:hover { background: var(--dark); color: var(--light); filter: none; }
+.btn.alt:hover svg { background: var(--accent); }
+.btn.alt:hover svg path { fill: var(--dark); }
+@media (max-width: 560px) { .cta { flex-direction: column; } .cta .btn { width: 100%; justify-content: space-between; } }
+body.sub .ph { position: relative; overflow: hidden; border-top: 0; padding: 190px 0 70px; }
+body.sub .ph .container { position: relative; z-index: 1; }
+.ph .g1 { width: 460px; height: 460px; right: -150px; top: -40px; --spin: 130s; }
+.ph .g2 { width: 130px; height: 130px; right: 9%; bottom: 6%; --spin: 50s; --dir: reverse; }
+.jump { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 56px; }
+.jump a { border: 1px solid var(--line); border-radius: 50px; padding: 13px 24px; font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--dark); background: var(--light); transition: var(--ease); }
+.jump a:hover { background: var(--accent); border-color: var(--accent); }
+@media (max-width: 560px) { .jump { gap: 10px; } .jump a { padding: 11px 18px; font-size: 11px; letter-spacing: 1.5px; } }
+@media (max-width: 992px) { body.sub .ph { padding: 140px 0 40px; } .ph .g1 { width: 280px; height: 280px; right: -110px; } .ph .g2 { display: none; } .jump { margin-top: 36px; } }
 @media (prefers-reduced-motion: reduce) {
   .body { transition: none; }
   .track { animation: none; width: auto; justify-content: center; flex-wrap: wrap; padding: 0 30px; }
@@ -468,8 +486,9 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
   .gem svg, .scroll-cue .ct { animation: none; }
 }
 </style>
+<script>try{if(sessionStorage.getItem("pl"))document.documentElement.classList.add("nopl")}catch(e){}</script>
 </head>
-<body>
+<body data-page="home">
 
 <div class="preloader" id="preloader" aria-hidden="true">
   <div class="pname"><span>Joseph Gomez de la Mora</span></div>
@@ -489,7 +508,7 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
     <nav aria-label="Main">
       <ul id="menulist">
         <li><a href="#top" data-sec="top">Homepage</a></li>
-        <li><a href="#portfolio" data-sec="portfolio">Portfolio</a></li>
+        <li><a href="/portfolio" data-sec="portfolio">Portfolio</a></li>
         <li><a href="#services" data-sec="services">Services</a></li>
         <li><a href="#testimonials" data-sec="testimonials">Testimonials</a></li>
         <li><a href="#experience" data-sec="experience">Experience</a></li>
@@ -525,6 +544,10 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
         <div>
           <p class="lede">Hi, I'm Joseph. A marketing and communications leader with 5+ years of experience supporting population health and health equity initiatives across Pierce County.</p>
           <p class="es">Campañas, video y diseño en inglés y español.</p>
+          <div class="cta">
+            <a class="btn" href="/portfolio"><span>View portfolio</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg></a>
+            <a class="btn alt" href="https://docs.google.com/document/d/1kia_8wKuOrGpDp3uzUiFT2xI9fVxtSvapqBMX_5C3LM/export?format=pdf" target="_blank" rel="noopener" download="Joseph-Gomez-de-la-Mora-Resume.pdf"><span>Download resume</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg></a>
+          </div>
         </div>
       </div>
       <a class="scroll-cue" href="#about" aria-label="Scroll down">
@@ -533,14 +556,12 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
       </a>
     </div>
   </section>
-
   <section class="marquee" aria-label="Awards and certifications">
     <div class="track badges" id="badges" data-style="pictogram">
       <ul class="half" id="half1"></ul>
       <ul class="half" id="half2" aria-hidden="true"></ul>
     </div>
   </section>
-
   <section class="about" id="about">
     <div class="fx" aria-hidden="true">
       <div class="gem g1" data-n="6" data-speed=".14" data-scale="1"></div>
@@ -564,7 +585,6 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
       <ul class="stats rv" id="facts"></ul>
     </div>
   </section>
-
   <section class="svc" id="services">
     <div class="container">
       <span class="upper sup rv">Services</span>
@@ -572,18 +592,6 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
       <div class="svc-grid" id="svcgrid"></div>
     </div>
   </section>
-
-  <section class="ph" id="portfolio">
-    <div class="container">
-      <div class="row rv">
-        <div><span class="upper sup">Portfolio</span><h2>Selected work</h2></div>
-        <p class="intro">Campaigns, video, and print from Elevate Health, Blue Zones Project, and independent clients. Click any piece to view it; each one opens straight from Google Drive.</p>
-      </div>
-    </div>
-  </section>
-
-  <div id="work"></div>
-
   <section class="tst" id="testimonials" aria-roledescription="carousel" aria-label="Testimonials">
     <div class="container">
       <div class="row">
@@ -603,7 +611,6 @@ footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130
       </div>
     </div>
   </section>
-
   <section class="exp" id="experience">
     <div class="container">
       <span class="upper sup rv">Experience</span>
@@ -1056,10 +1063,17 @@ function render() {
   const work = document.getElementById("work");
   const projs = document.getElementById("projlist");
   const foot = document.getElementById("footlist");
+  const jump = document.getElementById("jump");
+  const base = work ? "" : "/portfolio";
   let pieces = 0, orgs = 0, n = 0;
 
   WORK.forEach(org => {
     n++;
+    const navLabel = org.slug === "certifications" ? "Certifications" : org.name;
+    projs.appendChild(el("li", {}, [el("a", { href: base + "#" + org.slug, text: navLabel })]));
+    foot.appendChild(el("li", {}, [el("a", { href: base + "#" + org.slug, text: navLabel })]));
+    if (jump) jump.appendChild(el("a", { href: "#" + org.slug, text: navLabel }));
+    if (!work) return;
     const sec = el("section", { class: "org" + (n % 2 === 1 ? " soft" : ""), id: org.slug });
     const orgSects = [];
     const c = el("div", { class: "container" });
@@ -1137,12 +1151,10 @@ function render() {
     sec.appendChild(c);
     work.appendChild(sec);
     if (org.slug !== "certifications") orgs++;
-    const label = org.slug === "certifications" ? "Certifications" : org.name;
-    projs.appendChild(el("li", {}, [el("a", { href: "#" + org.slug, text: label })]));
-    foot.appendChild(el("li", {}, [el("a", { href: "#" + org.slug, text: label })]));
   });
 
   const facts = document.getElementById("facts");
+  if (facts) {
   const GI = {
     users: '<circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.5c.4-3.3 3-5.3 6.2-5.3s5.8 2 6.2 5.3"/><circle cx="17.2" cy="9" r="2.6"/><path d="M16.4 14.4c2.6-.2 4.5 1.5 4.8 4.4"/>',
     cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M9 15.2l2.2 2.2 3.9-4.2"/>',
@@ -1153,15 +1165,18 @@ function render() {
     const g = el("span", { class: "gi", "aria-hidden": "true", html: '<svg viewBox="0 0 24 24">' + GI[ic] + "</svg>" });
     facts.appendChild(el("li", {}, [g, el("b", { text: String(a) }), el("span", { text: b })]));
   });
+  }
 
   /* Intro line with a small pill image pulled from Drive */
   const cx = document.getElementById("complex");
+  if (cx) {
   const pill = el("span", { class: "pimg" });
   const pimg = el("img", { src: "rainier.jpg", alt: "", width: 200, height: 64, loading: "lazy" });
   pimg.addEventListener("error", () => pill.classList.add("nothumb"));
   pill.appendChild(pimg);
   cx.appendChild(pill);
   cx.appendChild(document.createTextNode("Campaigns that connect people to health services, in the languages they speak."));
+  }
 
   const items = [];
   if (CONTACT.email) items.push(el("li", {}, [el("a", { href: "mailto:" + CONTACT.email, text: CONTACT.email })]));
@@ -1175,7 +1190,20 @@ function render() {
 render();
 
 (function () {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (!h) return;
+  if (document.getElementById("work")) {
+    const t = document.getElementById(h);
+    if (t) setTimeout(() => t.scrollIntoView(), 60);
+  } else if (WORK.some(o => o.slug === h) || h === "portfolio") {
+    /* old links to the portfolio section now live on the Portfolio page */
+    location.replace("/portfolio" + (h === "portfolio" ? "" : "#" + h));
+  }
+})();
+
+(function () {
   const sg = document.getElementById("svcgrid");
+  if (sg) (function () {
   SERVICES.forEach(([title, text], i) => sg.appendChild(el("div", { class: "svc-card rv" }, [
     el("span", { class: "upper n", text: "0" + (i + 1) }),
     el("div", {}, [el("h4", { text: title }), el("p", { text: text })])
@@ -1193,10 +1221,12 @@ render();
   EARLY.forEach(([a, b]) => early.appendChild(el("div", {}, [el("h5", { text: a }), el("p", { text: b })])));
   const more = document.getElementById("more");
   MORE.forEach(([a, b]) => more.appendChild(el("div", {}, [el("span", { class: "upper", text: a }), el("p", { text: b })])));
+  })();
 
   /* Testimonials */
   (function () {
     const wrap = document.getElementById("slides");
+    if (!wrap) return;
     const count = document.getElementById("tcount");
     const slides = TESTIMONIALS.map((x, i) => {
       const kids = [
@@ -1227,7 +1257,9 @@ render();
     go(0);
   })();
 
+  (function () {
   const bl = document.getElementById("badges");
+  if (!bl) return;
   const qs = new URLSearchParams(location.search).get("badges");
   const bStyle = ["pictogram", "mono", "medal", "laurel", "text"].includes(qs) ? qs : BADGE_STYLE;
   bl.setAttribute("data-style", bStyle);
@@ -1262,9 +1294,10 @@ render();
   }
   fillBanner();
   let rzT; addEventListener("resize", () => { clearTimeout(rzT); rzT = setTimeout(fillBanner, 250); });
+  })();
 
   const rb = document.getElementById("resumebtn");
-  rb.addEventListener("click", () => openViewer([{ type: "d", id: RESUME_ID, title: "Resume" }], 0, rb));
+  if (rb) rb.addEventListener("click", () => openViewer([{ type: "d", id: RESUME_ID, title: "Resume" }], 0, rb));
 
   const ul = document.getElementById("usefullist");
   const rl = el("button", { type: "button", text: "Resume" });
@@ -1305,6 +1338,7 @@ addEventListener("scroll", onScroll, { passive: true }); onScroll();
 /* Highlight the current section in the menu */
 (function () {
   const links = [...document.querySelectorAll("#menulist a")];
+  if (document.body.dataset.page === "portfolio") { links.forEach(a => a.classList.toggle("cur", a.dataset.sec === "portfolio")); return; }
   const ids = links.map(a => a.dataset.sec);
   function spy() {
     let cur = "top", best = -Infinity;
@@ -1347,8 +1381,8 @@ addEventListener("scroll", onScroll, { passive: true }); onScroll();
   gems.forEach((g, i) => { g.innerHTML = gemSVG(+g.dataset.n || 5, i + 3); });
 
   const hs = document.getElementById("headshot"), pf = document.getElementById("pframe");
-  hs.addEventListener("error", () => pf.classList.add("nophoto"));
-  hs.src = "https://drive.google.com/thumbnail?id=1WiSReZCZqfRLNte8D0RTagH6DYTWZD6S&sz=w1000";
+  if (hs) hs.addEventListener("error", () => pf.classList.add("nophoto"));
+  if (hs) hs.src = "https://drive.google.com/thumbnail?id=1WiSReZCZqfRLNte8D0RTagH6DYTWZD6S&sz=w1000";
 
   if (reduced) return;
   const zoom = [...document.querySelectorAll("[data-zoom]")];
@@ -1401,6 +1435,8 @@ if (matchMedia("(hover: hover) and (pointer: fine) and (min-width: 1200px)").mat
 /* Preloader */
 (function () {
   const p = document.getElementById("preloader");
+  if (!p) return;
+  try { sessionStorage.setItem("pl", "1"); } catch (e) {}
   const hide = () => { p.classList.add("done"); };
   const wait = reduced ? 0 : 1300;
   const t0 = Date.now();

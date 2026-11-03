@@ -1,0 +1,571 @@
+
+/* ------------------------------------------------------------------ */
+const D = {
+  preview: id => "https://drive.google.com/file/d/" + id + "/preview",
+  view: id => "https://drive.google.com/file/d/" + id + "/view",
+  thumb: id => "https://drive.google.com/thumbnail?id=" + id + "&sz=w800",
+  folderEmbed: id => "https://drive.google.com/embeddedfolderview?id=" + id + "#grid",
+  folder: id => "https://drive.google.com/drive/folders/" + id,
+  docPreview: id => "https://docs.google.com/document/d/" + id + "/preview",
+  docView: id => "https://docs.google.com/document/d/" + id + "/edit"
+};
+const RESUME_ID = "1kia_8wKuOrGpDp3uzUiFT2xI9fVxtSvapqBMX_5C3LM";
+const KIND = { v: "Video", p: "PDF", i: "Image", f: "Folder", d: "Resume" };
+const PLAY = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13l11-6.5z" fill="#000"/></svg>';
+const ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg>';
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function el(tag, props, kids) {
+  const n = document.createElement(tag);
+  Object.entries(props || {}).forEach(([k, v]) => {
+    if (k === "class") n.className = v; else if (k === "text") n.textContent = v; else if (k === "html") n.innerHTML = v; else n.setAttribute(k, v);
+  });
+  (kids || []).forEach(c => n.appendChild(c));
+  return n;
+}
+
+/* Viewer */
+const dlg = document.getElementById("viewer");
+const frame = document.getElementById("vframe");
+const state = { list: [], i: 0, opener: null };
+
+function show() {
+  const it = state.list[state.i];
+  document.getElementById("vtitle").textContent = it.title;
+  document.getElementById("vopen").href = it.type === "f" ? D.folder(it.id) : it.type === "d" ? D.docView(it.id) : D.view(it.id);
+  frame.src = it.type === "f" ? D.folderEmbed(it.id) : it.type === "d" ? D.docPreview(it.id) : D.preview(it.id);
+  document.getElementById("vpos").textContent = state.list.length > 1 ? (state.i + 1) + " of " + state.list.length : KIND[it.type];
+  document.getElementById("vprev").disabled = state.i === 0;
+  document.getElementById("vnext").disabled = state.i === state.list.length - 1;
+}
+function openViewer(list, i, opener) {
+  state.list = list; state.i = i; state.opener = opener || null;
+  show();
+  if (!dlg.open) dlg.showModal();
+}
+function step(d) {
+  const j = state.i + d;
+  if (j >= 0 && j < state.list.length) { state.i = j; show(); }
+}
+document.getElementById("vprev").addEventListener("click", () => step(-1));
+document.getElementById("vnext").addEventListener("click", () => step(1));
+document.getElementById("vclose").addEventListener("click", () => dlg.close());
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+dlg.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") step(-1);
+  if (e.key === "ArrowRight") step(1);
+});
+dlg.addEventListener("close", () => {
+  frame.src = "about:blank";
+  if (state.opener) state.opener.focus();
+});
+
+/* Homepage content (from the resume and LinkedIn bio) */
+const SERVICES = [
+  ["Paid media", "Campaigns on Meta, Google, LinkedIn and TikTok, built around measurable service utilization and reported on a steady cadence."],
+  ["Creative strategy and content", "Concepts, video, graphics and print materials that carry a campaign from idea to finished asset."],
+  ["Multilingual community engagement", "Outreach that meets people in their language, including a transit campaign across five languages."],
+  ["Reporting and automation", "Tracking dashboards, intake workflows and marketing automation that guide budget and staffing decisions."]
+];
+const JOBS = [
+  { when: "May 2025 to present", org: "Elevate Health of Pierce County", role: "Communications Manager",
+    sum: "Leads marketing and communications strategy for Pierce County's Accountable Community of Health, working with healthcare providers, tribal nations, community organizations, and public stakeholders.",
+    pts: ["Launched a digital demand campaign that increased referrals by <b>250%+ in 10 days</b> using <b>less than 20% of budget</b>.", "Advised executive leadership on a phased digital demand framework, adopted as the primary county-wide campaign strategy.", "Directed a <b>multilingual transit campaign across five languages</b> to improve language access."] },
+  { when: "April 2023 to May 2025", org: "Blue Zones, Parkland, WA", role: "Marketing and Engagement Lead",
+    sum: "Led multi-channel marketing and community engagement across Parkland-Spanaway, working with local government, employers, schools, and nonprofits.",
+    pts: ["Directed a <b>$120K annual marketing budget</b> across paid digital and social platforms.", "Engaged <b>10,000+ residents</b> and met 100% of monthly event registration targets for two years.", "Ran <b>72 community events</b>, earned <b>15 regional media placements</b>, and gave <b>50+ keynote presentations</b>."] },
+  { when: "July 2022 to April 2023", org: "El Centro de La Raza, Seattle, WA", role: "Marketing Program Manager",
+    sum: "Led marketing and growth strategy for community-based social service programs serving historically underserved populations.",
+    pts: ["Built a marketing automation system that took two programs to <b>117%</b> and <b>110%</b> of annual targets in six months with no ad spend.", "Automated intake with Salesforce, <b>saving 30+ hours a month</b> of manual work."] }
+];
+const EARLY = [
+  ["Marketing Specialist", "InstaMortgage, 2021 to 2022"],
+  ["Social Media Intern", "Mighty Pursuit, 2020 to 2021"],
+  ["Marketing Program Manager", "Northwest University, 2019 to 2020"]
+];
+const MORE = [
+  ["Education", "Bachelor of Arts in Business Marketing, Digital Marketing Concentration, Northwest University. Act Six Leadership Alum."],
+  ["Awards and activities", "40 Under 40 Honoree, South Sound Business (2025). Leadership Tomorrow Alum (2025-26)."],
+  ["Platforms and tools", "Meta Ads Manager, LinkedIn Campaign Manager, Google Ads, Google Tag Manager, GA4, Looker Studio, HubSpot, Salesforce, GoHighLevel, Zapier, n8n, Adobe Premiere Pro, Photoshop, Illustrator, Canva, and more."]
+];
+
+/* Awards and certifications shown in the hero. Leave id as "" until the file is in Drive (the badge then shows without a link). */
+const BADGES = [
+  { type: "p", id: "", title: "Google Ads Search Certification", top: "Google Ads", main: "Search Certification", icon: "search", mono: "G" },
+  { type: "p", id: "1SoUQ_lkaOC24alWBHCUgAtRh8PASW8G4", title: "Google Ads Video Certification", top: "Google Ads", main: "Video Certification", icon: "video", mono: "G" },
+  { type: "p", id: "1rBZQz9ED8cthxfq0f7KhdVKdv_a5J1lE", title: "Meta Certified Media Buying Professional", top: "Meta", main: "Certified Media Buying Professional", icon: "target", mono: "M" },
+  { type: "i", id: "1o50VhUOpHNvDtcc1aFs02Hse_CBb2BMn", title: "40 Under 40 Honoree, South Sound Business", top: "South Sound Business", main: "40 Under 40 Honoree, 2025", icon: "trophy", mono: "40" }
+];
+const BADGE_STYLE = "pictogram"; /* pictogram | mono | medal | laurel | text */
+
+/*EMBLEMS*/
+const PICTO = {
+  search: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.2"/><path d="M15.3 15.3L21 21"/></svg>',
+  video: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M10 9v6l5-3z" fill="currentColor"/></svg>',
+  target: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.6"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>',
+  trophy: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h10V9a5 5 0 0 1-10 0z" fill="currentColor"/><path d="M7 5.5H3.8V7A3.4 3.4 0 0 0 7 10.4M17 5.5h3.2V7a3.4 3.4 0 0 1-3.2 3.4M12 14v4M8.2 20.5h7.6M9.6 18h4.8"/></svg>'
+};
+function medalSvg(letter) {
+  return '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M15 29l-5 15 8-4.5 5 4.5 2.5-15z" fill="#000"/><path d="M33 29l5 15-8-4.5-5 4.5-2.5-15z" fill="#000"/><circle cx="24" cy="19" r="15" fill="#FF9800"/><circle cx="24" cy="19" r="10.8" fill="none" stroke="#000" stroke-width="1.6"/><text x="24" y="24" text-anchor="middle" font-size="' + (letter.length > 1 ? 12 : 15) + '" font-weight="600" fill="#000" font-family="Outfit, sans-serif">' + letter + '</text></svg>';
+}
+function laurelSvg(letter) {
+  let leaves = "";
+  for (let i = 0; i < 7; i++) {
+    const a = (118 + i * 21) * Math.PI / 180;
+    const cx = 24 + 17.5 * Math.cos(a), cy = 24 + 17.5 * Math.sin(a);
+    const rot = (118 + i * 21) + 90 - 32;
+    leaves += '<ellipse cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" rx="2" ry="4.6" transform="rotate(' + rot.toFixed(0) + ' ' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ')"/>';
+  }
+  return '<svg viewBox="0 0 48 48" aria-hidden="true"><g fill="#FF9800">' + leaves + '</g><g fill="#FF9800" transform="translate(48 0) scale(-1 1)">' + leaves + '</g><text x="24" y="' + (letter.length > 1 ? 28.5 : 29.5) + '" text-anchor="middle" font-size="' + (letter.length > 1 ? 13 : 17) + '" font-weight="600" fill="#000" font-family="Outfit, sans-serif">' + letter + '</text></svg>';
+}
+function emblem(style, b) {
+  if (style === "mono") return '<span class="mono">' + b.mono + '</span>';
+  if (style === "medal") return medalSvg(b.mono);
+  if (style === "laurel") return laurelSvg(b.mono);
+  if (style === "text") return "";
+  return PICTO[b.icon];
+}
+/*END EMBLEMS*/
+
+const TESTIMONIALS = [
+  { q: "More than double the amount of referrals the [community care hub] has ever received in one month [even at the height of] COVID.",
+    who: "Operations Manager", org: "Connect Pierce, Elevate Health", ctx: "On the first 11-day Meta campaign in October 2025.",
+    src: { type: "p", id: "1zmTsJRwoGaLzpazCZwfNlchDAjPY3ewI", title: "Campaign overview presentation" } },
+  { q: "Joseph is the driving force behind this new social media campaign - it's been so well designed and the first week execution has been awesome. Really nice work, Joseph!",
+    who: "Communications Director", org: "Elevate Health", ctx: "Shared with the team in the first week of the campaign.",
+    src: { type: "i", id: "1k32PxWyuIHrUcXbTX9ENANYM8g5exU9E", title: "Comms director on quality" } },
+  { q: "Huge thanks to Comms for their social media push that [drove] the self referrals!",
+    who: "Operations Manager", org: "Connect Pierce, Elevate Health", ctx: "Posted the same week: 199 client referrals, just 41 short of the entire month of September.",
+    src: { type: "i", id: "1okFJ2CjySxcXabHZdhYTgbHVGpUyKv6j", title: "Program lead on results" } },
+  { q: "Yes, thank you, Joseph! Really amazing results.",
+    who: "Executive Director", org: "Elevate Health", ctx: "Replying to the campaign results update.",
+    src: { type: "i", id: "1ujB4oy1jUdkwuhMDQQA1saVs4DCsRc0X", title: "Executive director on results" } },
+  { q: "The geographic targeting is a LOT tighter than I expected!",
+    who: "Product Manager", org: "Reviewing the campaign's referral data", ctx: "",
+    src: { type: "i", id: "1rs_VlkmV0PLCgtJz1ztFCNOEJdlEFCNo", title: "Product manager on targeting" } },
+  { q: "HopeSparks wanted me to thank you for the work on the meta-ad campaign and any other outreach and marketing campaigns you have done as they have seen an increase in referrals for their program.",
+    who: "Community Care Hub Program Manager", org: "Elevate Health, passing along thanks from partner HopeSparks", ctx: "The partner increased its caseload by 38.8%.",
+    src: { type: "i", id: "1pDb9JnPAucXlHR6FVJaEmCTgRUugEITO", title: "Program lead on referral increase" } }
+];
+
+/* Cards */
+function card(item, list, i, meta) {
+  const [type, id, title] = item;
+  const cover = el("div", { class: "cover" });
+  if (type !== "f") {
+    const img = el("img", { src: D.thumb(id), alt: "", loading: "lazy", referrerpolicy: "no-referrer" });
+    img.addEventListener("error", () => cover.classList.add("nothumb"));
+    cover.appendChild(img);
+  } else {
+    cover.classList.add("nothumb");
+  }
+  cover.appendChild(el("span", { class: "fb", text: KIND[type] }));
+  cover.appendChild(el("span", { class: "tag", text: KIND[type] }));
+  if (type === "v") cover.appendChild(el("span", { class: "play", html: PLAY }));
+  const btn = el("button", { class: "card", type: "button", "data-ball": type === "v" ? "Play" : "View", "aria-label": (type === "v" ? "Play " : "View ") + title }, [
+    cover, el("h5", { text: title })
+  ]);
+  if (meta) btn.appendChild(el("span", { class: "meta upper", text: meta }));
+  btn.addEventListener("click", () => openViewer(list, i, btn));
+  return btn;
+}
+
+/* Page */
+let secN = 0;
+function setSect(wrap, open) {
+  wrap.classList.toggle("open", open);
+  const tg = wrap.querySelector(".toggle");
+  if (tg) tg.setAttribute("aria-expanded", String(open));
+  const body = wrap.querySelector(".body");
+  if (body) body.inert = !open;
+  wrap.dispatchEvent(new Event("sectchange"));
+}
+
+function render() {
+  const work = document.getElementById("work");
+  const projs = document.getElementById("projlist");
+  const foot = document.getElementById("footlist");
+  const jump = document.getElementById("jump");
+  const base = work ? "" : "/portfolio";
+  let pieces = 0, orgs = 0, n = 0;
+
+  WORK.forEach(org => {
+    n++;
+    const navLabel = org.slug === "certifications" ? "Certifications" : org.name;
+    projs.appendChild(el("li", {}, [el("a", { href: base + "#" + org.slug, text: navLabel })]));
+    foot.appendChild(el("li", {}, [el("a", { href: base + "#" + org.slug, text: navLabel })]));
+    if (jump) jump.appendChild(el("a", { href: "#" + org.slug, text: navLabel }));
+    if (!work) return;
+    const sec = el("section", { class: "org" + (n % 2 === 1 ? " soft" : ""), id: org.slug });
+    const orgSects = [];
+    const c = el("div", { class: "container" });
+    c.appendChild(el("div", { class: "org-head rv r" }, [
+      el("div", { class: "org-left" }, [
+        el("span", { class: "upper sup num", html: "0" + n + "<i></i>" }),
+        el("h2", { text: org.name }),
+        el("div", { class: "org-meta" }, [el("p", { class: "upper", text: org.role, style: "color:#000;margin-bottom:14px" }), el("p", { class: "intro", text: org.intro })])
+      ]),
+      el("div", { class: "org-right" })
+    ]));
+    const rightCol = c.querySelector(".org-right");
+    org.groups.forEach(g => {
+      const gEl = el("div", { class: "group" });
+      if (g.title) gEl.appendChild(el("span", { class: "upper rv r", text: g.title }));
+      g.sections.forEach(s => {
+        const subs = s.subs || [{ title: "", items: s.items }];
+        const list = subs.flatMap(sb => sb.items.map(([type, id, title]) => ({ type, id, title })));
+        const collapsible = !!s.title;
+        const info = el("div", { class: "info rv r" });
+        info.style.transitionDelay = ((secN % 3) * 70) + "ms";
+        const bodyId = "sect-" + org.slug + "-" + (++secN);
+        const label = s.title || (g.title || org.name);
+        const countTxt = list.length ? list.length + (list.length === 1 ? " piece" : " pieces") : "";
+        const wrap = el("div", { class: "sect" + (collapsible ? "" : " plain") });
+        if (collapsible) {
+          const tg = el("button", { class: "toggle", type: "button", "aria-expanded": "false", "aria-controls": bodyId }, [el("span", { class: "pm", "aria-hidden": "true" }), el("span", { text: label })]);
+          if (countTxt) tg.appendChild(el("span", { class: "count", text: countTxt }));
+          tg.addEventListener("click", () => setSect(wrap, !wrap.classList.contains("open")));
+          info.appendChild(el("h4", {}, [tg]));
+          orgSects.push(wrap);
+        } else {
+          info.appendChild(el("h4", { text: label }));
+        }
+        wrap.appendChild(info);
+        const inner = el("div", { class: "inner" });
+        if (list.length) {
+          let off = 0;
+          subs.forEach(sb => {
+            if (!sb.items.length) return;
+            const grid = el("div", { class: "cards" });
+            sb.items.forEach((it, j) => { const k = card(it, list, off + j); k.classList.add("rv"); grid.appendChild(k); });
+            if (sb.title) inner.appendChild(el("div", { class: "subhead rv" }, [el("span", { class: "upper", text: sb.title }), el("span", { class: "count", text: sb.items.length + (sb.items.length === 1 ? " piece" : " pieces") })]));
+            inner.appendChild(grid);
+            off += sb.items.length;
+          });
+          pieces += list.length;
+        } else if (s.folder) {
+          const grid = el("div", { class: "cards" });
+          const fl = [{ type: "f", id: s.folder, title: s.title }];
+          const k = card(["f", s.folder, "Open the campaign folder"], fl, 0, "Google Drive");
+          k.classList.add("rv");
+          grid.appendChild(k);
+          inner.appendChild(grid);
+        }
+        const body = el("div", { class: "body", id: bodyId }, [inner]);
+        if (collapsible) body.inert = true;
+        wrap.appendChild(body);
+        gEl.appendChild(wrap);
+      });
+      c.appendChild(gEl);
+    });
+    if (orgSects.length > 1) {
+      const all = el("button", { class: "link org-tools", type: "button", html: "<span>Expand all</span>" + ARROW });
+      all.addEventListener("click", () => {
+        const open = !orgSects.every(s => s.classList.contains("open"));
+        orgSects.forEach(s => setSect(s, open));
+        all.firstChild.textContent = open ? "Collapse all" : "Expand all";
+      });
+      orgSects.forEach(s => s.addEventListener("sectchange", () => {
+        all.firstChild.textContent = orgSects.every(x => x.classList.contains("open")) ? "Collapse all" : "Expand all";
+      }));
+      rightCol.appendChild(all);
+    }
+    sec.appendChild(c);
+    work.appendChild(sec);
+    if (org.slug !== "certifications") orgs++;
+  });
+
+  const facts = document.getElementById("facts");
+  if (facts) {
+  const GI = {
+    users: '<circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.5c.4-3.3 3-5.3 6.2-5.3s5.8 2 6.2 5.3"/><circle cx="17.2" cy="9" r="2.6"/><path d="M16.4 14.4c2.6-.2 4.5 1.5 4.8 4.4"/>',
+    cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M9 15.2l2.2 2.2 3.9-4.2"/>',
+    mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.2M8.5 21.2h7"/>',
+    funnel: '<path d="M3.5 5h17l-6.5 7.8v5.7l-4 2v-7.7z"/>'
+  };
+  [["10,000+", "Pierce County residents engaged through programming", "users"], ["100+", "Pierce County events planned and managed", "cal"], ["50+", "live keynotes and presentations delivered", "mic"], ["1,000s", "of leads generated through paid ad strategy", "funnel"]].forEach(([a, b, ic]) => {
+    const g = el("span", { class: "gi", "aria-hidden": "true", html: '<svg viewBox="0 0 24 24">' + GI[ic] + "</svg>" });
+    facts.appendChild(el("li", {}, [g, el("b", { text: String(a) }), el("span", { text: b })]));
+  });
+  }
+
+  /* Intro line with a small pill image pulled from Drive */
+  const cx = document.getElementById("complex");
+  if (cx) {
+  const pill = el("span", { class: "pimg" });
+  const pimg = el("img", { src: "rainier.jpg", alt: "", width: 200, height: 64, loading: "lazy" });
+  pimg.addEventListener("error", () => pill.classList.add("nothumb"));
+  pill.appendChild(pimg);
+  cx.appendChild(pill);
+  cx.appendChild(document.createTextNode("Campaigns that connect people to health services, in the languages they speak."));
+  }
+
+  const items = [];
+  if (CONTACT.email) items.push(el("li", {}, [el("a", { href: "mailto:" + CONTACT.email, text: CONTACT.email })]));
+  if (CONTACT.linkedin) items.push(el("li", {}, [el("a", { href: CONTACT.linkedin, target: "_blank", rel: "noopener", text: "LinkedIn" })]));
+  if (CONTACT.website) items.push(el("li", {}, [el("a", { href: CONTACT.website, target: "_blank", rel: "noopener", text: "Website" })]));
+  const cl = document.getElementById("contactlist");
+  if (items.length) items.forEach(i => cl.appendChild(i));
+  else cl.remove();
+  document.getElementById("yr").textContent = new Date().getFullYear();
+}
+render();
+
+(function () {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (!h) return;
+  if (document.getElementById("work")) {
+    const t = document.getElementById(h);
+    if (t) setTimeout(() => t.scrollIntoView(), 60);
+  } else if (WORK.some(o => o.slug === h) || h === "portfolio") {
+    /* old links to the portfolio section now live on the Portfolio page */
+    location.replace("/portfolio" + (h === "portfolio" ? "" : "#" + h));
+  }
+})();
+
+(function () {
+  const sg = document.getElementById("svcgrid");
+  if (sg) (function () {
+  SERVICES.forEach(([title, text], i) => sg.appendChild(el("div", { class: "svc-card rv" }, [
+    el("span", { class: "upper n", text: "0" + (i + 1) }),
+    el("div", {}, [el("h4", { text: title }), el("p", { text: text })])
+  ])));
+  const jobs = document.getElementById("jobs");
+  JOBS.forEach(j => {
+    const ul = el("ul");
+    j.pts.forEach(p => ul.appendChild(el("li", { html: p })));
+    jobs.appendChild(el("div", { class: "job rv" }, [
+      el("div", {}, [el("span", { class: "upper when", text: j.when }), el("span", { class: "org-n", text: j.org })]),
+      el("div", {}, [el("h4", { text: j.role }), el("p", { class: "sum", text: j.sum }), ul])
+    ]));
+  });
+  const early = document.getElementById("early");
+  EARLY.forEach(([a, b]) => early.appendChild(el("div", {}, [el("h5", { text: a }), el("p", { text: b })])));
+  const more = document.getElementById("more");
+  MORE.forEach(([a, b]) => more.appendChild(el("div", {}, [el("span", { class: "upper", text: a }), el("p", { text: b })])));
+  })();
+
+  /* Testimonials */
+  (function () {
+    const wrap = document.getElementById("slides");
+    if (!wrap) return;
+    const count = document.getElementById("tcount");
+    const slides = TESTIMONIALS.map((x, i) => {
+      const kids = [
+        el("blockquote", { text: "\u201C" + x.q + "\u201D" }),
+        el("div", { class: "who" }, [el("b", { text: x.who }), el("span", { text: x.org })])
+      ];
+      if (x.ctx) kids.push(el("p", { class: "ctx", text: x.ctx }));
+      const src = el("button", { class: "link", type: "button", html: "<span>View the original</span>" + ARROW });
+      src.addEventListener("click", () => openViewer([x.src], 0, src));
+      kids.push(src);
+      const s = el("figure", { class: "slide", role: "group", "aria-roledescription": "slide", "aria-label": (i + 1) + " of " + TESTIMONIALS.length }, kids);
+      wrap.appendChild(s);
+      return s;
+    });
+    let cur = 0;
+    function go(n) {
+      cur = (n + slides.length) % slides.length;
+      slides.forEach((s, i) => { s.classList.toggle("on", i === cur); s.inert = i !== cur; });
+      count.textContent = String(cur + 1).padStart(2, "0") + " / " + String(slides.length).padStart(2, "0");
+    }
+    document.getElementById("tprev").addEventListener("click", () => go(cur - 1));
+    document.getElementById("tnext").addEventListener("click", () => go(cur + 1));
+    const sec = document.getElementById("testimonials");
+    sec.addEventListener("keydown", e => { if (e.key === "ArrowLeft") go(cur - 1); if (e.key === "ArrowRight") go(cur + 1); });
+    let x0 = null;
+    wrap.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive: true });
+    wrap.addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); });
+    go(0);
+  })();
+
+  (function () {
+  const bl = document.getElementById("badges");
+  if (!bl) return;
+  const qs = new URLSearchParams(location.search).get("badges");
+  const bStyle = ["pictogram", "mono", "medal", "laurel", "text"].includes(qs) ? qs : BADGE_STYLE;
+  bl.setAttribute("data-style", bStyle);
+  const half1 = document.getElementById("half1"), half2 = document.getElementById("half2");
+  const bList = BADGES.filter(b => b.id).map(b => ({ type: b.type, id: b.id, title: b.title }));
+  function badgeSet(clone) {
+    return BADGES.map(b => {
+      const inner = [
+        el("span", { class: "em", html: emblem(bStyle, b) }),
+        el("span", { class: "bt" }, [el("span", { class: "upper", text: b.top }), el("b", { text: b.main })])
+      ];
+      let node;
+      if (b.id) {
+        node = el("button", { class: "badge", type: "button", "aria-label": "View " + b.title }, inner);
+        if (clone) node.setAttribute("tabindex", "-1");
+        node.addEventListener("click", () => openViewer(bList, bList.findIndex(x => x.id === b.id), node));
+      } else {
+        node = el("span", { class: "badge static" }, inner);
+      }
+      return el("li", {}, [node]);
+    });
+  }
+  function fillBanner() {
+    half1.textContent = ""; half2.textContent = "";
+    badgeSet(false).forEach(li => half1.appendChild(li));
+    if (reduced) return;
+    const w = half1.getBoundingClientRect().width || 1;
+    const sets = Math.max(1, Math.ceil(innerWidth / w));
+    for (let i = 1; i < sets; i++) badgeSet(true).forEach(li => { li.firstChild.setAttribute("tabindex", "-1"); half1.appendChild(li); });
+    for (let i = 0; i < sets; i++) badgeSet(true).forEach(li => half2.appendChild(li));
+    bl.style.setProperty("--dur", Math.max(20, half1.getBoundingClientRect().width / 55) + "s");
+  }
+  fillBanner();
+  let rzT; addEventListener("resize", () => { clearTimeout(rzT); rzT = setTimeout(fillBanner, 250); });
+  })();
+
+  const rb = document.getElementById("resumebtn");
+  if (rb) rb.addEventListener("click", () => openViewer([{ type: "d", id: RESUME_ID, title: "Resume" }], 0, rb));
+
+  const ul = document.getElementById("usefullist");
+  const rl = el("button", { type: "button", text: "Resume" });
+  rl.addEventListener("click", () => { setMenu(false); openViewer([{ type: "d", id: RESUME_ID, title: "Resume" }], 0, rl); });
+  ul.appendChild(el("li", {}, [rl]));
+  if (CONTACT.linkedin) ul.appendChild(el("li", {}, [el("a", { href: CONTACT.linkedin, target: "_blank", rel: "noopener", text: "LinkedIn" })]));
+  if (CONTACT.email) ul.appendChild(el("li", {}, [el("a", { href: "mailto:" + CONTACT.email, text: "Email" })]));
+  ul.appendChild(el("li", {}, [el("a", { href: "#contact", text: "Contact" })]));
+})();
+
+/* Menu */
+const menuEl = document.getElementById("menu");
+const mbtn = document.getElementById("mbtn");
+function setMenu(open) {
+  menuEl.classList.toggle("open", open);
+  mbtn.classList.toggle("open", open);
+  mbtn.setAttribute("aria-expanded", String(open));
+  mbtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  document.body.classList.toggle("lock", open);
+  document.body.classList.toggle("menu-open", open);
+  menuEl.inert = !open;
+}
+menuEl.inert = true;
+mbtn.addEventListener("click", () => setMenu(!menuEl.classList.contains("open")));
+menuEl.addEventListener("click", e => { if (e.target.closest("a")) setMenu(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && menuEl.classList.contains("open")) { setMenu(false); mbtn.focus(); } });
+
+/* Header solidifies on scroll; progress bar */
+const frameEl = document.getElementById("frame");
+const bar = document.getElementById("bar");
+function onScroll() {
+  const y = window.scrollY, max = document.documentElement.scrollHeight - innerHeight;
+  frameEl.classList.toggle("solid", y > 40);
+  bar.style.height = (max > 0 ? Math.min(100, y / max * 100) : 0) + "%";
+}
+addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+/* Highlight the current section in the menu */
+(function () {
+  const links = [...document.querySelectorAll("#menulist a")];
+  if (document.body.dataset.page === "portfolio") { links.forEach(a => a.classList.toggle("cur", a.dataset.sec === "portfolio")); return; }
+  const ids = links.map(a => a.dataset.sec);
+  function spy() {
+    let cur = "top", best = -Infinity;
+    ids.forEach(id => {
+      if (id === "top") return;
+      const n = document.getElementById(id); if (!n) return;
+      const top = n.getBoundingClientRect().top;
+      if (top <= innerHeight * .4 && top > best) { best = top; cur = id; }
+    });
+    // Individual organizations count as Portfolio
+    document.querySelectorAll(".org").forEach(o => { const r = o.getBoundingClientRect(); if (r.top <= innerHeight * .4 && r.bottom > innerHeight * .4) cur = "portfolio"; });
+    links.forEach(a => a.classList.toggle("cur", a.dataset.sec === cur));
+  }
+  addEventListener("scroll", spy, { passive: true }); spy();
+})();
+
+/* Line art: build the shapes, drift them with scroll, zoom the portrait */
+(function () {
+  function gemSVG(n, seed) {
+    let s = seed * 9301 + 49297;
+    const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+    const out = [], inn = [];
+    for (let i = 0; i < n; i++) {
+      const a = -Math.PI / 2 + i * 2 * Math.PI / n;
+      const k = 92 * (0.9 + rnd() * 0.16);
+      out.push([100 + Math.cos(a) * k, 100 + Math.sin(a) * k]);
+      const b = a + Math.PI / n, q = 42 * (0.8 + rnd() * 0.4);
+      inn.push([100 + Math.cos(b) * q, 100 + Math.sin(b) * q]);
+    }
+    const f = p => p[0].toFixed(1) + "," + p[1].toFixed(1);
+    let d = "";
+    for (let i = 0; i < n; i++) {
+      const j = (i + 1) % n;
+      d += "M" + f(out[i]) + "L" + f(out[j]) + "M" + f(inn[i]) + "L" + f(inn[j]) +
+           "M" + f(inn[i]) + "L" + f(out[i]) + "M" + f(inn[i]) + "L" + f(out[j]) + "M" + f(inn[i]) + "L100,100";
+    }
+    return '<svg viewBox="0 0 200 200" aria-hidden="true"><path d="' + d + '"/></svg>';
+  }
+  const gems = [...document.querySelectorAll(".gem")];
+  gems.forEach((g, i) => { g.innerHTML = gemSVG(+g.dataset.n || 5, i + 3); });
+
+  const hs = document.getElementById("headshot"), pf = document.getElementById("pframe");
+  if (hs) hs.addEventListener("error", () => pf.classList.add("nophoto"));
+  if (hs) hs.src = "https://drive.google.com/thumbnail?id=1WiSReZCZqfRLNte8D0RTagH6DYTWZD6S&sz=w1000";
+
+  if (reduced) return;
+  const zoom = [...document.querySelectorAll("[data-zoom]")];
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  let queued = false;
+  function paint() {
+    queued = false;
+    const vh = innerHeight;
+    gems.forEach(g => {
+      const r = g.parentNode.parentNode.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > vh + 200) return;
+      const d = r.top + r.height / 2 - vh / 2;
+      const sc = 1 + clamp(-d / vh, -1, 1) * 0.18 * (+g.dataset.scale || 0);
+      g.style.transform = "translate3d(0," + (d * (+g.dataset.speed || 0)).toFixed(1) + "px,0) scale(" + sc.toFixed(3) + ")";
+    });
+    zoom.forEach(z => {
+      const r = z.parentNode.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) return;
+      const p = clamp((vh - r.top) / (vh + r.height), 0, 1);
+      z.style.transform = "scale(" + (1 + p * 0.08).toFixed(3) + ")";
+    });
+  }
+  function queue() { if (!queued) { queued = true; requestAnimationFrame(paint); } }
+  addEventListener("scroll", queue, { passive: true });
+  addEventListener("resize", queue);
+  paint();
+})();
+
+/* Reveal on scroll */
+const rv = document.querySelectorAll(".rv");
+if ("IntersectionObserver" in window && !reduced) {
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+  rv.forEach(n => io.observe(n));
+} else rv.forEach(n => n.classList.add("in"));
+
+/* Cursor ball (fine pointers, wide screens only) */
+if (matchMedia("(hover: hover) and (pointer: fine) and (min-width: 1200px)").matches && !reduced) {
+  document.body.classList.add("has-ball");
+  const ball = document.getElementById("ball");
+  let tx = innerWidth / 2, ty = innerHeight / 2, x = tx, y = ty;
+  addEventListener("mousemove", e => { tx = e.clientX; ty = e.clientY; });
+  (function tick() { x += (tx - x) * .18; y += (ty - y) * .18; ball.style.transform = "translate(" + x + "px," + y + "px)"; requestAnimationFrame(tick); })();
+  document.addEventListener("mouseover", e => {
+    const t = e.target.closest && e.target.closest("[data-ball]");
+    ball.classList.toggle("big", !!t);
+    ball.textContent = t ? t.getAttribute("data-ball") : "";
+  });
+}
+
+/* Preloader */
+(function () {
+  const p = document.getElementById("preloader");
+  if (!p) return;
+  try { sessionStorage.setItem("pl", "1"); } catch (e) {}
+  const hide = () => { p.classList.add("done"); };
+  const wait = reduced ? 0 : 1300;
+  const t0 = Date.now();
+  const go = () => setTimeout(hide, Math.max(0, wait - (Date.now() - t0)));
+  if (document.readyState === "complete") go(); else addEventListener("load", go);
+  setTimeout(hide, 3500);
+})();
+</script>
+</body>
+</html>
