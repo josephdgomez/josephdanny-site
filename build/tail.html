@@ -150,24 +150,24 @@ function emblem(style, b) {
 /*END EMBLEMS*/
 
 const TESTIMONIALS = [
-  { q: "More than double the amount of referrals the [community care hub] has ever received in one month [even at the height of] COVID.",
+  { name: "Ariana Winters", photo: "t4.jpg", q: "More than double the amount of referrals the [community care hub] has ever received in one month [even at the height of] COVID.",
     who: "Operations Manager", org: "Connect Pierce, Elevate Health", ctx: "On the first 11-day Meta campaign in October 2025.",
     src: { type: "p", id: "1zmTsJRwoGaLzpazCZwfNlchDAjPY3ewI", title: "Campaign overview presentation" } },
-  { q: "Joseph is the driving force behind this new social media campaign - it's been so well designed and the first week execution has been awesome. Really nice work, Joseph!",
+  { name: "Zach Powers", photo: "t3.jpg", q: "Joseph is the driving force behind this new social media campaign - it's been so well designed and the first week execution has been awesome. Really nice work, Joseph!",
     who: "Communications Director", org: "Elevate Health", ctx: "Shared with the team in the first week of the campaign.",
-    src: { type: "i", id: "1k32PxWyuIHrUcXbTX9ENANYM8g5exU9E", title: "Comms director on quality" } },
-  { q: "Huge thanks to Comms for their social media push that [drove] the self referrals!",
-    who: "Operations Manager", org: "Connect Pierce, Elevate Health", ctx: "Posted the same week: 199 client referrals, just 41 short of the entire month of September.",
-    src: { type: "i", id: "1okFJ2CjySxcXabHZdhYTgbHVGpUyKv6j", title: "Program lead on results" } },
-  { q: "Really amazing results.",
+    src: { type: "i", id: "1k32PxWyuIHrUcXbTX9ENANYM8g5exU9E", title: "Zach Powers on quality" } },
+  { name: "Gena Morgan", photo: "t1.jpg", q: "Really amazing results.",
     who: "Executive Director", org: "Elevate Health", ctx: "Replying to the campaign results update.",
-    src: { type: "i", id: "1ujB4oy1jUdkwuhMDQQA1saVs4DCsRc0X", title: "Executive director on results" } },
-  { q: "The geographic targeting is a LOT tighter than I expected!",
-    who: "Product Manager", org: "Reviewing the campaign's referral data", ctx: "",
-    src: { type: "i", id: "1rs_VlkmV0PLCgtJz1ztFCNOEJdlEFCNo", title: "Product manager on targeting" } },
-  { q: "HopeSparks wanted me to thank you for the work on the meta-ad campaign and any other outreach and marketing campaigns you have done as they have seen an increase in referrals for their program.",
-    who: "Community Care Hub Program Manager", org: "Elevate Health, passing along thanks from partner HopeSparks", ctx: "The partner increased its caseload by 38.8%.",
-    src: { type: "i", id: "1pDb9JnPAucXlHR6FVJaEmCTgRUugEITO", title: "Program lead on referral increase" } }
+    src: { type: "i", id: "1ujB4oy1jUdkwuhMDQQA1saVs4DCsRc0X", title: "Gena Morgan on results" } },
+  { name: "Ariana Winters", photo: "t4.jpg", q: "Huge thanks to Comms for their social media push that [drove] the self referrals!",
+    who: "Operations Manager", org: "Connect Pierce, Elevate Health", ctx: "Posted the same week: 199 client referrals, just 41 short of the entire month of September.",
+    src: { type: "i", id: "1okFJ2CjySxcXabHZdhYTgbHVGpUyKv6j", title: "Ariana Winters on results" } },
+  { name: "Liz Matzelle", photo: "t2.jpg", q: "The geographic targeting is a LOT tighter than I expected!",
+    who: "Product Manager", org: "", ctx: "Reviewing the campaign's referral data.",
+    src: { type: "i", id: "1rs_VlkmV0PLCgtJz1ztFCNOEJdlEFCNo", title: "Liz Matzelle on targeting" } },
+  { name: "Iris Figueroa", photo: "t5.jpg", q: "HopeSparks wanted me to thank you for the work on the meta-ad campaign and any other outreach and marketing campaigns you have done as they have seen an increase in referrals for their program.",
+    who: "Community Care Hub Program Manager", org: "Elevate Health", ctx: "Passing along thanks from partner HopeSparks, which increased its caseload by 38.8%.",
+    src: { type: "i", id: "1pDb9JnPAucXlHR6FVJaEmCTgRUugEITO", title: "Iris Figueroa on referral increase" } }
 ];
 
 /* Cards */
@@ -395,7 +395,7 @@ render();
     const slides = [], avs = [];
     TESTIMONIALS.forEach((x, i) => {
       const name = x.name || x.who;
-      const head = el("div", { class: "who" }, [el("b", { text: name }), el("span", { text: x.name ? x.who + ", " + x.org : x.org })]);
+      const head = el("div", { class: "who" }, [el("b", { text: name }), el("span", { text: x.org ? x.who + ", " + x.org : x.who })]);
       const kids = [el("div", { html: QM }), head, el("blockquote", { text: "\u201C" + x.q + "\u201D" })];
       if (x.ctx) kids.push(el("p", { class: "ctx", text: x.ctx }));
       const src = el("button", { class: "link", type: "button", html: "<span>View the original</span>" + ARROW });
@@ -405,8 +405,8 @@ render();
       wrap.appendChild(s); slides.push(s);
 
       const av = el("button", { class: "av", type: "button", "aria-label": "Show the testimonial from " + name });
-      const inner = x.photo ? el("img", { src: x.photo, alt: "", width: 112, height: 112, loading: "lazy", decoding: "async" }) : el("span", { class: "mono", text: initials(x.who) });
-      if (x.photo) inner.addEventListener("error", () => { inner.replaceWith(el("span", { class: "mono", text: initials(x.who) })); });
+      const inner = x.photo ? el("img", { src: x.photo, alt: "", width: 112, height: 112, loading: "lazy", decoding: "async" }) : el("span", { class: "mono", text: initials(name) });
+      if (x.photo) inner.addEventListener("error", () => { inner.replaceWith(el("span", { class: "mono", text: initials(name) })); });
       av.appendChild(inner); av.appendChild(el("span", { class: "ring" }));
       av.addEventListener("click", () => go(i));
       ring.appendChild(av); avs.push(av);
