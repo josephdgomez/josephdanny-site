@@ -396,11 +396,11 @@ render();
     TESTIMONIALS.forEach((x, i) => {
       const name = x.name || x.who;
       const head = el("div", { class: "who" }, [el("b", { text: name }), el("span", { text: x.org ? x.who + ", " + x.org : x.who })]);
-      const kids = [el("div", { html: QM }), head, el("blockquote", { text: "\u201C" + x.q + "\u201D" })];
+      const qbtn = el("button", { class: "qlink", type: "button", "aria-label": "Open the original message: " + x.q, text: "\u201C" + x.q + "\u201D" });
+      qbtn.addEventListener("click", () => openViewer([x.src], 0, qbtn));
+      const kids = [el("div", { html: QM }), head, el("blockquote", {}, [qbtn])];
       if (x.ctx) kids.push(el("p", { class: "ctx", text: x.ctx }));
-      const src = el("button", { class: "link", type: "button", html: "<span>View the original</span>" + ARROW });
-      src.addEventListener("click", () => openViewer([x.src], 0, src));
-      kids.push(src);
+      kids.push(el("span", { class: "qhint upper", text: "Select the quote to see the original" }));
       const s = el("figure", { class: "slide", role: "group", "aria-roledescription": "slide", "aria-label": (i + 1) + " of " + n }, kids);
       wrap.appendChild(s); slides.push(s);
 
