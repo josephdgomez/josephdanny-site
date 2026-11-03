@@ -319,7 +319,12 @@ function render() {
   pimg.addEventListener("error", () => pill.classList.add("nothumb"));
   pill.appendChild(pimg);
   cx.appendChild(pill);
-  cx.appendChild(document.createTextNode("Campaigns that connect people to health services, in the languages they speak."));
+  cx.appendChild(document.createTextNode("Campaigns that connect people to health services, in the languages they speak. "));
+  const pill2 = el("span", { class: "pimg end" });
+  const pimg2 = el("img", { src: "team.jpg", alt: "", width: 230, height: 64, loading: "lazy" });
+  pimg2.addEventListener("error", () => pill2.classList.add("nothumb"));
+  pill2.appendChild(pimg2);
+  cx.appendChild(pill2);
   }
 
   const items = [];
@@ -348,7 +353,7 @@ render();
 (function () {
   const sg = document.getElementById("svcgrid");
   if (sg) (function () {
-  SERVICES.forEach(([title, text], i) => sg.appendChild(el("div", { class: "svc-card rv" }, [
+  SERVICES.forEach(([title, text], i) => sg.appendChild(el("div", { class: "svc-card rv", tabindex: "0" }, [
     el("span", { class: "upper n", text: "0" + (i + 1) }),
     el("div", {}, [el("h4", { text: title }), el("p", { text: text })])
   ])));
@@ -356,10 +361,21 @@ render();
   JOBS.forEach(j => {
     const ul = el("ul");
     j.pts.forEach(p => ul.appendChild(el("li", { html: p })));
-    jobs.appendChild(el("div", { class: "job rv" }, [
+    const uid = "jb" + (jobs.children.length + 1);
+    const btn = el("button", { class: "jmore", type: "button", "aria-expanded": "false", "aria-controls": uid }, [
+      el("span", { class: "pm", "aria-hidden": "true" }), el("span", { class: "jl", text: "Learn more" })
+    ]);
+    const body = el("div", { class: "jbody", id: uid }, [el("div", { class: "jin" }, [ul])]);
+    const job = el("div", { class: "job rv" }, [
       el("div", {}, [el("span", { class: "upper when", text: j.when }), el("span", { class: "org-n", text: j.org })]),
-      el("div", {}, [el("h4", { text: j.role }), el("p", { class: "sum", text: j.sum }), ul])
-    ]));
+      el("div", {}, [el("h4", { text: j.role }), el("p", { class: "sum", text: j.sum }), btn, body])
+    ]);
+    btn.addEventListener("click", () => {
+      const open = job.classList.toggle("open");
+      btn.setAttribute("aria-expanded", String(open));
+      btn.querySelector(".jl").textContent = open ? "Show less" : "Learn more";
+    });
+    jobs.appendChild(job);
   });
   const early = document.getElementById("early");
   EARLY.forEach(([a, b]) => early.appendChild(el("div", {}, [el("h5", { text: a }), el("p", { text: b })])));

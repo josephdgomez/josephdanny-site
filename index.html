@@ -203,7 +203,7 @@ h4 { font-size: 28px; }
 .badges[data-style="text"] .badge:not(.static):hover .em { background: var(--dark); }
 
 /* About strip */
-.about { padding: 120px 0; }
+.about { padding: 120px 0 56px; }
 .about .row { display: grid; grid-template-columns: 5fr 7fr; gap: 60px; align-items: start; }
 .sup { position: relative; display: block; margin-bottom: 60px; color: var(--dark); }
 .sup::before { content: ""; position: absolute; right: calc(100% + 30px); top: 10px; width: 600px; height: 1px; background: var(--dark); opacity: .1; }
@@ -218,6 +218,8 @@ h4 { font-size: 28px; }
 .complex .pimg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; transition: transform var(--ease); }
 .complex .pimg:hover img { transform: scale(1.05); }
 .complex .pimg.nothumb { display: none; }
+.complex .pimg.end { width: 230px; margin: 0 0 6px 12px; }
+.complex .pimg.end img { object-position: 50% 16%; }
 .about .row > * { min-width: 0; }
 @media (max-width: 992px) { .about { padding: 90px 0; } .about .row { grid-template-columns: minmax(0, 1fr); gap: 40px; } .complex .pimg { display: none; } }
 @media (max-width: 560px) { .about .stats b { font-size: 40px; } .about .stats { gap: 24px 16px; } }
@@ -289,13 +291,20 @@ h4 { font-size: 28px; }
 
 
 /* Services */
-.svc { padding: 120px 0; }
+.svc { padding: 56px 0 120px; }
 .svc h2 { max-width: 14ch; margin-bottom: 80px; }
 .svc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 60px; }
 .svc-card { border-top: 1px solid var(--line); padding: 34px 0 56px; display: grid; grid-template-columns: 64px 1fr; }
 .svc-card .n { display: grid; place-items: center; width: 44px; height: 44px; margin-top: 2px; border-radius: 50%; background: var(--accent); color: var(--dark); font-weight: 500; letter-spacing: 1px; text-indent: 1px; }
 .svc-card h4 { margin-bottom: 14px; font-size: 28px; }
 .svc-card p { max-width: 44ch; font-size: 17px; line-height: 170%; }
+@media (hover: hover) and (pointer: fine) {
+  .svc-card p { opacity: 0; transform: translateY(10px); transition: opacity .4s ease, transform .5s cubic-bezier(0,0,.3642,1); }
+  .svc-card:hover p, .svc-card:focus-within p, .svc-card:focus p { opacity: 1; transform: none; }
+  .svc-card { cursor: default; transition: border-color .3s ease; }
+  .svc-card:hover, .svc-card:focus { border-top-color: var(--dark); outline: none; }
+}
+@media (prefers-reduced-motion: reduce) { .svc-card p { transition: opacity .2s ease !important; transform: none !important; } }
 @media (max-width: 992px) { .svc { padding: 90px 0; } .svc-grid { grid-template-columns: 1fr; } .svc h2 { margin-bottom: 50px; } }
 
 /* Portfolio heading */
@@ -341,6 +350,19 @@ h4 { font-size: 28px; }
 .job li { position: relative; padding-left: 24px; margin-bottom: 10px; font-size: 16px; line-height: 160%; }
 .job li::before { content: ""; position: absolute; left: 0; top: .6em; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
 .job li b { color: var(--dark); font-weight: 500; }
+.jmore { all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: 14px; font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--dark); padding: 6px 0; }
+.jmore:focus-visible { outline: 2px solid var(--dark); outline-offset: 4px; }
+.jmore .pm { position: relative; flex: none; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,.08); transition: var(--ease); }
+.jmore .pm::before, .jmore .pm::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; margin: -1px 0 0 -6px; background: var(--dark); transition: var(--ease); }
+.jmore .pm::after { transform: rotate(90deg); }
+.jmore:hover .pm, .job.open .jmore .pm { background: var(--accent); }
+.job.open .jmore .pm::after { transform: rotate(0deg); }
+.jbody { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s cubic-bezier(0,0,.3642,1); }
+.job.open .jbody { grid-template-rows: 1fr; }
+.jbody > .jin { min-height: 0; overflow: hidden; visibility: hidden; transition: visibility 0s linear .5s; }
+.job.open .jbody > .jin { visibility: visible; transition-delay: 0s; }
+.jbody ul { padding-top: 22px; }
+@media (prefers-reduced-motion: reduce) { .jbody { transition-duration: .01ms; } }
 .early { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 30px; border-top: 1px solid var(--line); padding-top: 40px; margin-top: 10px; }
 .early h5, .more h5 { font-size: 18px; margin-bottom: 6px; }
 .more { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px 30px; border-top: 1px solid var(--line); padding-top: 40px; margin-top: 50px; }
@@ -415,9 +437,10 @@ dialog::backdrop { background: rgba(0,0,0,.86); }
 .hero .g1 { width: 540px; height: 540px; right: -150px; top: -70px; --spin: 140s; }
 .hero .g2 { width: 150px; height: 150px; right: 30%; top: 47%; --spin: 50s; --dir: reverse; }
 .hero .g3 { width: 250px; height: 250px; left: 47%; top: 50%; --spin: 90s; }
-.about { position: relative; overflow: hidden; }
+.about { position: relative; overflow: hidden; overflow-x: clip; overflow-y: visible; }
+.about .fx { overflow: visible; }
 .about .g1 { width: 420px; height: 420px; right: -210px; top: 4%; --spin: 120s; }
-.about .g2 { width: 120px; height: 120px; right: 6%; bottom: 3%; --spin: 45s; --dir: reverse; }
+.about .g2 { width: 120px; height: 120px; right: 6%; bottom: -34px; --spin: 45s; --dir: reverse; }
 footer { overflow: hidden; }
 footer .container { position: relative; z-index: 1; }
 footer .g1 { width: 460px; height: 460px; right: -140px; top: -40px; --spin: 130s; }
@@ -642,7 +665,7 @@ body.sub .ph .container { position: relative; z-index: 1; }
       <div class="fmenu rv"><ul id="footlist"></ul></div>
     </div>
     <div class="copy">
-      <span>© <span id="yr"></span> Joseph Daniel Gomez de la Mora</span>
+      <span>© <span id="yr"></span> Joseph Danny LLC</span>
       <span>Every file opens from Google Drive</span>
     </div>
   </div>
@@ -674,7 +697,7 @@ document.documentElement.classList.add("js");
    shows whatever is in that Drive folder, including new uploads.
    Set contact details below; leave blank to hide them.
 ------------------------------------------------------------------- */
-const CONTACT = { email: "josephdanielgomez13@gmail.com", linkedin: "https://linkedin.com/josephdgomez", website: "" };
+const CONTACT = { email: "hello@josephdanny.co", linkedin: "https://linkedin.com/josephdgomez", website: "" };
 
 /* ------------------------------------------------------------------
    CONTENT. To add a piece, add one line: [type, driveFileId, "Title"].
@@ -1205,7 +1228,12 @@ function render() {
   pimg.addEventListener("error", () => pill.classList.add("nothumb"));
   pill.appendChild(pimg);
   cx.appendChild(pill);
-  cx.appendChild(document.createTextNode("Campaigns that connect people to health services, in the languages they speak."));
+  cx.appendChild(document.createTextNode("Campaigns that connect people to health services, in the languages they speak. "));
+  const pill2 = el("span", { class: "pimg end" });
+  const pimg2 = el("img", { src: "team.jpg", alt: "", width: 230, height: 64, loading: "lazy" });
+  pimg2.addEventListener("error", () => pill2.classList.add("nothumb"));
+  pill2.appendChild(pimg2);
+  cx.appendChild(pill2);
   }
 
   const items = [];
@@ -1234,7 +1262,7 @@ render();
 (function () {
   const sg = document.getElementById("svcgrid");
   if (sg) (function () {
-  SERVICES.forEach(([title, text], i) => sg.appendChild(el("div", { class: "svc-card rv" }, [
+  SERVICES.forEach(([title, text], i) => sg.appendChild(el("div", { class: "svc-card rv", tabindex: "0" }, [
     el("span", { class: "upper n", text: "0" + (i + 1) }),
     el("div", {}, [el("h4", { text: title }), el("p", { text: text })])
   ])));
@@ -1242,10 +1270,21 @@ render();
   JOBS.forEach(j => {
     const ul = el("ul");
     j.pts.forEach(p => ul.appendChild(el("li", { html: p })));
-    jobs.appendChild(el("div", { class: "job rv" }, [
+    const uid = "jb" + (jobs.children.length + 1);
+    const btn = el("button", { class: "jmore", type: "button", "aria-expanded": "false", "aria-controls": uid }, [
+      el("span", { class: "pm", "aria-hidden": "true" }), el("span", { class: "jl", text: "Learn more" })
+    ]);
+    const body = el("div", { class: "jbody", id: uid }, [el("div", { class: "jin" }, [ul])]);
+    const job = el("div", { class: "job rv" }, [
       el("div", {}, [el("span", { class: "upper when", text: j.when }), el("span", { class: "org-n", text: j.org })]),
-      el("div", {}, [el("h4", { text: j.role }), el("p", { class: "sum", text: j.sum }), ul])
-    ]));
+      el("div", {}, [el("h4", { text: j.role }), el("p", { class: "sum", text: j.sum }), btn, body])
+    ]);
+    btn.addEventListener("click", () => {
+      const open = job.classList.toggle("open");
+      btn.setAttribute("aria-expanded", String(open));
+      btn.querySelector(".jl").textContent = open ? "Show less" : "Learn more";
+    });
+    jobs.appendChild(job);
   });
   const early = document.getElementById("early");
   EARLY.forEach(([a, b]) => early.appendChild(el("div", {}, [el("h5", { text: a }), el("p", { text: b })])));
