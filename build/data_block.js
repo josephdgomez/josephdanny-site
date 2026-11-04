@@ -6,7 +6,7 @@
    Set contact details below; leave blank to hide the contact section.
 ------------------------------------------------------------------- */
 
-const WORK = [
+let WORK = [
   {
     slug: "elevate-health",
     name: "Elevate Health",
@@ -205,4 +205,5 @@ const WORK = [
     ]
   }
 ];
-
+/* Content saved from the /admin editor (injected at the edge) replaces the built-in content above. */
+if (window.__SAVED && Array.isArray(window.__SAVED.work) && window.__SAVED.work.length) WORK = window.__SAVED.work;

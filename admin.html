@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Site editor</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext x='6' y='24' font-size='24' font-family='sans-serif' font-weight='600'%3EJ%3C/text%3E%3Ccircle cx='24' cy='23' r='3' fill='%23FF9800'/%3E%3C/svg%3E">
+<style>
+:root { --ink:#111; --text:#555; --line:#e6e6e6; --soft:#f6f6f6; --accent:#FF9800; --accent-d:#c97700; --bad:#c62828; --ok:#1b7f3b; --r:12px; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin:0; background:#fafafa; color:var(--ink); font:16px/1.5 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+button, input, select, textarea { font:inherit; color:inherit; }
+.hidden { display:none !important; }
+
+/* Login + setup */
+.center { min-height:100vh; display:grid; place-items:center; padding:24px 16px; }
+.panel { width:100%; max-width:440px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:32px 28px; }
+.panel h1 { margin:0 0 6px; font-size:26px; font-weight:600; }
+.panel p { margin:0 0 18px; color:var(--text); }
+.panel.wide { max-width:640px; }
+.panel ol { padding-left:20px; color:var(--text); } .panel li { margin-bottom:10px; }
+code { background:var(--soft); padding:1px 6px; border-radius:6px; font-size:14px; }
+.logo { font-size:28px; font-weight:600; margin-bottom:18px; } .logo i { color:var(--accent); font-style:normal; }
+
+/* Controls */
+.btn { appearance:none; border:1px solid var(--line); background:#fff; border-radius:999px; padding:9px 18px; cursor:pointer; font-weight:500; line-height:1.2; transition:background .2s, border-color .2s; min-height:40px; }
+.btn:hover { background:var(--soft); border-color:#d0d0d0; }
+.a-btn, a.btn { text-decoration:none; color:inherit; display:inline-flex; align-items:center; }
+.btn.primary { background:var(--ink); color:#fff; border-color:var(--ink); }
+.btn.primary:hover { background:#000; }
+.btn.primary:disabled { opacity:.45; cursor:default; }
+.btn.danger { color:var(--bad); }
+.btn.small { padding:5px 12px; min-height:32px; font-size:14px; }
+.btn.icon { padding:0; width:34px; height:34px; min-height:34px; display:inline-grid; place-items:center; font-size:15px; }
+.btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline:2px solid var(--ink); outline-offset:2px; }
+input[type=text], input[type=password], select, textarea { width:100%; border:1px solid var(--line); border-radius:10px; padding:9px 12px; background:#fff; min-height:40px; }
+textarea { resize:vertical; min-height:84px; line-height:1.45; }
+input.bad { border-color:var(--bad); background:#fff6f6; }
+label.f { display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--text); margin:0 0 4px; }
+.err { color:var(--bad); font-size:14px; margin:10px 0 0; min-height:1.2em; }
+.hint { color:var(--text); font-size:14px; margin:4px 0 0; }
+
+/* App shell */
+.bar { position:sticky; top:0; z-index:20; background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+.bar .in { max-width:980px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.bar .grow { flex:1; min-width:8px; }
+.status { font-size:14px; color:var(--text); }
+.status.dirty { color:var(--accent-d); font-weight:500; }
+.wrap { max-width:980px; margin:0 auto; padding:22px 16px 120px; }
+.tabs { display:flex; gap:6px; margin:0 0 18px; }
+.tab { border:1px solid var(--line); background:#fff; border-radius:999px; padding:8px 18px; cursor:pointer; font-weight:500; }
+.tab[aria-selected=true] { background:var(--ink); color:#fff; border-color:var(--ink); }
+.note { background:#fff8ec; border:1px solid #ffe2b0; border-radius:var(--r); padding:12px 14px; color:#6b4a00; margin:0 0 18px; font-size:15px; }
+.toast { position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:12px 20px; border-radius:999px; z-index:50; max-width:calc(100vw - 32px); font-size:15px; box-shadow:0 8px 30px rgba(0,0,0,.2); }
+.toast.bad { background:var(--bad); }
+
+/* Cards */
+details.card { background:#fff; border:1px solid var(--line); border-radius:var(--r); margin:0 0 14px; }
+details.card > summary { list-style:none; cursor:pointer; padding:14px 16px; display:flex; align-items:center; gap:10px; }
+details.card > summary::-webkit-details-marker { display:none; }
+details.card > summary .chev { width:18px; height:18px; transition:transform .2s; flex:none; }
+details.card[open] > summary .chev { transform:rotate(90deg); }
+details.card > summary .t { font-weight:600; font-size:18px; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+details.card > summary .c { color:var(--text); font-size:14px; white-space:nowrap; }
+.body { padding:4px 16px 18px; border-top:1px solid var(--line); }
+.row { display:grid; gap:12px; margin-top:14px; }
+.row.two { grid-template-columns:1fr 1fr; }
+.acts { display:flex; gap:4px; flex:none; }
+.sub { border:1px solid var(--line); border-radius:var(--r); padding:12px 14px 14px; margin-top:14px; background:#fcfcfc; }
+.sub.g { background:#fafafa; }
+.sub .hd { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.sub .hd .tt { flex:1; min-width:0; }
+.sub .tag { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--text); margin:0 0 3px; }
+.addrow { margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+
+/* Pieces */
+.item { display:grid; grid-template-columns:44px 110px minmax(120px,1fr) minmax(140px,1.3fr) auto; gap:8px; align-items:center; padding:8px 0; border-top:1px solid var(--line); }
+.item:first-child { border-top:0; }
+.thumb { width:44px; height:44px; border-radius:8px; object-fit:cover; background:var(--soft); display:block; }
+.thumb.none { visibility:hidden; }
+.add { border:1px dashed #cfcfcf; border-radius:var(--r); padding:12px; margin-top:10px; background:#fff; }
+.add .line { display:grid; grid-template-columns:minmax(140px,1.4fr) 110px minmax(120px,1fr) auto; gap:8px; align-items:center; }
+.add textarea { margin-top:8px; }
+.linkbtn { background:none; border:0; padding:0; color:var(--ink); text-decoration:underline; text-underline-offset:3px; cursor:pointer; font-size:14px; }
+
+/* Testimonials */
+.tcard { display:grid; grid-template-columns:96px 1fr; gap:18px; }
+.avatar { width:96px; height:96px; border-radius:50%; background:var(--soft); object-fit:cover; display:grid; place-items:center; font-size:26px; font-weight:600; color:var(--text); }
+.tcol { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.orig { display:grid; grid-template-columns:44px 110px minmax(140px,1fr) minmax(120px,1fr); gap:8px; align-items:center; margin-top:6px; }
+
+dialog { border:0; border-radius:16px; padding:22px; max-width:min(92vw,420px); width:100%; box-shadow:0 20px 60px rgba(0,0,0,.3); }
+dialog::backdrop { background:rgba(0,0,0,.5); }
+dialog canvas { width:240px; height:240px; border-radius:50%; background:var(--soft); display:block; margin:14px auto; }
+dialog .sl { display:grid; grid-template-columns:70px 1fr; align-items:center; gap:10px; margin:8px 0; font-size:14px; color:var(--text); }
+dialog input[type=range] { width:100%; }
+.foot { margin-top:30px; padding-top:18px; border-top:1px solid var(--line); display:flex; gap:10px; flex-wrap:wrap; }
+
+@media (max-width: 760px) {
+  .row.two { grid-template-columns:1fr; }
+  .item { grid-template-columns:44px 1fr auto; grid-template-areas:"th ty ac" "ti ti ti" "li li li"; }
+  .item .thumb { grid-area:th; } .item .ty { grid-area:ty; } .item .ti { grid-area:ti; } .item .li { grid-area:li; } .item .acts { grid-area:ac; }
+  .add .line { grid-template-columns:1fr 1fr; } .add .line input:first-child { grid-column:1 / -1; } .add .line .btn { grid-column:1 / -1; }
+  .tcard { grid-template-columns:1fr; } .tcol { flex-direction:row; justify-content:flex-start; }
+  .orig { grid-template-columns:44px 1fr; } .orig input { grid-column:1 / -1; }
+  details.card > summary .c { display:none; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="toast" class="toast hidden" role="status"></div>
+
+<script>
+/* ------------------------------------------------------------------
+   CONTENT. To add a piece, add one line: [type, driveFileId, "Title"].
+   Types: "v" video, "p" PDF, "i" image.
+   Each section's `folder` powers a "Browse folder" link that always
+   shows whatever is in that Drive folder, including new uploads.
+   Set contact details below; leave blank to hide the contact section.
+------------------------------------------------------------------- */
+
+let WORK = [
+  {
+    slug: "elevate-health",
+    name: "Elevate Health",
+    role: "Communications Manager, 2025 to present",
+    intro: "An Accountable Community of Health in Pierce County, Washington. Paid campaigns, a video explainer series, and translated print materials.",
+    groups: [
+      { title: "Paid ad campaigns", sections: [
+        { title: "Apple Health campaign", folder: "1TIfWuOAAUhPgvKo53wg8HdyC2Kp_VHoH", items: [
+          ["v", "1XNNYuRPQtPNnfL_FjGF_AnTzq4iEhuuw", "Big Changes Are Coming"],
+          ["v", "1KoTOxcifN4v54dwmPdTEBbWtin2Nc3gd", "If You Use Apple Health"],
+          ["i", "1_p-CuczC01LbfUe9EwzPMeHGfwynbcPs", "Graphic ad 1"],
+          ["i", "10aQPzK9rTBUhyFXtyu86kQ3j5u2Nqvvc", "Graphic ad 2"],
+          ["p", "1QKrd26NuARg1a3QUdbzOUXijm2GVgWHi", "HR1 changes web page"]
+        ]},
+        { title: "Multilingual transit ads", folder: "1sszsEjz3gWEOmssOFul9Gdk2W_iN16jd", items: [
+          ["i", "1m1HxBea6s565oYG3E-K3gz1ynczSySvg", "Spanish, in-bus card"],
+          ["i", "1rC6PVVSm3Fkxthb3suwh82o8iTqcE0K7", "Vietnamese, in-bus card"],
+          ["i", "1c4hzMSe5v4JsxTcpK9KVAYEKFcUQuRQf", "Russian, in-bus card"],
+          ["i", "1uXIBGNtbhCPIxqAWWoPJKP-6zF2WdCKz", "Tagalog, in-bus card"],
+          ["p", "1yO5rNipXS8lxEcryha_zQSGj8No21yU9", "Interior bus cards"]
+        ]},
+        { title: "Community care hub referral campaign", folder: "1OmiKeCzyslbf_e3_wCe_Q1gH_HfFhZMq", subs: [
+          { title: "Results and overview", items: [
+            ["p", "1Z_02JSRwyX7V895XB3Qb1Co6QsMBRRWy", "10-day results"],
+            ["p", "1gP1FBTA2daAA0cQLRRZm3UgginFV5zj0", "6-month results"],
+            ["p", "1zmTsJRwoGaLzpazCZwfNlchDAjPY3ewI", "Campaign overview presentation"]
+          ]},
+          { title: "Launch announcement and graphic ads", items: [
+            ["p", "1QzmUrxuS0WNs37SwGG4jenGh7lYpNtRk", "Launch announcement"],
+            ["p", "1bQERDNUcfxpaacoC5ijpVKUPdMnzP1Hd", "All graphic ads"]
+          ]},
+          { title: "Video ads, round 1", items: [
+            ["v", "11Oi797r4Xwt5cWlesk3dTV77wuTfrW3Q", "Joseph: Fill out the form"],
+            ["v", "1ihe4KtKa9vl_rIrQ-nOT8XK9OxnUWMvF", "Alli: Fill out the form"],
+            ["v", "1rINY1G49o2vnpKS751C-AY0J5brMbd9C", "Ariana: Fill out the form"]
+          ]},
+          { title: "Video ads, round 2", items: [
+            ["v", "1iNfkxovQNhLcL8Y-CdhsSf5Wlnuj5ddD", "Sara: Fill out the form"],
+            ["v", "1gTlQMzYXRJAY6plFRhYz6kSybq9MayvT", "Derrick: Fill out the form"],
+            ["v", "19kiWZ9TvwPcNGIvflnrpGC8t21WOaYCf", "Joseph: Give us a call"],
+            ["v", "18gl_ZZgUhpRt4niiKE6ghj-nCm-4paNH", "Paloma: Give us a call"],
+            ["v", "1-C1DvuS0efbzG4G_8L4NsGYWM6tuOoPg", "Julia: Give us a call"],
+            ["v", "1qFsb3n004_98XbywFg9nFrOvVvuUqpvQ", "Zach: Give us a call"]
+          ]},
+          { title: "Praise for campaign success", items: [
+            ["i", "1okFJ2CjySxcXabHZdhYTgbHVGpUyKv6j", "Program lead on results"],
+            ["i", "1k32PxWyuIHrUcXbTX9ENANYM8g5exU9E", "Comms director on quality"],
+            ["i", "1nQLPOuuWrcsGLHZLKWVjlNylNfHvQEdk", "Comms director on success"],
+            ["i", "1ujB4oy1jUdkwuhMDQQA1saVs4DCsRc0X", "Executive director on results"],
+            ["i", "1rs_VlkmV0PLCgtJz1ztFCNOEJdlEFCNo", "Product manager on targeting"],
+            ["i", "1pDb9JnPAucXlHR6FVJaEmCTgRUugEITO", "Program lead on referral increase"],
+            ["i", "1LdpqvoW6OqGsmR9Z9aKx-Eo-2z5w5nj8", "Needing to increase capacity"]
+          ]}
+        ]}
+      ]},
+      { title: "Social media content", sections: [
+        { title: "Joseph Explains", folder: "1dPI6HKA8VodZpHzqtDgnFqLhKwN7KU08", items: [
+          ["v", "1iUZzFCwyq_g_WGtfIVux5-ji6VRC8a8_", "How to apply for Apple Health"],
+          ["v", "1ixJUWEauV2_fnKjSWAp2tuzHiNUhd3IV", "Save on Wi-Fi"],
+          ["v", "1G7RxkUmbIQd_xelqDD2YONvwUrvKfPt6", "Primary care"],
+          ["v", "1e7mZsm2BxSJhVapLkeLrmxMH_XeazcJ1", "Why immunizations matter"],
+          ["v", "1AEZlm_CXgWPP_lkGtAZkUx0p_jeiLe4q", "Emergency planning"],
+          ["v", "1ktCMcxxK1hZsVS6F9TLWaqhMMFe3K9j5", "What is a CBW"],
+          ["v", "1CBneZSbrGQf8-9H3_6qe5tWmNZkGT_MB", "Mental health resources"]
+        ]}
+      ]},
+      { title: "Graphic design", sections: [
+        { title: "Print materials", folder: "1_lxYo4O5ufXfmoAarcdjHhlyA9sBnkSq", items: [
+          ["p", "1jjSjGMm6EPoYFXBT2N1p-znrVtP5Y9hE", "One Pierce one-pager"],
+          ["p", "11xit7LAdKvsImIbTAkGMGxvZmFKxfyXs", "One Pierce brochure"],
+          ["p", "107OVCv3RkQShEib6GK27-shv89z_jSrC", "Translated notecards"],
+          ["p", "1srCU0PlatwvoryxwatOYIDllXnspte_8", "Translated posters"],
+          ["p", "1UaViaPy8cIUjdHWPpVc1ufpcb78R1gr-", "Translated brochures"]
+        ]}
+      ]}
+    ]
+  },
+  {
+    slug: "joseph-danny-llc",
+    name: "Joseph Danny, LLC",
+    role: "Independent practice",
+    intro: "Paid social campaigns for insurance and church clients, plus brochure design.",
+    groups: [
+      { title: "Paid ad campaigns", sections: [
+        { title: "Veitch Agency, insurance", folder: "1yGhf05GwD7I2Ra5gEZbSydEMne5HTWc3", items: [
+          ["v", "1o7aNz2atJmIYZ4RbAgZ2rqvcpmvgDiHp", "Micah: COI"],
+          ["v", "12lxX73qgMsx_dbk5YgaAQ7O8oYonpz0P", "Micah: Lawsuit"],
+          ["v", "1OnS2Eqg9lPIAToVj5i1VQowmuoYNypVh", "Connor: A decade of experience"],
+          ["v", "1JviiKYRGpS772mdT2hATjQamZkLpaviN", "Connor: Tailored underwriting"],
+          ["v", "1yIn3AZ0sGQWfZlYxAjjGvMFpxyPDsXxR", "Connor: Hundreds of policies"]
+        ]},
+        { title: "The Table Church", folder: "191qPlq5IZaVFe4PH3GHBBSSsxyxDsJ2T", items: [
+          ["v", "1_PjpbcRldxNdc2YxiCFZXFe2ZikCh1ez", "Pastor Beth"],
+          ["v", "1z-IGcYYTMBDbcunqinSzLgrv-lt19kwr", "Pastor Jen"],
+          ["v", "1G_XD12kkAEaEpV6Wl2cvODvWZQLcGaxD", "Pastor Arianna"],
+          ["v", "1K73-3KiCemj4waVmQXnwOVjbB6nG3QCK", "Tabitha"],
+          ["v", "1Pzl9y_ABjHif3POVWJHoA_w6Sy6N830l", "Joseph"]
+        ]}
+      ]},
+      { title: "Graphic design", sections: [
+        { title: "Brochures", items: [
+          ["p", "1qbQg0vmDeiHs8l10iqDakNbuXueqCglC", "NWMN brochure"],
+          ["p", "1AJhk1MB-Tim8LzTTwOlO1ydVQkkbd-uf", "Hope Givers brochure"]
+        ]}
+      ]}
+    ]
+  },
+  {
+    slug: "blue-zones-project",
+    name: "Blue Zones Project",
+    role: "Marketing and Engagement Lead, 2023 to 2025",
+    intro: "Interview films, short-form video, newsletters, signage, presentations, and ad creative for the Blue Zones Project.",
+    groups: [
+      { title: "Video projects", sections: [
+        { title: "Long-form interviews", folder: "1XBCjGuTmwEW3JwrOF91NZe9oQ0bp6H8k", items: [
+          ["v", "1tPg44UT_ZHEFMBuc5jPR5Nde5jt1ZTQh", "Dan Burden"],
+          ["v", "1sqgeQ1sfjYn7LrLcWgqYeCtzRBCOnwhv", "Jani Hitchen"],
+          ["v", "1XfWgW67ePfoKQSEkdlIGa2Dtkm183Ixz", "Rachel Kelly"],
+          ["v", "1OA-NMxgpgCKA2ZT5Es1oHEn0Iqnf1INh", "Marianne Lincoln"],
+          ["v", "1wHqwIAvYaSFDeMBifJWQ3qmrLQF9XKZX", "Susan Armbruster"]
+        ]},
+        { title: "Short-form", folder: "1dKoxs3wyRl8i8yOOPdkJvv6357ybvT1C", items: [
+          ["v", "1gsiLyO47mGCHCtvVQ0mNNFPJG5t3fIpR", "Zumba invite"],
+          ["v", "1WZC-KcWGNA5CgArm-FqQBLdL8zv5HDZc", "H4H reel"],
+          ["v", "1NSxTjBgpv9VNUIAfM2nmj2C4kONUg1Y2", "BZ Friends tweet video"],
+          ["v", "1OvKHK0JwWIHCB9EQ7f8T_0ev3xmw68Rv", "Christmas picture"]
+        ]}
+      ]},
+      { title: "Paid ads", sections: [
+        { title: "Video ads", folder: "1UPSUoNg5vYhLKuUT6QSlvQJ6Bc61vako", items: [
+          ["v", "1ou79kUVM-s5Ji13NU_Dk-2VkzWISwihN", "Zumba ad"],
+          ["v", "1Gca8gQegw9o_wNAUFyoB6QgPAxH4lK3o", "Cooking ad, version 1"],
+          ["v", "1yvrYxG2IndcTV6I2am2UU4DbDBXQGovr", "Cooking ad, version 2"]
+        ]},
+        { title: "Graphic ads", folder: "18soe9KAv10cBOr-rWzTzG1bJSpWGVmd8", items: [
+          ["i", "1hw8GiYjGBOMNRzKPanW2nO-R2Jo14qNQ", "Yoga"],
+          ["i", "1HT2MKRaGFaYnUcpOpXNBHW2bu4QdV3yT", "Cooking"],
+          ["i", "1nveGWd3TzGdRIe9878tOUTkRCu2SVFFG", "Zumba"]
+        ]}
+      ]},
+      { title: "Graphic design", sections: [
+        { title: "Design", folder: "1vGowKlP9f-MdVg4L8xMvNgSynaEZBrSZ", items: [
+          ["i", "14emNQ-dolgH5KsX_d1sDFQH-x_mvboUo", "Design 1"],
+          ["i", "1s6JQfSc9P6aGnKt6zRjGMpVVwhcUqkk6", "Design 2"],
+          ["i", "1aYQzB7BdPrq-r8e0aEIYPonvc61qrtxX", "Design 3"],
+          ["i", "1FkPfKJ3ZuuhA3bEff6ixI2T8VZpqaWj9", "Design 4"],
+          ["i", "1bs1fozsiGK41yuYapESLRlfuXHgn_u3q", "Design 5"]
+        ]},
+        { title: "Signage", folder: "1UeSixPcXmQSpxvxgR-JDjzf9jxqzS9eS", items: [
+          ["i", "1Vsw4EvPNQpNrunTJO9r4OBfLiZ5AUCEi", "Walking School Bus sign"],
+          ["i", "1Y-KBdTudw0IcPHN5NJZVXzdavfhF-9pi", "Healthy Cooking sign"],
+          ["i", "1rooQHicUsfOCnP_kwB72gVJFGMWQb0A1", "BZ Day sign"],
+          ["i", "1nRDmPpjp2ydJSz8kyqVZ4sAsIJnxjefd", "Parking sign, blue"],
+          ["i", "1dyiIswNu6fP5mDBJOJ8F91A2GJXpYK4U", "Parking sign, white"]
+        ]},
+        { title: "Social media graphics", folder: "1zxl3Nyck8GvceOUAOnNbOp9sWraepNxT", items: [
+          ["i", "1Qv6cXN2W6uT-oVbUUhS7VSGo_C5JkcON", "Graphic 1"],
+          ["i", "1DzMwOR9VXyXYqrPKTgG4gwyN4NyHyeG0", "Graphic 2"],
+          ["i", "1hGzKdNccbSEicIQ7g3Fp9Ob-h0EUxKwd", "Graphic 3"],
+          ["i", "1mofZAwBn9iktdo-6bpYUrc6WwtXq0VT8", "Graphic 4"],
+          ["i", "1OxGSypfN9S6Lq483JbRBykUgkwphxd-4", "Graphic 5"]
+        ]},
+        { title: "Newsletters", folder: "1RZ58XSOBM2igVWiYy36NVdLS4bNJAuT1", items: [
+          ["p", "1ZPZY88wWrBNJWOhQ6RKTXaadYSKiXj0I", "November newsletter"],
+          ["p", "1ozS00wl494GTkpWwgC9Pmns2qNEdRZTe", "February newsletter"]
+        ]},
+        { title: "Presentations", folder: "1vscLDnNAQqshtIPG7zwKENsZYIKQtJvV", items: [
+          ["p", "1duv6-3mdUPjqD5_O8qypxt0VOaQ2wM2g", "BZP story speech"],
+          ["p", "1weviQnJdV9sGCw6R5jOCSJgg0Vut1YNX", "Healthy Cooking Made Simple: Tofu"]
+        ]}
+      ]},
+      { title: "Articles", sections: [
+        { title: "Press and features", folder: "1NCPiMrlAeT0Y4aSkys513xncIjUpYPld", items: [
+          ["p", "1AhFyOcYtyAU7ZeG0jvRHVT36gObSJKQ1", "New executive director, South Sound Magazine"],
+          ["p", "1E57JTKUPVq-J7GRQgoHHatWvRGFtBfMg", "New executive director, The Suburban Times"],
+          ["p", "1DU_PWPbLCyVl3SHUKcPMDTTKq4FVhXLo", "New executive director, Showcase Media"],
+          ["p", "1oJQdTKhmlupEBysnGR83TzZ2phuwG0i-", "Brookdale Elementary, The Suburban Times"],
+          ["p", "1IZpbKA9gI7G8rUe_hkm1rffZpMqrB9Bv", "Berta Rivera, Blue Zones"]
+        ]}
+      ]}
+    ]
+  },
+  {
+    slug: "certifications",
+    name: "Awards and certifications",
+    role: "Credentials",
+    intro: "Recognition and platform certifications.",
+    groups: [
+      { title: "", sections: [
+        { title: "", folder: "13ZSABT4229OQ5ncuKvY__gLjw05RYk9I", items: [
+          ["i", "1o50VhUOpHNvDtcc1aFs02Hse_CBb2BMn", "40 Under 40 Award"],
+          ["p", "1rBZQz9ED8cthxfq0f7KhdVKdv_a5J1lE", "Meta Certified Media Buying Professional"],
+          ["p", "1SoUQ_lkaOC24alWBHCUgAtRh8PASW8G4", "Google Ads Video Certification"]
+        ]}
+      ]}
+    ]
+  }
+];
+/* Content saved from the /admin editor (injected at the edge) replaces the built-in content above. */
+if (window.__SAVED && Array.isArray(window.__SAVED.work) && window.__SAVED.work.length) WORK = window.__SAVED.work;
+
+let TESTIMONIALS = [
+  { name: "Ariana Winters", photo: "t4.jpg", q: "More than double the amount of referrals the [community care hub] has ever received in one month [even at the height of] COVID.",
+    who: "Operations Manager", org: "Connect Pierce, Elevate Health", ctx: "On the first 11-day Meta campaign in October 2025.",
+    src: { type: "p", id: "1zmTsJRwoGaLzpazCZwfNlchDAjPY3ewI", title: "Campaign overview presentation" } },
+  { name: "Zach Powers", photo: "t3.jpg", q: "Joseph is the driving force behind this new social media campaign - it's been so well designed and the first week execution has been awesome. Really nice work, Joseph!",
+    who: "Communications Director", org: "Elevate Health", ctx: "Shared with the team in the first week of the campaign.",
+    src: { type: "i", id: "1k32PxWyuIHrUcXbTX9ENANYM8g5exU9E", title: "Zach Powers on quality" } },
+  { name: "Gena Morgan", photo: "t1.jpg", q: "Really amazing results.",
+    who: "Executive Director", org: "Elevate Health", ctx: "Replying to the campaign results update.",
+    src: { type: "i", id: "1ujB4oy1jUdkwuhMDQQA1saVs4DCsRc0X", title: "Gena Morgan on results" } },
+  { name: "Ariana Winters", photo: "t4.jpg", q: "Huge thanks to Comms for their social media push that [drove] the self referrals!",
+    who: "Operations Manager", org: "Connect Pierce, Elevate Health", ctx: "Posted the same week: 199 client referrals, just 41 short of the entire month of September.",
+    src: { type: "i", id: "1okFJ2CjySxcXabHZdhYTgbHVGpUyKv6j", title: "Ariana Winters on results" } },
+  { name: "Liz Matzelle", photo: "t2.jpg", q: "The geographic targeting is a LOT tighter than I expected!",
+    who: "Product Manager", org: "", ctx: "Reviewing the campaign's referral data.",
+    src: { type: "i", id: "1rs_VlkmV0PLCgtJz1ztFCNOEJdlEFCNo", title: "Liz Matzelle on targeting" } },
+  { name: "Iris Figueroa", photo: "t5.jpg", q: "HopeSparks wanted me to thank you for the work on the meta-ad campaign and any other outreach and marketing campaigns you have done as they have seen an increase in referrals for their program.",
+    who: "Community Care Hub Program Manager", org: "Elevate Health", ctx: "Passing along thanks from partner HopeSparks, which increased its caseload by 38.8%.",
+    src: { type: "i", id: "1pDb9JnPAucXlHR6FVJaEmCTgRUugEITO", title: "Iris Figueroa on referral increase" } }
+];
+
+</script>
+<script>
+"use strict";
+(function () {
+  const DEFAULT_WORK = JSON.parse(JSON.stringify(WORK));
+  const DEFAULT_TESTS = JSON.parse(JSON.stringify(TESTIMONIALS)).map(t => {
+    const o = { name: t.name || t.who || "", who: t.who || "", org: t.org || "", q: t.q || "", ctx: t.ctx || "" };
+    if (t.photo) o.photo = /^(\/|https?:)/.test(t.photo) ? t.photo : "/" + t.photo;
+    if (t.src && t.src.id) o.src = { type: t.src.type, id: t.src.id, title: t.src.title || o.name };
+    return o;
+  });
+
+  const TYPE_LABEL = { v: "Video", p: "PDF", i: "Image" };
+  const root = document.getElementById("root");
+  let S = null, dirty = false, usingDefaults = false, hasPrev = false, tab = "work", busy = false;
+
+  /* ---------- helpers ---------- */
+  function h(tag, props, kids) {
+    const n = document.createElement(tag);
+    Object.entries(props || {}).forEach(([k, v]) => {
+      if (v === undefined || v === null || v === false) return;
+      if (k === "class") n.className = v;
+      else if (k === "text") n.textContent = v;
+      else if (k === "value") n.value = v;
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2).toLowerCase(), v);
+      else if (v === true) n.setAttribute(k, "");
+      else n.setAttribute(k, v);
+    });
+    (kids || []).forEach(c => c && n.appendChild(typeof c === "string" ? document.createTextNode(c) : c));
+    return n;
+  }
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const strip = (k, v) => (k.startsWith("_") ? undefined : v);
+  function toast(msg, bad) {
+    const t = document.getElementById("toast");
+    t.textContent = msg; t.className = "toast" + (bad ? " bad" : "");
+    clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.add("hidden"), bad ? 7000 : 3500);
+  }
+  async function api(path, opts) {
+    const o = Object.assign({ credentials: "same-origin" }, opts || {});
+    o.headers = Object.assign({ "X-Admin": "1" }, o.headers || {});
+    const r = await fetch(path, o);
+    let data = null; try { data = await r.json(); } catch (e) {}
+    return { ok: r.ok, status: r.status, data: data || {} };
+  }
+  function driveId(v) {
+    v = (v || "").trim();
+    const m = v.match(/\/d\/([\w-]{10,})/) || v.match(/\/folders\/([\w-]{10,})/) || v.match(/[?&]id=([\w-]{10,})/);
+    if (m) return m[1];
+    return /^[\w-]{10,}$/.test(v) ? v : "";
+  }
+  const fileUrl = id => "https://drive.google.com/file/d/" + id + "/view";
+  const folderUrl = id => "https://drive.google.com/drive/folders/" + id;
+  const thumbUrl = id => "https://drive.google.com/thumbnail?id=" + id + "&sz=w160";
+  const slugify = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "employer";
+  function markDirty() { if (!dirty) { dirty = true; updateBar(); } }
+  function move(list, i, d) { const j = i + d; if (j < 0 || j >= list.length) return; [list[i], list[j]] = [list[j], list[i]]; markDirty(); render(); }
+  function drop(list, i, what) { if (what && !confirm("Remove " + what + "?")) return; list.splice(i, 1); markDirty(); render(); }
+  function pieceCount(o) { let n = 0; o.groups.forEach(g => g.sections.forEach(s => { n += (s.subs ? s.subs.flatMap(x => x.items) : s.items || []).length; })); return n; }
+
+  function field(label, node, hint) { return h("div", {}, [h("label", { class: "f", text: label }), node, hint ? h("p", { class: "hint", text: hint }) : null]); }
+  function text(value, onInput, ph, extra) { return h("input", Object.assign({ type: "text", value: value || "", placeholder: ph || "", onInput: e => { onInput(e.target.value); markDirty(); }, autocomplete: "off" }, extra || {})); }
+  function area(value, onInput, ph, rows) { return h("textarea", { value: value || "", rows: rows || 3, placeholder: ph || "", onInput: e => { onInput(e.target.value); markDirty(); } }); }
+  function typeSelect(value, onChange, cls) {
+    const s = h("select", { class: cls || "", "aria-label": "Type", onChange: e => { onChange(e.target.value); markDirty(); } },
+      Object.entries(TYPE_LABEL).map(([k, v]) => h("option", { value: k, text: v })));
+    s.value = value; return s;
+  }
+  function actions(list, i, what) {
+    return h("div", { class: "acts" }, [
+      h("button", { class: "btn icon", type: "button", title: "Move up", "aria-label": "Move up", text: "↑", disabled: i === 0, onClick: () => move(list, i, -1) }),
+      h("button", { class: "btn icon", type: "button", title: "Move down", "aria-label": "Move down", text: "↓", disabled: i === list.length - 1, onClick: () => move(list, i, 1) }),
+      h("button", { class: "btn icon danger", type: "button", title: "Remove", "aria-label": "Remove", text: "×", onClick: () => drop(list, i, what) })
+    ]);
+  }
+  function card(obj, title, count, bodyNodes, acts) {
+    const d = h("details", { class: "card" });
+    if (obj._open) d.open = true;
+    d.addEventListener("toggle", () => { obj._open = d.open; });
+    const sm = h("summary", {}, [
+      chev(),
+      h("span", { class: "t", text: title || "Untitled" }),
+      count ? h("span", { class: "c", text: count }) : null
+    ]);
+    if (acts) { acts.addEventListener("click", e => e.stopPropagation()); sm.appendChild(acts); }
+    d.appendChild(sm); d.appendChild(h("div", { class: "body" }, bodyNodes));
+    return d;
+  }
+  function chev() {
+    const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("class", "chev"); s.setAttribute("aria-hidden", "true");
+    s.innerHTML = '<path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    return s;
+  }
+
+  /* ---------- pieces list (used for sections and sub-groups) ---------- */
+  function itemsEditor(items) {
+    const box = h("div", { class: "items" });
+    items.forEach((it, i) => {
+      const thumb = h("img", { class: "thumb", alt: "", loading: "lazy", referrerpolicy: "no-referrer", src: thumbUrl(it[1]) });
+      thumb.addEventListener("error", () => thumb.classList.add("none"));
+      const link = h("input", { class: "li", type: "text", value: fileUrl(it[1]), "aria-label": "Google Drive link", autocomplete: "off" });
+      link.addEventListener("change", () => {
+        const id = driveId(link.value);
+        if (!id) { link.classList.add("bad"); toast("That does not look like a Google Drive link.", true); return; }
+        link.classList.remove("bad"); it[1] = id; link.value = fileUrl(id); thumb.classList.remove("none"); thumb.src = thumbUrl(id); markDirty();
+      });
+      const ty = typeSelect(it[0], v => { it[0] = v; }, "ty");
+      const ti = text(it[2], v => { it[2] = v; }, "Title shown on the site", { class: "ti", "aria-label": "Title" });
+      box.appendChild(h("div", { class: "item" }, [thumb, ty, ti, link, actions(items, i)]));
+    });
+    box.appendChild(addPiece(items));
+    return box;
+  }
+  function addPiece(items) {
+    const link = h("input", { type: "text", placeholder: "Paste a Google Drive link", "aria-label": "Google Drive link", autocomplete: "off" });
+    const ty = h("select", { "aria-label": "Type" }, Object.entries(TYPE_LABEL).map(([k, v]) => h("option", { value: k, text: v })));
+    const title = h("input", { type: "text", placeholder: "Title shown on the site", "aria-label": "Title", autocomplete: "off" });
+    const many = h("textarea", { class: "hidden", rows: 5, placeholder: "One per line:  Drive link | Title\nThe type above applies to every line." });
+    const msg = h("p", { class: "err" });
+    const go = h("button", { class: "btn small primary", type: "button", text: "Add piece", onClick: () => {
+      msg.textContent = "";
+      if (!many.classList.contains("hidden")) {
+        const bad = []; let added = 0;
+        many.value.split("\n").map(l => l.trim()).filter(Boolean).forEach((l, n) => {
+          const [a, ...rest] = l.split("|"); const id = driveId(a); const t = rest.join("|").trim();
+          if (!id || !t) { bad.push(n + 1); return; }
+          items.push([ty.value, id, t]); added++;
+        });
+        if (bad.length) { msg.textContent = "Line" + (bad.length > 1 ? "s " : " ") + bad.join(", ") + " need a Drive link, then | and a title."; }
+        if (added) { markDirty(); render(); }
+        return;
+      }
+      const id = driveId(link.value); const t = title.value.trim();
+      if (!id) { msg.textContent = "Paste a Google Drive link to the file."; return; }
+      if (!t) { msg.textContent = "Give it a title."; return; }
+      items.push([ty.value, id, t]); markDirty(); render();
+    } });
+    const toggle = h("button", { class: "linkbtn", type: "button", text: "Add several at once", onClick: () => {
+      const on = many.classList.toggle("hidden") === false;
+      link.classList.toggle("hidden", on); title.classList.toggle("hidden", on);
+      toggle.textContent = on ? "Add one at a time" : "Add several at once";
+    } });
+    return h("div", { class: "add" }, [h("div", { class: "line" }, [link, ty, title, go]), many, h("div", { style: "margin-top:8px" }, [toggle]), msg]);
+  }
+
+  /* ---------- portfolio tab ---------- */
+  function sectionEditor(g, si) {
+    const s = g.sections[si];
+    const kids = [];
+    kids.push(h("div", { class: "hd" }, [
+      h("div", { class: "tt" }, [h("p", { class: "tag", text: "Section" }), text(s.title, v => { s.title = v; }, "Section title (blank for a plain list)", { "aria-label": "Section title" })]),
+      actions(g.sections, si, "this section and its pieces")
+    ]));
+    const folder = h("input", { type: "text", value: s.folder ? folderUrl(s.folder) : "", placeholder: "Optional: Drive folder link", autocomplete: "off", "aria-label": "Drive folder link" });
+    folder.addEventListener("change", () => {
+      if (!folder.value.trim()) { delete s.folder; folder.classList.remove("bad"); markDirty(); return; }
+      const id = driveId(folder.value);
+      if (!id) { folder.classList.add("bad"); toast("That does not look like a Google Drive folder link.", true); return; }
+      folder.classList.remove("bad"); s.folder = id; folder.value = folderUrl(id); markDirty();
+    });
+    kids.push(field("Drive folder", folder, "Shown as a folder card when the section has no pieces."));
+    if (s.subs) {
+      s.subs.forEach((sb, bi) => {
+        kids.push(h("div", { class: "sub" }, [
+          h("div", { class: "hd" }, [
+            h("div", { class: "tt" }, [h("p", { class: "tag", text: "Sub-group" }), text(sb.title, v => { sb.title = v; }, "Sub-group title", { "aria-label": "Sub-group title" })]),
+            actions(s.subs, bi, "this sub-group and its pieces")
+          ]),
+          itemsEditor(sb.items)
+        ]));
+      });
+      kids.push(h("div", { class: "addrow" }, [h("button", { class: "btn small", type: "button", text: "+ Add sub-group", onClick: () => { s.subs.push({ title: "New sub-group", items: [] }); markDirty(); render(); } })]));
+    } else {
+      s.items = s.items || [];
+      kids.push(itemsEditor(s.items));
+      kids.push(h("div", { class: "addrow" }, [h("button", { class: "linkbtn", type: "button", text: "Split this section into sub-groups", onClick: () => { s.subs = [{ title: "Group 1", items: s.items }]; delete s.items; markDirty(); render(); } })]));
+    }
+    return h("div", { class: "sub" }, kids);
+  }
+  function workPanel() {
+    const box = h("div");
+    S.work.forEach((o, oi) => {
+      const body = [
+        h("div", { class: "row two" }, [
+          field("Name", text(o.name, v => { o.name = v; const t = box.querySelectorAll("details.card > summary .t")[oi]; if (t) t.textContent = v || "Untitled"; }, "Employer or client")),
+          field("Role and dates", text(o.role, v => { o.role = v; }, "e.g. Communications Manager, 2025 to present"))
+        ]),
+        h("div", { class: "row" }, [field("Intro", area(o.intro, v => { o.intro = v; }, "One or two sentences", 3))]),
+        h("div", { class: "row" }, [field("Web address", text(o.slug, v => { o.slug = v; }, "elevate-health", {
+          onChange: e => { e.target.value = o.slug = slugify(e.target.value); }
+        }), "Used in links like /portfolio#" + o.slug + ". Changing it breaks old links to this section.")])
+      ];
+      o.groups.forEach((g, gi) => {
+        const gk = [h("div", { class: "hd" }, [
+          h("div", { class: "tt" }, [h("p", { class: "tag", text: "Group" }), text(g.title, v => { g.title = v; }, "Group title, e.g. Paid ad campaigns", { "aria-label": "Group title" })]),
+          actions(o.groups, gi, "this group and everything in it")
+        ])];
+        g.sections.forEach((_, si) => gk.push(sectionEditor(g, si)));
+        gk.push(h("div", { class: "addrow" }, [h("button", { class: "btn small", type: "button", text: "+ Add section", onClick: () => { g.sections.push({ title: "New section", items: [] }); markDirty(); render(); } })]));
+        body.push(h("div", { class: "sub g" }, gk));
+      });
+      body.push(h("div", { class: "addrow" }, [h("button", { class: "btn small", type: "button", text: "+ Add group", onClick: () => { o.groups.push({ title: "New group", sections: [{ title: "New section", items: [] }] }); markDirty(); render(); } })]));
+      box.appendChild(card(o, o.name, pieceCount(o) + " pieces", body, actions(S.work, oi, "this whole employer section")));
+    });
+    box.appendChild(h("button", { class: "btn", type: "button", text: "+ Add employer or client", onClick: () => {
+      let slug = "new-employer", n = 2; while (S.work.some(w => w.slug === slug)) slug = "new-employer-" + n++;
+      S.work.push({ slug, name: "New employer", role: "", intro: "", groups: [{ title: "", sections: [{ title: "", items: [] }] }], _open: true });
+      markDirty(); render();
+    } }));
+    return box;
+  }
+
+  /* ---------- testimonials tab ---------- */
+  function initials(n) { return (n || "?").replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase() || "?"; }
+  function testimonialsPanel() {
+    const box = h("div");
+    S.testimonials.forEach((t, i) => {
+      const av = t.photo ? h("img", { class: "avatar", alt: "", src: t.photo }) : h("div", { class: "avatar", text: initials(t.name) });
+      const pickBtn = h("button", { class: "btn small", type: "button", text: t.photo ? "Change photo" : "Add photo", onClick: () => pickPhoto(t) });
+      const src = t.src || (t.src = { type: "i", id: "", title: "" });
+      const thumb = h("img", { class: "thumb", alt: "", referrerpolicy: "no-referrer", src: src.id ? thumbUrl(src.id) : "" });
+      thumb.addEventListener("error", () => thumb.classList.add("none"));
+      const link = h("input", { type: "text", value: src.id ? fileUrl(src.id) : "", placeholder: "Link to the original screenshot or PDF", "aria-label": "Link to the original", autocomplete: "off" });
+      link.addEventListener("change", () => {
+        if (!link.value.trim()) { src.id = ""; link.classList.remove("bad"); thumb.classList.add("none"); markDirty(); return; }
+        const id = driveId(link.value);
+        if (!id) { link.classList.add("bad"); toast("That does not look like a Google Drive link.", true); return; }
+        link.classList.remove("bad"); src.id = id; link.value = fileUrl(id); thumb.classList.remove("none"); thumb.src = thumbUrl(id); markDirty();
+      });
+      const body = [
+        h("div", { class: "tcard", style: "margin-top:14px" }, [
+          h("div", { class: "tcol" }, [av, pickBtn]),
+          h("div", {}, [
+            h("div", { class: "row two", style: "margin-top:0" }, [
+              field("Name", text(t.name, v => { t.name = v; const s = box.querySelectorAll("details.card > summary .t")[i]; if (s) s.textContent = v || "Untitled"; }, "Full name")),
+              field("Role", text(t.who, v => { t.who = v; }, "e.g. Operations Manager"))
+            ]),
+            h("div", { class: "row two" }, [
+              field("Organization", text(t.org, v => { t.org = v; }, "e.g. Connect Pierce, Elevate Health")),
+              field("Context line", text(t.ctx, v => { t.ctx = v; }, "Optional small line under the quote"))
+            ]),
+            h("div", { class: "row" }, [field("Quote", area(t.q, v => { t.q = v; }, "What they said", 4), "Use [brackets] for words you add to make the quote clear.")]),
+            h("div", { class: "row" }, [
+              h("div", {}, [h("label", { class: "f", text: "Original (makes the quote a link)" }),
+                h("div", { class: "orig" }, [thumb, typeSelect(src.type, v => { src.type = v; }), text(src.title, v => { src.title = v; }, "Title for the viewer", { "aria-label": "Original title" }), link])])
+            ])
+          ])
+        ])
+      ];
+      box.appendChild(card(t, t.name, "", body, actions(S.testimonials, i, "this testimonial")));
+    });
+    box.appendChild(h("button", { class: "btn", type: "button", text: "+ Add testimonial", onClick: () => {
+      S.testimonials.push({ name: "New person", who: "", org: "", q: "", ctx: "", src: { type: "i", id: "", title: "" }, _open: true }); markDirty(); render();
+    } }));
+    return box;
+  }
+
+  /* ---------- photo picker (crop to a square, upload) ---------- */
+  function pickPhoto(t) {
+    const file = h("input", { type: "file", accept: "image/*" });
+    file.addEventListener("change", () => { if (file.files[0]) cropDialog(file.files[0], t); });
+    file.click();
+  }
+  function cropDialog(file, t) {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const cv = h("canvas", { width: 360, height: 360 });
+      const st = { zoom: 1, x: 50, y: 30 };
+      const draw = () => {
+        const c = cv.getContext("2d"); const sc = Math.max(360 / img.naturalWidth, 360 / img.naturalHeight) * st.zoom;
+        const w = img.naturalWidth * sc, hh = img.naturalHeight * sc;
+        c.fillStyle = "#eee"; c.fillRect(0, 0, 360, 360);
+        c.drawImage(img, -(w - 360) * st.x / 100, -(hh - 360) * st.y / 100, w, hh);
+      };
+      const slider = (label, key, min, max, step) => h("div", { class: "sl" }, [h("span", { text: label }), h("input", { type: "range", min, max, step, value: st[key], "aria-label": label, onInput: e => { st[key] = parseFloat(e.target.value); draw(); } })]);
+      const dlg = h("dialog", {}, [
+        h("h2", { text: "Crop photo", style: "margin:0;font-size:20px" }),
+        cv, slider("Zoom", "zoom", 1, 3, 0.01), slider("Left / right", "x", 0, 100, 1), slider("Up / down", "y", 0, 100, 1),
+        h("div", { class: "addrow", style: "justify-content:flex-end;margin-top:16px" }, [
+          h("button", { class: "btn", type: "button", text: "Cancel", onClick: () => { dlg.close(); } }),
+          h("button", { class: "btn primary", type: "button", text: "Use photo", onClick: async (e) => {
+            e.target.disabled = true; e.target.textContent = "Uploading…";
+            const blob = await new Promise(r => cv.toBlob(r, "image/jpeg", 0.86));
+            const r = await api("/api/admin/photo", { method: "POST", headers: { "Content-Type": "image/jpeg" }, body: blob });
+            if (!r.ok) { toast(r.data.message || "Could not upload that photo.", true); e.target.disabled = false; e.target.textContent = "Use photo"; return; }
+            t.photo = r.data.url; markDirty(); dlg.close(); render();
+          } })
+        ])
+      ]);
+      dlg.addEventListener("close", () => { URL.revokeObjectURL(url); dlg.remove(); });
+      document.body.appendChild(dlg); dlg.showModal(); draw();
+    };
+    img.onerror = () => toast("Could not read that image.", true);
+    img.src = url;
+  }
+
+  /* ---------- shell ---------- */
+  function updateBar() {
+    const st = document.getElementById("status"), sv = document.getElementById("save");
+    if (!st) return;
+    st.textContent = dirty ? "Unsaved changes" : "All changes saved";
+    st.className = "status" + (dirty ? " dirty" : "");
+    sv.disabled = !dirty || busy;
+  }
+  function render() {
+    const y = window.scrollY;
+    const app = document.getElementById("app"); if (!app) return;
+    app.textContent = "";
+    if (usingDefaults) app.appendChild(h("p", { class: "note", text: "You are looking at the content that came with the site. Nothing has been saved from this editor yet. Your first save makes this editor the source for the portfolio and testimonials." }));
+    app.appendChild(h("div", { class: "tabs", role: "tablist" }, [
+      h("button", { class: "tab", role: "tab", "aria-selected": String(tab === "work"), text: "Portfolio", onClick: () => { tab = "work"; render(); } }),
+      h("button", { class: "tab", role: "tab", "aria-selected": String(tab === "tests"), text: "Testimonials", onClick: () => { tab = "tests"; render(); } })
+    ]));
+    app.appendChild(tab === "work" ? workPanel() : testimonialsPanel());
+    app.appendChild(h("div", { class: "foot" }, [
+      h("button", { class: "btn", type: "button", text: "Go back to the previous saved version", disabled: !hasPrev, onClick: undo }),
+      h("button", { class: "btn danger", type: "button", text: "Reset to the original content", onClick: resetAll })
+    ]));
+    updateBar();
+    window.scrollTo(0, y);
+  }
+  async function save() {
+    if (busy || !dirty) return;
+    busy = true; updateBar();
+    const r = await api("/api/admin/content", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(S, strip) });
+    busy = false;
+    if (r.status === 401) { location.reload(); return; }
+    if (!r.ok) { toast(r.data.message || "Could not save.", true); updateBar(); return; }
+    dirty = false; usingDefaults = false; hasPrev = !!r.data.hasPrev;
+    toast("Saved. The live site shows it within about a minute.");
+    render();
+  }
+  async function undo() {
+    if (!confirm("Go back to the version saved before this one?")) return;
+    const r = await api("/api/admin/undo", { method: "POST" });
+    if (!r.ok) { toast(r.data.message || "Could not go back.", true); return; }
+    S = clone(r.data.content); hasPrev = !!r.data.hasPrev; dirty = false; toast("Went back one version."); render();
+  }
+  async function resetAll() {
+    if (!confirm("Reset the portfolio and testimonials to the content that came with the site? You can undo this once from the button next to it.")) return;
+    const r = await api("/api/admin/content", { method: "DELETE" });
+    if (!r.ok) { toast(r.data.message || "Could not reset.", true); return; }
+    S = { work: clone(DEFAULT_WORK), testimonials: clone(DEFAULT_TESTS) }; usingDefaults = true; hasPrev = !!r.data.hasPrev; dirty = false;
+    toast("Reset to the original content."); render();
+  }
+  async function signOut() { await api("/api/admin/logout", { method: "POST" }); location.reload(); }
+
+  function showApp() {
+    root.textContent = "";
+    root.appendChild(h("div", { class: "bar" }, [h("div", { class: "in" }, [
+      h("strong", { text: "Site editor" }),
+      h("span", { id: "status", class: "status", text: "All changes saved" }),
+      h("span", { class: "grow" }),
+      h("a", { class: "btn small", href: "/portfolio", target: "_blank", rel: "noopener", text: "View site" }),
+      h("button", { class: "btn small", type: "button", text: "Sign out", onClick: signOut }),
+      h("button", { id: "save", class: "btn primary small", type: "button", text: "Save changes", disabled: true, onClick: save })
+    ])]));
+    root.appendChild(h("main", { class: "wrap", id: "app" }));
+    render();
+  }
+
+  function showLogin(msg) {
+    root.textContent = "";
+    const pw = h("input", { type: "password", autocomplete: "current-password", "aria-label": "Password", placeholder: "Password" });
+    const err = h("p", { class: "err", text: msg || "" });
+    const btn = h("button", { class: "btn primary", type: "submit", text: "Sign in", style: "width:100%;margin-top:14px" });
+    const form = h("form", {}, [pw, btn, err]);
+    form.addEventListener("submit", async e => {
+      e.preventDefault(); err.textContent = ""; btn.disabled = true;
+      const r = await api("/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: pw.value }) });
+      btn.disabled = false;
+      if (r.ok) { start(); return; }
+      err.textContent = r.data.message || "Could not sign in."; pw.select();
+    });
+    root.appendChild(h("div", { class: "center" }, [h("div", { class: "panel" }, [
+      h("div", { class: "logo" }, ["J", h("i", { text: "." })]),
+      h("h1", { text: "Site editor" }), h("p", { text: "Sign in to edit the portfolio and testimonials." }), form
+    ])]));
+    pw.focus();
+  }
+
+  function showSetup(s) {
+    root.textContent = "";
+    const steps = [];
+    if (!s.storage) steps.push(h("li", {}, ["In Cloudflare, open ", h("b", { text: "Workers & Pages" }), ", choose this site, then ", h("b", { text: "Settings → Bindings → Add → KV namespace" }), ". Set the variable name to ", h("code", { text: "CONTENT" }), " and pick the ", h("code", { text: "josephdanny-content" }), " namespace."]));
+    if (!s.password) steps.push(h("li", {}, ["In the same Settings page, open ", h("b", { text: "Variables and Secrets" }), " and add a secret named ", h("code", { text: "ADMIN_PASSWORD" }), " with the password you want to sign in with."]));
+    steps.push(h("li", { text: "Redeploy the site (Deployments → the latest one → Retry deployment), then reload this page." }));
+    root.appendChild(h("div", { class: "center" }, [h("div", { class: "panel wide" }, [
+      h("div", { class: "logo" }, ["J", h("i", { text: "." })]),
+      h("h1", { text: "Almost ready" }), h("p", { text: "The editor needs two settings in Cloudflare before it can sign you in." }), h("ol", {}, steps)
+    ])]));
+  }
+
+  async function start() {
+    const r = await api("/api/admin/session");
+    const s = r.data;
+    if (!s.storage || !s.password) { showSetup(s); return; }
+    if (!s.authed) { showLogin(); return; }
+    const c = await api("/api/admin/content");
+    if (c.status === 401) { showLogin(); return; }
+    if (!c.ok) { root.textContent = ""; root.appendChild(h("div", { class: "center" }, [h("div", { class: "panel" }, [h("h1", { text: "Something went wrong" }), h("p", { text: c.data.message || "Could not load the content." })])])); return; }
+    if (c.data.content) { S = clone(c.data.content); usingDefaults = false; }
+    else { S = { work: clone(DEFAULT_WORK), testimonials: clone(DEFAULT_TESTS) }; usingDefaults = true; }
+    S.work.forEach(o => o.groups.forEach(g => g.sections.forEach(s => { if (!s.subs && !s.items) s.items = []; })));
+    hasPrev = !!c.data.hasPrev; dirty = false;
+    showApp();
+  }
+
+  addEventListener("beforeunload", e => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+  addEventListener("keydown", e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s" && document.getElementById("save")) { e.preventDefault(); save(); } });
+  start();
+})();
+</script>
+</body>
+</html>

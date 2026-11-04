@@ -673,7 +673,7 @@ const CONTACT = { email: "hello@josephdanny.co", linkedin: "https://linkedin.com
    Set contact details below; leave blank to hide the contact section.
 ------------------------------------------------------------------- */
 
-const WORK = [
+let WORK = [
   {
     slug: "elevate-health",
     name: "Elevate Health",
@@ -872,7 +872,8 @@ const WORK = [
     ]
   }
 ];
-
+/* Content saved from the /admin editor (injected at the edge) replaces the built-in content above. */
+if (window.__SAVED && Array.isArray(window.__SAVED.work) && window.__SAVED.work.length) WORK = window.__SAVED.work;
 
 /* ------------------------------------------------------------------ */
 const D = {
@@ -1024,7 +1025,7 @@ function emblem(style, b) {
 }
 /*END EMBLEMS*/
 
-const TESTIMONIALS = [
+let TESTIMONIALS = [
   { name: "Ariana Winters", photo: "t4.jpg", q: "More than double the amount of referrals the [community care hub] has ever received in one month [even at the height of] COVID.",
     who: "Operations Manager", org: "Connect Pierce, Elevate Health", ctx: "On the first 11-day Meta campaign in October 2025.",
     src: { type: "p", id: "1zmTsJRwoGaLzpazCZwfNlchDAjPY3ewI", title: "Campaign overview presentation" } },
@@ -1044,6 +1045,8 @@ const TESTIMONIALS = [
     who: "Community Care Hub Program Manager", org: "Elevate Health", ctx: "Passing along thanks from partner HopeSparks, which increased its caseload by 38.8%.",
     src: { type: "i", id: "1pDb9JnPAucXlHR6FVJaEmCTgRUugEITO", title: "Iris Figueroa on referral increase" } }
 ];
+if (window.__SAVED && Array.isArray(window.__SAVED.testimonials) && window.__SAVED.testimonials.length) TESTIMONIALS = window.__SAVED.testimonials;
+
 
 /* Cards */
 function card(item, list, i, meta) {
@@ -1267,15 +1270,21 @@ render();
     const QM = '<svg class="qm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.2 17.5c-1.5-1.2-2.2-2.9-2.2-5 0-3.6 2.2-6.4 6-7.5l.6 1.3C8.4 7.5 7.6 9 7.5 10.8c.3-.1.7-.2 1.1-.2 1.4 0 2.5 1.1 2.5 2.7 0 1.6-1.3 2.9-2.9 2.9-.7 0-1.3-.2-1.9-.6zm8.5 0c-1.5-1.2-2.2-2.9-2.2-5 0-3.6 2.2-6.4 6-7.5l.6 1.3c-2.2.7-3 2.2-3.1 4 .3-.1.7-.2 1.1-.2 1.4 0 2.5 1.1 2.5 2.7 0 1.6-1.3 2.9-2.9 2.9-.7 0-1.3-.2-1.9-.6z"/></svg>';
     const initials = t => t.replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase();
     const n = TESTIMONIALS.length;
+    if (!n) { const t = document.getElementById("testimonials"); if (t) t.hidden = true; return; }
+    if (n < 2) { ["tprev", "tnext"].forEach(id => { const b = document.getElementById(id); if (b) b.hidden = true; }); }
     const slides = [], avs = [];
     TESTIMONIALS.forEach((x, i) => {
       const name = x.name || x.who;
       const head = el("div", { class: "who" }, [el("b", { text: name }), el("span", { text: x.org ? x.who + ", " + x.org : x.who })]);
-      const qbtn = el("button", { class: "qlink", type: "button", "aria-label": "Open the original message: " + x.q, text: "\u201C" + x.q + "\u201D" });
-      qbtn.addEventListener("click", () => openViewer([x.src], 0, qbtn));
-      const kids = [el("div", { html: QM }), head, el("blockquote", {}, [qbtn])];
+      const qtext = "\u201C" + x.q + "\u201D";
+      let qnode;
+      if (x.src && x.src.id) {
+        qnode = el("button", { class: "qlink", type: "button", "aria-label": "Open the original message: " + x.q, text: qtext });
+        qnode.addEventListener("click", () => openViewer([x.src], 0, qnode));
+      } else qnode = document.createTextNode(qtext);
+      const kids = [el("div", { html: QM }), head, el("blockquote", {}, [qnode])];
       if (x.ctx) kids.push(el("p", { class: "ctx", text: x.ctx }));
-      kids.push(el("span", { class: "qhint upper", text: "Select the quote to see the original" }));
+      if (x.src && x.src.id) kids.push(el("span", { class: "qhint upper", text: "Select the quote to see the original" }));
       const s = el("figure", { class: "slide", role: "group", "aria-roledescription": "slide", "aria-label": (i + 1) + " of " + n }, kids);
       wrap.appendChild(s); slides.push(s);
 

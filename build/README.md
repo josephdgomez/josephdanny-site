@@ -8,3 +8,10 @@
 - `build.py` – splits the shell into the Home and Portfolio pages
 
 Rebuild after editing: `python3 build/build.py` (run from the repo root). Cloudflare Pages needs no build step; it serves the generated files as they are.
+
+## Editor (`/admin`)
+
+- `admin.html` (built into the parent folder) is the login-protected editor for the portfolio pieces and testimonials.
+- `../functions/` holds the Cloudflare Pages Functions behind it: sign-in, saving to a KV namespace bound as `CONTENT`, photo upload, and a middleware that injects saved content into the Home and Portfolio pages (`window.__SAVED`). With nothing saved, the pages use the content in `data_block.js` and `tail.html`.
+- Needs two settings in the Cloudflare Pages project: a KV binding named `CONTENT` and a secret named `ADMIN_PASSWORD`.
+

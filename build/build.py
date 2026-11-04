@@ -37,6 +37,14 @@ def page(kind):
         a, n = re.subn(r'<li><a href="[^"]*" data-sec="%s">' % k, '<li><a href="%s" data-sec="%s">' % (v, k), a); assert n == 1, k
     return a + '<main id="top">\n' + main + R + data + tail
 
+def admin():
+    t = open(D+'admin.html').read()
+    m = re.search(r'let TESTIMONIALS = \[.*?\n\];\n', tail, re.S); assert m, 'TESTIMONIALS block'
+    defaults = data + '\n' + m.group(0)
+    assert '</script>' not in defaults
+    return t.replace('/*__DEFAULTS__*/', defaults)
+
 open(OUT + 'index.html', 'w').write(page('home'))
 open(OUT + 'portfolio.html', 'w').write(page('portfolio'))
+open(OUT + 'admin.html', 'w').write(admin())
 print('built')
