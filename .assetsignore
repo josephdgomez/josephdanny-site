@@ -1,0 +1,9 @@
+# Not part of the public site
+worker/
+build/
+wrangler.jsonc
+.assetsignore
+.gitignore
+.git
+node_modules/
+*.md

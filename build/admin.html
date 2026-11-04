@@ -501,12 +501,15 @@ dialog input[type=range] { width:100%; }
   function showSetup(s) {
     root.textContent = "";
     const steps = [];
-    if (!s.storage) steps.push(h("li", {}, ["In Cloudflare, open ", h("b", { text: "Workers & Pages" }), ", choose this site, then ", h("b", { text: "Settings → Bindings → Add → KV namespace" }), ". Set the variable name to ", h("code", { text: "CONTENT" }), " and pick the ", h("code", { text: "josephdanny-content" }), " namespace."]));
-    if (!s.password) steps.push(h("li", {}, ["In the same Settings page, open ", h("b", { text: "Variables and Secrets" }), " and add a secret named ", h("code", { text: "ADMIN_PASSWORD" }), " with the password you want to sign in with."]));
-    steps.push(h("li", { text: "Redeploy the site (Deployments → the latest one → Retry deployment), then reload this page." }));
+    if (!s.password) {
+      steps.push(h("li", {}, ["In Cloudflare, open ", h("b", { text: "Workers & Pages" }), ", choose ", h("b", { text: "josephdanny-site" }), ", then ", h("b", { text: "Settings \u2192 Variables and Secrets \u2192 Add" }), "."]));
+      steps.push(h("li", {}, ["Set the type to ", h("b", { text: "Secret" }), ", the name to ", h("code", { text: "ADMIN_PASSWORD" }), ", and the value to the password you want to sign in with. Save and deploy."]));
+      steps.push(h("li", { text: "Reload this page." }));
+    }
+    if (!s.storage) steps.push(h("li", { text: "The storage connection is not active yet. It comes with the site\u2019s latest deployment, so wait for that to finish in Cloudflare, then reload this page." }));
     root.appendChild(h("div", { class: "center" }, [h("div", { class: "panel wide" }, [
       h("div", { class: "logo" }, ["J", h("i", { text: "." })]),
-      h("h1", { text: "Almost ready" }), h("p", { text: "The editor needs two settings in Cloudflare before it can sign you in." }), h("ol", {}, steps)
+      h("h1", { text: "Almost ready" }), h("p", { text: "The editor needs one more setting in Cloudflare before it can sign you in." }), h("ol", {}, steps)
     ])]));
   }
 
