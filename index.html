@@ -992,7 +992,7 @@ function usePoster(it) {
   poster.hidden = false;
   poster.href = D.view(it.id);
   poster.querySelector("img").style.visibility = "";
-  poster.querySelector("img").src = D.thumb(it.id);
+  poster.querySelector("img").src = it.opts && it.opts.img ? it.opts.img : D.thumb(it.id);
   poster.setAttribute("aria-label", "Watch " + it.title + " in Google Drive");
 }
 function useFrame(src) {
@@ -1125,10 +1125,12 @@ if (window.__SAVED && Array.isArray(window.__SAVED.testimonials) && window.__SAV
 
 /* Cards */
 function card(item, list, i, meta) {
-  const [type, id, title] = item;
+  const [type, id, title, opts] = item;
   const cover = el("div", { class: "cover" });
   if (type !== "f") {
-    const img = el("img", { src: D.thumb(id), alt: "", loading: "lazy", referrerpolicy: "no-referrer" });
+    // opts (optional, set in /admin): { img: custom thumbnail, y: vertical crop position 0-100 }
+    const img = el("img", { src: opts && opts.img ? opts.img : D.thumb(id), alt: "", loading: "lazy", referrerpolicy: "no-referrer" });
+    if (opts && typeof opts.y === "number") img.style.objectPosition = "50% " + opts.y + "%";
     img.addEventListener("error", () => cover.classList.add("nothumb"));
     cover.appendChild(img);
   } else {
@@ -1188,7 +1190,7 @@ function render() {
       if (g.title) gEl.appendChild(el("span", { class: "upper rv r", text: g.title }));
       g.sections.forEach(s => {
         const subs = s.subs || [{ title: "", items: s.items }];
-        const list = subs.flatMap(sb => sb.items.map(([type, id, title]) => ({ type, id, title })));
+        const list = subs.flatMap(sb => sb.items.map(([type, id, title, opts]) => ({ type, id, title, opts })));
         const collapsible = !!s.title;
         const info = el("div", { class: "info rv r" });
         info.style.transitionDelay = ((secN % 3) * 70) + "ms";

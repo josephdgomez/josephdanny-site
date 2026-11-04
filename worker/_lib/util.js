@@ -113,8 +113,27 @@ function cleanItems(list, label) {
     if (!Array.isArray(it) || it.length < 3) throw new Error(label + " piece " + (i + 1) + " is incomplete.");
     const [type, id, title] = it;
     if (!TYPES.has(type)) throw new Error(label + " piece " + (i + 1) + " has an unknown type.");
-    return [type, driveId(id, label + " piece " + (i + 1)), str(title, 160, label + " piece " + (i + 1) + " title", { required: true })];
+    const row = [type, driveId(id, label + " piece " + (i + 1)), str(title, 160, label + " piece " + (i + 1) + " title", { required: true })];
+    const opts = cleanOpts(it[3], label + " piece " + (i + 1));
+    if (opts) row.push(opts);
+    return row;
   });
+}
+
+// Optional thumbnail settings for a piece: { y: 0-100 crop position, img: uploaded thumbnail }
+function cleanOpts(o, label) {
+  if (!o || typeof o !== "object") return null;
+  const out = {};
+  if (o.y !== undefined && o.y !== null) {
+    const y = Number(o.y);
+    if (!Number.isFinite(y)) throw new Error(label + " has an invalid thumbnail position.");
+    out.y = Math.max(0, Math.min(100, Math.round(y)));
+  }
+  if (o.img) {
+    if (typeof o.img !== "string" || !/^\/api\/photo\/[a-f0-9]{16}$/.test(o.img)) throw new Error(label + " has an invalid thumbnail image.");
+    out.img = o.img;
+  }
+  return Object.keys(out).length ? out : null;
 }
 
 function cleanSection(s, label) {

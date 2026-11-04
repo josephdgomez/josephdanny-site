@@ -5,7 +5,7 @@ export async function onRequestPost({ request, env }) {
   const bad = await requireAdmin(request, env, { mutating: true });
   if (bad) return bad;
   const buf = await request.arrayBuffer();
-  if (buf.byteLength < 500 || buf.byteLength > 400000) return json({ error: "size", message: "Photo must be under 400 KB." }, 413);
+  if (buf.byteLength < 500 || buf.byteLength > 700000) return json({ error: "size", message: "Image must be under 700 KB." }, 413);
   const b = new Uint8Array(buf);
   if (!(b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff)) return json({ error: "type", message: "Photo must be a JPEG." }, 415);
   const id = [...crypto.getRandomValues(new Uint8Array(8))].map(x => x.toString(16).padStart(2, "0")).join("");

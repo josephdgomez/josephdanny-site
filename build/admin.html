@@ -98,10 +98,19 @@ dialog .sl { display:grid; grid-template-columns:70px 1fr; align-items:center; g
 dialog input[type=range] { width:100%; }
 .foot { margin-top:30px; padding-top:18px; border-top:1px solid var(--line); display:flex; gap:10px; flex-wrap:wrap; }
 
+.tn { grid-column:2 / -1; display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:-2px; }
+.tn .hint { margin:0; }
+.tprev { position:relative; padding-bottom:65%; overflow:hidden; background:#e4e4e4; border-radius:10px; touch-action:none; cursor:grab; user-select:none; -webkit-user-select:none; }
+.tprev:active { cursor:grabbing; }
+.tprev img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; pointer-events:none; -webkit-user-drag:none; }
+dialog.tdlg { max-width:min(94vw,460px); }
+dialog .ypos { display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; margin:14px 0 4px; font-size:14px; color:var(--text); }
+dialog .nudge { display:flex; gap:6px; justify-content:center; margin-top:10px; }
+
 @media (max-width: 760px) {
   .row.two { grid-template-columns:1fr; }
-  .item { grid-template-columns:44px 1fr auto; grid-template-areas:"th ty ac" "ti ti ti" "li li li"; }
-  .item .thumb { grid-area:th; } .item .ty { grid-area:ty; } .item .ti { grid-area:ti; } .item .li { grid-area:li; } .item .acts { grid-area:ac; }
+  .item { grid-template-columns:44px 1fr auto; grid-template-areas:"th ty ac" "ti ti ti" "li li li" "tn tn tn"; }
+  .item .thumb { grid-area:th; } .item .ty { grid-area:ty; } .item .ti { grid-area:ti; } .item .li { grid-area:li; } .item .acts { grid-area:ac; } .item .tn { grid-area:tn; grid-column:auto; }
   .add .line { grid-template-columns:1fr 1fr; } .add .line input:first-child { grid-column:1 / -1; } .add .line .btn { grid-column:1 / -1; }
   .tcard { grid-template-columns:1fr; } .tcol { flex-direction:row; justify-content:flex-start; }
   .orig { grid-template-columns:44px 1fr; } .orig input { grid-column:1 / -1; }
@@ -210,6 +219,86 @@ dialog input[type=range] { width:100%; }
     return s;
   }
 
+  /* ---------- video thumbnails: reposition or replace ---------- */
+  async function toJpeg(file, maxW, maxH) {
+    const url = URL.createObjectURL(file);
+    try {
+      const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+      let sc = Math.min(1, maxW / im.naturalWidth, maxH / im.naturalHeight), q = 0.86, blob;
+      for (let n = 0; n < 6; n++) {
+        const cv = document.createElement("canvas");
+        cv.width = Math.max(1, Math.round(im.naturalWidth * sc)); cv.height = Math.max(1, Math.round(im.naturalHeight * sc));
+        const c = cv.getContext("2d"); c.fillStyle = "#fff"; c.fillRect(0, 0, cv.width, cv.height); c.drawImage(im, 0, 0, cv.width, cv.height);
+        blob = await new Promise(r => cv.toBlob(r, "image/jpeg", q));
+        if (blob && blob.size <= 650000) return blob;
+        q = Math.max(0.55, q - 0.1); sc *= 0.85;
+      }
+      return blob;
+    } finally { URL.revokeObjectURL(url); }
+  }
+  function thumbDialog(it, done) {
+    const full = () => (it[3] && it[3].img) || thumbUrl(it[1]).replace("w160", "w800");
+    const curY = () => (it[3] && typeof it[3].y === "number" ? it[3].y : 0);
+    const img = h("img", { alt: "", referrerpolicy: "no-referrer" });
+    const box = h("div", { class: "tprev" }, [img]);
+    const note = h("p", { class: "hint", style: "text-align:center" });
+    const slider = h("input", { type: "range", min: 0, max: 100, step: 1, "aria-label": "Move the picture up or down" });
+    let slack = 0; // how many px the picture can travel inside the frame
+    const setY = (y, silent) => {
+      y = Math.max(0, Math.min(100, Math.round(y)));
+      const o = it[3] || (it[3] = {}); o.y = y;
+      img.style.objectPosition = "50% " + y + "%"; slider.value = y;
+      if (!silent) { markDirty(); done(); }
+    };
+    const measure = () => {
+      if (!img.naturalWidth) return;
+      const fw = box.clientWidth, fh = box.clientHeight;
+      slack = Math.max(0, fw * (img.naturalHeight / img.naturalWidth) - fh);
+      note.textContent = slack < 2 ? "This picture fits the frame exactly, so there is nothing to move up or down. Replace it with a taller image to reposition." : "Drag the picture, or use the slider.";
+    };
+    img.addEventListener("load", measure);
+    img.addEventListener("error", () => { note.textContent = "Could not load the Drive thumbnail here. You can still replace it with your own image."; });
+    const show = () => { img.src = full(); img.style.objectPosition = "50% " + curY() + "%"; slider.value = curY(); };
+    let drag = null;
+    box.addEventListener("pointerdown", e => { drag = { y: e.clientY, from: curY() }; box.setPointerCapture(e.pointerId); });
+    box.addEventListener("pointermove", e => { if (drag && slack > 1) setY(drag.from - ((e.clientY - drag.y) / slack) * 100); });
+    box.addEventListener("pointerup", () => { drag = null; });
+    box.addEventListener("pointercancel", () => { drag = null; });
+    slider.addEventListener("input", () => setY(parseFloat(slider.value)));
+    const nudge = d => setY(curY() + d);
+    const replace = h("button", { class: "btn", type: "button", text: "Replace with my own image", onClick: () => {
+      const f = h("input", { type: "file", accept: "image/*" });
+      f.addEventListener("change", async () => {
+        if (!f.files[0]) return;
+        replace.disabled = true; replace.textContent = "Uploading\u2026";
+        try {
+          const blob = await toJpeg(f.files[0], 960, 1600);
+          const r = await api("/api/admin/photo", { method: "POST", headers: { "Content-Type": "image/jpeg" }, body: blob });
+          if (!r.ok) { toast(r.data.message || "Could not upload that image.", true); return; }
+          const o = it[3] || (it[3] = {}); o.img = r.data.url; if (typeof o.y !== "number") o.y = 50;
+          markDirty(); show(); done();
+        } catch (e) { toast("Could not read that image.", true); }
+        finally { replace.disabled = false; replace.textContent = "Replace with my own image"; }
+      });
+      f.click();
+    } });
+    const reset = h("button", { class: "btn", type: "button", text: "Back to the Drive thumbnail", onClick: () => { delete it[3]; markDirty(); show(); done(); } });
+    const dlg = h("dialog", { class: "tdlg" }, [
+      h("h2", { text: "Edit thumbnail", style: "margin:0;font-size:20px" }),
+      h("p", { class: "hint", text: it[2], style: "margin:2px 0 12px" }),
+      box, note,
+      h("div", { class: "ypos" }, [h("span", { text: "Top" }), slider, h("span", { text: "Bottom" })]),
+      h("div", { class: "nudge" }, [
+        h("button", { class: "btn small", type: "button", text: "Move picture up", onClick: () => nudge(8) }),
+        h("button", { class: "btn small", type: "button", text: "Move picture down", onClick: () => nudge(-8) })
+      ]),
+      h("div", { class: "addrow", style: "justify-content:space-between;margin-top:18px" }, [replace, reset]),
+      h("div", { class: "addrow", style: "justify-content:flex-end" }, [h("button", { class: "btn primary", type: "button", text: "Done", onClick: () => dlg.close() })])
+    ]);
+    dlg.addEventListener("close", () => { dlg.remove(); });
+    document.body.appendChild(dlg); dlg.showModal(); show();
+  }
+
   /* ---------- pieces list (used for sections and sub-groups) ---------- */
   function itemsEditor(items) {
     const box = h("div", { class: "items" });
@@ -222,9 +311,21 @@ dialog input[type=range] { width:100%; }
         if (!id) { link.classList.add("bad"); toast("That does not look like a Google Drive link.", true); return; }
         link.classList.remove("bad"); it[1] = id; link.value = fileUrl(id); thumb.classList.remove("none"); thumb.src = thumbUrl(id); markDirty();
       });
-      const ty = typeSelect(it[0], v => { it[0] = v; }, "ty");
+      const ty = typeSelect(it[0], v => { const was = it[0]; it[0] = v; if ((was === "v") !== (v === "v")) render(); }, "ty");
       const ti = text(it[2], v => { it[2] = v; }, "Title shown on the site", { class: "ti", "aria-label": "Title" });
-      box.appendChild(h("div", { class: "item" }, [thumb, ty, ti, link, actions(items, i)]));
+      const row = h("div", { class: "item" }, [thumb, ty, ti, link, actions(items, i)]);
+      if (it[0] === "v") {
+        const label = h("span", { class: "hint" });
+        const refresh = () => {
+          const o = it[3] || {};
+          thumb.classList.remove("none"); thumb.src = o.img || thumbUrl(it[1]);
+          thumb.style.objectPosition = "50% " + (typeof o.y === "number" ? o.y : 0) + "%";
+          label.textContent = (o.img ? "Your own image" : "Thumbnail from Drive") + (typeof o.y === "number" ? ", position " + o.y + "%" : "");
+        };
+        refresh();
+        row.appendChild(h("div", { class: "tn" }, [h("button", { class: "btn small", type: "button", text: "Edit thumbnail", onClick: () => thumbDialog(it, refresh) }), label]));
+      }
+      box.appendChild(row);
     });
     box.appendChild(addPiece(items));
     return box;
