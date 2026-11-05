@@ -198,6 +198,28 @@ function card(item, list, i, meta) {
 
 /* Page */
 let secN = 0;
+const allSects = [];
+/* Accordion: opening a section closes every other one on the page. */
+function toggleSect(wrap, tg) {
+  const opening = !wrap.classList.contains("open");
+  const before = tg.getBoundingClientRect().top;
+  const closing = opening ? allSects.filter(s => s !== wrap && s.classList.contains("open")) : [];
+  const above = closing.some(s => s.compareDocumentPosition(wrap) & Node.DOCUMENT_POSITION_FOLLOWING);
+  closing.forEach(s => setSect(s, false));
+  setSect(wrap, opening);
+  if (above && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    /* Sections above are collapsing; keep the clicked heading where the reader's eyes are. */
+    const t0 = performance.now();
+    (function hold() {
+      const d = tg.getBoundingClientRect().top - before;
+      if (Math.abs(d) > 0.5) window.scrollBy({ top: d, behavior: "instant" });
+      if (performance.now() - t0 < 650) requestAnimationFrame(hold);
+    })();
+  } else if (above) {
+    const d = tg.getBoundingClientRect().top - before;
+    if (Math.abs(d) > 0.5) window.scrollBy({ top: d, behavior: "instant" });
+  }
+}
 function setSect(wrap, open) {
   wrap.classList.toggle("open", open);
   const tg = wrap.querySelector(".toggle");
@@ -223,7 +245,6 @@ function render() {
     if (jump) jump.appendChild(el("a", { href: "#" + org.slug, text: navLabel }));
     if (!work) return;
     const sec = el("section", { class: "org" + (n % 2 === 1 ? " soft" : ""), id: org.slug });
-    const orgSects = [];
     const c = el("div", { class: "container" });
     c.appendChild(el("div", { class: "org-head rv r" }, [
       el("div", { class: "org-left" }, [
@@ -233,7 +254,6 @@ function render() {
       ]),
       el("div", { class: "org-right" })
     ]));
-    const rightCol = c.querySelector(".org-right");
     org.groups.forEach(g => {
       const gEl = el("div", { class: "group" });
       if (g.title) gEl.appendChild(el("span", { class: "upper rv r", text: g.title }));
@@ -250,9 +270,9 @@ function render() {
         if (collapsible) {
           const tg = el("button", { class: "toggle", type: "button", "aria-expanded": "false", "aria-controls": bodyId }, [el("span", { class: "pm", "aria-hidden": "true" }), el("span", { text: label })]);
           if (countTxt) tg.appendChild(el("span", { class: "count", text: countTxt }));
-          tg.addEventListener("click", () => setSect(wrap, !wrap.classList.contains("open")));
+          tg.addEventListener("click", () => toggleSect(wrap, tg));
           info.appendChild(el("h4", {}, [tg]));
-          orgSects.push(wrap);
+          allSects.push(wrap);
         } else {
           info.appendChild(el("h4", { text: label }));
         }
@@ -284,18 +304,6 @@ function render() {
       });
       c.appendChild(gEl);
     });
-    if (orgSects.length > 1) {
-      const all = el("button", { class: "link org-tools", type: "button", html: "<span>Expand all</span>" + ARROW });
-      all.addEventListener("click", () => {
-        const open = !orgSects.every(s => s.classList.contains("open"));
-        orgSects.forEach(s => setSect(s, open));
-        all.firstChild.textContent = open ? "Collapse all" : "Expand all";
-      });
-      orgSects.forEach(s => s.addEventListener("sectchange", () => {
-        all.firstChild.textContent = orgSects.every(x => x.classList.contains("open")) ? "Collapse all" : "Expand all";
-      }));
-      rightCol.appendChild(all);
-    }
     sec.appendChild(c);
     work.appendChild(sec);
     if (org.slug !== "certifications") orgs++;

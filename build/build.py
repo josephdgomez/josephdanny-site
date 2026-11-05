@@ -27,7 +27,7 @@ def page(kind):
         a = a.replace('<body>', '<body data-page="portfolio" class="sub">')
         a = a.replace('<a class="logo" href="#top" aria-label="Joseph Gomez de la Mora, back to top">', '<a class="logo" href="/" aria-label="Joseph Gomez de la Mora, home">')
         menu = {'top': '/', 'portfolio': '#top', 'services': '/#services', 'testimonials': '/#testimonials', 'experience': '/#experience', 'contact': '#contact'}
-        main = ph + work
+        main = ph.replace('<h1 class="h2">Selected work</h1>', '<h1 class="h2">Selected <span class="marker">work</span></h1>') + work
     else:
         a = a.replace('<body>', '<body data-page="home">')
         a = a.replace('</head>', '<script>try{if(sessionStorage.getItem("pl"))document.documentElement.classList.add("nopl")}catch(e){}</script>\n</head>')

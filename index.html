@@ -563,6 +563,30 @@ body.sub .ph .container { position: relative; z-index: 1; }
   .gem svg { animation-duration: 140s !important; animation-iteration-count: infinite !important; }
   .scroll-cue .ct { animation-duration: 40s !important; }
 }
+
+/* Portfolio page: a pop of color throughout */
+body.sub ::selection { background: var(--accent); color: var(--dark); }
+body.sub .ph h1 .marker { padding: 0 .1em; }
+@media (min-width: 993px) { body.sub .ph .row { grid-template-columns: 6fr 6fr; } body.sub .ph h1 { white-space: nowrap; } }
+body.sub .ph .sup::after { content: ""; display: inline-block; width: 9px; height: 9px; margin-left: 12px; border-radius: 50%; background: var(--accent); vertical-align: 1px; }
+body.sub .jump a::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 11px; border-radius: 50%; background: var(--accent); vertical-align: 1px; transition: var(--ease); }
+body.sub .jump a:hover::before { background: var(--dark); }
+body.sub .org.soft { background: #FFF5E4; }
+body.sub .org-head .num { display: inline-block; padding: 7px 14px; border-radius: 30px; background: var(--accent); color: var(--dark); }
+body.sub .org-head .num i { display: none; }
+body.sub .org-head h2 { position: relative; padding-bottom: 26px; }
+body.sub .org-head h2::after { content: ""; position: absolute; left: 0; bottom: 0; width: 72px; height: 6px; border-radius: 3px; background: var(--accent); }
+body.sub .group > .upper { display: flex; align-items: center; gap: 12px; }
+body.sub .group > .upper::before { content: ""; flex: none; width: 10px; height: 10px; background: var(--accent); }
+body.sub .sect.open .info { border-bottom-color: var(--accent); box-shadow: 0 1px 0 var(--accent); }
+body.sub .sect.open .toggle { color: var(--dark); }
+body.sub .info .count { padding: 5px 12px; border-radius: 20px; background: rgba(255,152,0,.16); color: #6b3f00; }
+body.sub .body .subhead .count { padding: 4px 10px; border-radius: 20px; background: rgba(255,152,0,.16); color: #6b3f00; }
+body.sub .body .subhead .upper { padding-left: 12px; border-left: 4px solid var(--accent); }
+body.sub .cover .tag { box-shadow: inset 0 -3px 0 var(--accent); }
+body.sub .card:hover h5 { text-decoration-color: var(--accent); text-decoration-thickness: 2px; }
+body.sub .card:hover .cover { outline: 3px solid var(--accent); outline-offset: 0; }
+body.sub .card:focus-visible { outline-color: var(--accent); }
 </style>
 <script>try{if(sessionStorage.getItem("pl"))document.documentElement.classList.add("nopl")}catch(e){}</script>
 </head>
@@ -1206,6 +1230,28 @@ function card(item, list, i, meta) {
 
 /* Page */
 let secN = 0;
+const allSects = [];
+/* Accordion: opening a section closes every other one on the page. */
+function toggleSect(wrap, tg) {
+  const opening = !wrap.classList.contains("open");
+  const before = tg.getBoundingClientRect().top;
+  const closing = opening ? allSects.filter(s => s !== wrap && s.classList.contains("open")) : [];
+  const above = closing.some(s => s.compareDocumentPosition(wrap) & Node.DOCUMENT_POSITION_FOLLOWING);
+  closing.forEach(s => setSect(s, false));
+  setSect(wrap, opening);
+  if (above && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    /* Sections above are collapsing; keep the clicked heading where the reader's eyes are. */
+    const t0 = performance.now();
+    (function hold() {
+      const d = tg.getBoundingClientRect().top - before;
+      if (Math.abs(d) > 0.5) window.scrollBy({ top: d, behavior: "instant" });
+      if (performance.now() - t0 < 650) requestAnimationFrame(hold);
+    })();
+  } else if (above) {
+    const d = tg.getBoundingClientRect().top - before;
+    if (Math.abs(d) > 0.5) window.scrollBy({ top: d, behavior: "instant" });
+  }
+}
 function setSect(wrap, open) {
   wrap.classList.toggle("open", open);
   const tg = wrap.querySelector(".toggle");
@@ -1231,7 +1277,6 @@ function render() {
     if (jump) jump.appendChild(el("a", { href: "#" + org.slug, text: navLabel }));
     if (!work) return;
     const sec = el("section", { class: "org" + (n % 2 === 1 ? " soft" : ""), id: org.slug });
-    const orgSects = [];
     const c = el("div", { class: "container" });
     c.appendChild(el("div", { class: "org-head rv r" }, [
       el("div", { class: "org-left" }, [
@@ -1241,7 +1286,6 @@ function render() {
       ]),
       el("div", { class: "org-right" })
     ]));
-    const rightCol = c.querySelector(".org-right");
     org.groups.forEach(g => {
       const gEl = el("div", { class: "group" });
       if (g.title) gEl.appendChild(el("span", { class: "upper rv r", text: g.title }));
@@ -1258,9 +1302,9 @@ function render() {
         if (collapsible) {
           const tg = el("button", { class: "toggle", type: "button", "aria-expanded": "false", "aria-controls": bodyId }, [el("span", { class: "pm", "aria-hidden": "true" }), el("span", { text: label })]);
           if (countTxt) tg.appendChild(el("span", { class: "count", text: countTxt }));
-          tg.addEventListener("click", () => setSect(wrap, !wrap.classList.contains("open")));
+          tg.addEventListener("click", () => toggleSect(wrap, tg));
           info.appendChild(el("h4", {}, [tg]));
-          orgSects.push(wrap);
+          allSects.push(wrap);
         } else {
           info.appendChild(el("h4", { text: label }));
         }
@@ -1292,18 +1336,6 @@ function render() {
       });
       c.appendChild(gEl);
     });
-    if (orgSects.length > 1) {
-      const all = el("button", { class: "link org-tools", type: "button", html: "<span>Expand all</span>" + ARROW });
-      all.addEventListener("click", () => {
-        const open = !orgSects.every(s => s.classList.contains("open"));
-        orgSects.forEach(s => setSect(s, open));
-        all.firstChild.textContent = open ? "Collapse all" : "Expand all";
-      });
-      orgSects.forEach(s => s.addEventListener("sectchange", () => {
-        all.firstChild.textContent = orgSects.every(x => x.classList.contains("open")) ? "Collapse all" : "Expand all";
-      }));
-      rightCol.appendChild(all);
-    }
     sec.appendChild(c);
     work.appendChild(sec);
     if (org.slug !== "certifications") orgs++;
