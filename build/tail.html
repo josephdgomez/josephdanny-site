@@ -37,6 +37,7 @@ poster.querySelector("img").addEventListener("error", e => { e.target.style.visi
 // change that, so on phones a video opens in Drive's own player from a poster instead.
 const NATIVE = matchMedia("(max-width: 700px), (pointer: coarse)").matches;
 function usePoster(it) {
+  resetPdf();
   frame.src = "about:blank";
   dlgBox.classList.add("pv");
   poster.hidden = false;
@@ -45,7 +46,59 @@ function usePoster(it) {
   poster.querySelector("img").src = it.opts && it.opts.img ? it.opts.img : D.thumb(it.id);
   poster.setAttribute("aria-label", "Watch " + it.title + " in Google Drive");
 }
+/* Phones: Google's document preview reflows the resume into an oversized layout, so show the live PDF page by page. */
+const pdfBox = document.getElementById("vpdf");
+let pdfJs = null, pdfRun = 0;
+function resetPdf() {
+  pdfRun++;
+  dlgBox.classList.remove("pdf");
+  pdfBox.hidden = true; pdfBox.textContent = ""; pdfBox.classList.remove("zoom");
+}
+if (!Promise.withResolvers) Promise.withResolvers = function () { let resolve, reject; const promise = new Promise((a, b) => { resolve = a; reject = b; }); return { promise, resolve, reject }; };
+async function showPdf(it) {
+  const run = ++pdfRun;
+  dlgBox.classList.remove("pv"); dlgBox.classList.add("pdf");
+  poster.hidden = true; frame.src = "about:blank";
+  pdfBox.hidden = false; pdfBox.classList.remove("zoom");
+  pdfBox.replaceChildren(el("p", { class: "vmsg", text: "Loading resume" }));
+  document.getElementById("vpos").textContent = "Tap to zoom";
+  try {
+    pdfJs = pdfJs || await import("/pdfjs/pdf.js");
+    pdfJs.GlobalWorkerOptions.workerSrc = "/pdfjs/pdf.worker.js";
+    const doc = await pdfJs.getDocument({ url: "/api/resume.pdf" }).promise;
+    if (run !== pdfRun) { doc.destroy(); return; }
+    const fit = Math.max(200, pdfBox.clientWidth - 16);
+    const ZOOM = 2.2, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const canvases = [];
+    for (let n = 1; n <= doc.numPages; n++) {
+      const page = await doc.getPage(n);
+      if (run !== pdfRun) return;
+      const base = page.getViewport({ scale: 1 });
+      const vp = page.getViewport({ scale: (fit * ZOOM / base.width) * dpr });
+      const c = document.createElement("canvas");
+      c.width = Math.floor(vp.width); c.height = Math.floor(vp.height);
+      const setZoom = z => { c.style.width = Math.floor(fit * (z ? ZOOM : 1)) + "px"; c.style.height = Math.floor(fit * (z ? ZOOM : 1) * base.height / base.width) + "px"; };
+      setZoom(false);
+      c.addEventListener("click", () => {
+        const z = !pdfBox.classList.contains("zoom");
+        pdfBox.classList.toggle("zoom", z);
+        canvases.forEach(f => f(z));
+        if (!z) pdfBox.scrollLeft = 0;
+      });
+      canvases.push(setZoom);
+      if (n === 1) pdfBox.replaceChildren();
+      pdfBox.appendChild(c);
+      await page.render({ canvasContext: c.getContext("2d"), viewport: vp }).promise;
+    }
+  } catch (e) {
+    if (run !== pdfRun) return;
+    resetPdf();
+    useFrame(D.docPreview(it.id));
+    document.getElementById("vpos").textContent = KIND[it.type];
+  }
+}
 function useFrame(src) {
+  resetPdf();
   dlgBox.classList.remove("pv");
   poster.hidden = true;
   poster.querySelector("img").removeAttribute("src");
@@ -57,7 +110,8 @@ function show() {
   document.getElementById("vopen").href = it.type === "f" ? D.folder(it.id) : it.type === "d" ? D.docView(it.id) : D.view(it.id);
   const dl = document.getElementById("vdl");
   dl.hidden = it.type !== "d";
-  if (it.type === "d") { dl.href = D.docPdf(it.id); dl.setAttribute("download", "Joseph-Gomez-de-la-Mora-Resume.pdf"); }
+  if (it.type === "d") { dl.href = "/api/resume.pdf?dl=1"; dl.setAttribute("download", "Joseph-Gomez-de-la-Mora-Resume.pdf"); dl.removeAttribute("target"); }
+  if (NATIVE && it.type === "d") { showPdf(it); document.getElementById("vprev").disabled = true; document.getElementById("vnext").disabled = true; return; }
   if (NATIVE && it.type === "v") usePoster(it);
   else useFrame(it.type === "f" ? D.folderEmbed(it.id) : it.type === "d" ? D.docPreview(it.id) : D.preview(it.id));
   document.getElementById("vpos").textContent = state.list.length > 1 ? (state.i + 1) + " of " + state.list.length : KIND[it.type];
@@ -83,6 +137,7 @@ dlg.addEventListener("keydown", e => {
 });
 dlg.addEventListener("close", () => {
   frame.src = "about:blank";
+  resetPdf();
   if (state.opener) state.opener.focus();
 });
 

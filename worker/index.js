@@ -10,6 +10,7 @@ import * as content from "./api/admin/content.js";
 import * as undo from "./api/admin/undo.js";
 import * as adminPhoto from "./api/admin/photo.js";
 import * as photo from "./api/photo/get.js";
+import * as resume from "./api/resume.js";
 import { onRequest as pages } from "./pages.js";
 
 const ADMIN = {
@@ -33,6 +34,7 @@ export default {
     }
     const m = path.match(/^\/api\/photo\/([a-f0-9]{16})$/);
     if (m) return request.method === "GET" ? photo.onRequestGet({ request, env, params: { id: m[1] } }) : new Response("Method not allowed", { status: 405 });
+    if (path === "/api/resume.pdf") return request.method === "GET" ? resume.onRequestGet({ request, env }) : new Response("Method not allowed", { status: 405 });
     if (path.startsWith("/api/")) return new Response("Not found", { status: 404 });
 
     return pages({ request, env, next: req => env.ASSETS.fetch(req || request) });
