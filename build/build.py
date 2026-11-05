@@ -2,7 +2,7 @@ import re, sys
 import os
 D = os.path.dirname(os.path.abspath(__file__)) + '/'
 OUT = os.path.dirname(D.rstrip('/')) + '/'
-head = open(D+'head.html').read(); data = open(D+'data_block.js').read(); tail = open(D+'tail.html').read()
+head = open(D+'head.html').read(); data = open(D+'data_block.js').read() + '\n' + open(D+'home_data.js').read(); tail = open(D+'tail.html').read()
 
 i0 = head.index('<main id="top">'); i1 = head.index('</main>')
 A, M, R = head[:i0], head[i0+len('<main id="top">'):i1], head[i1:]

@@ -350,6 +350,7 @@ h4 { font-size: 28px; }
 .job { display: grid; grid-template-columns: 4fr 8fr; gap: 20px 60px; border-top: 1px solid var(--line); padding: 40px 0 50px; }
 .job .when { color: var(--dark); display: block; margin-bottom: 8px; }
 .job .org-n { font-size: 18px; color: var(--text); }
+.job .job-logo { display: block; height: 44px; width: auto; max-width: 100%; margin: 16px 0 14px; object-fit: contain; object-position: left center; }
 .job h4 { margin-bottom: 14px; }
 .job p.sum { max-width: 60ch; font-size: 17px; line-height: 170%; margin-bottom: 18px; }
 .job ul { list-style: none; max-width: 60ch; }
@@ -600,8 +601,8 @@ body.sub .ph .container { position: relative; z-index: 1; }
       </div>
       <div class="mrule"></div>
       <div class="minfo">
-        <div><h6>Based in</h6><p>Tacoma, Washington<br>Pierce County</p></div>
-        <div><h6>Languages</h6><p>English<br>Spanish</p></div>
+        <div><h6>Based in</h6><p id="m-based">Tacoma, Washington<br>Pierce County</p></div>
+        <div><h6>Languages</h6><p id="m-lang">English<br>Spanish</p></div>
       </div>
     </aside>
   </div>
@@ -615,15 +616,15 @@ body.sub .ph .container { position: relative; z-index: 1; }
       <div class="gem g3" data-n="5" data-speed=".3" data-scale="1"></div>
     </div>
     <div class="container">
-      <span class="upper rv">Marketing and communications leader</span>
-      <h1 class="rv">Joseph Daniel <span class="marker">Gomez de la Mora</span></h1>
+      <span class="upper rv" id="h-eyebrow">Marketing and communications leader</span>
+      <h1 class="rv" id="h-name">Joseph Daniel <span class="marker">Gomez de la Mora</span></h1>
       <div class="grid2 rv">
         <div>
-          <p class="lede">Hi, I'm Joseph. A marketing and communications leader with 5+ years of experience supporting population health and health equity initiatives across Pierce County.</p>
-          <p class="es">Campañas, video y diseño en inglés y español.</p>
+          <p class="lede" id="h-lede">Hi, I'm Joseph. A marketing and communications leader with 5+ years of experience supporting population health and health equity initiatives across Pierce County.</p>
+          <p class="es" id="h-es">Campañas, video y diseño en inglés y español.</p>
           <div class="cta">
-            <a class="btn" href="/portfolio"><span>View portfolio</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg></a>
-            <a class="btn alt" href="https://docs.google.com/document/d/1kia_8wKuOrGpDp3uzUiFT2xI9fVxtSvapqBMX_5C3LM/export?format=pdf" target="_blank" rel="noopener" download="Joseph-Gomez-de-la-Mora-Resume.pdf"><span>Download resume</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg></a>
+            <a class="btn" href="/portfolio"><span id="h-btn1">View portfolio</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg></a>
+            <a class="btn alt" href="https://docs.google.com/document/d/1kia_8wKuOrGpDp3uzUiFT2xI9fVxtSvapqBMX_5C3LM/export?format=pdf" target="_blank" rel="noopener" download="Joseph-Gomez-de-la-Mora-Resume.pdf"><span id="h-btn2">Download resume</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg></a>
           </div>
         </div>
       </div>
@@ -656,7 +657,7 @@ body.sub .ph .container { position: relative; z-index: 1; }
         <div class="atext rv">
           <span class="upper sup">About</span>
           <p class="complex" id="complex"></p>
-          <p class="lede" style="margin-top:40px;max-width:58ch;font-size:18px;line-height:170%">I specialize in digital marketing, including creative strategy and paid media buying on Meta, Google, LinkedIn and TikTok. I pair that with content creation, cross-sector collaboration and multilingual community engagement to drive measurable service utilization for public benefit and private organizations.</p>
+          <p class="lede" id="a-para" style="margin-top:40px;max-width:58ch;font-size:18px;line-height:170%">I specialize in digital marketing, including creative strategy and paid media buying on Meta, Google, LinkedIn and TikTok. I pair that with content creation, cross-sector collaboration and multilingual community engagement to drive measurable service utilization for public benefit and private organizations.</p>
         </div>
       </div>
       <ul class="stats rv" id="facts"></ul>
@@ -699,15 +700,15 @@ body.sub .ph .container { position: relative; z-index: 1; }
   <div class="container">
     <div class="foot">
       <div class="rv">
-        <h2>Let's work together.</h2>
-        <p class="ftag">Campaigns, video, and design in English and Spanish.</p>
+        <h2 id="f-heading">Let's work together.</h2>
+        <p class="ftag" id="f-tag">Campaigns, video, and design in English and Spanish.</p>
         <ul class="contacts" id="contactlist"></ul>
       </div>
       <div class="fmenu rv"><ul id="footlist"></ul></div>
     </div>
     <div class="copy">
-      <span>© <span id="yr"></span> Joseph Danny LLC</span>
-      <span>Every file opens from Google Drive</span>
+      <span>© <span id="yr"></span> <span id="f-owner">Joseph Danny LLC</span></span>
+      <span id="f-note">Every file opens from Google Drive</span>
     </div>
   </div>
 </footer>
@@ -950,6 +951,62 @@ let WORK = [
 /* Content saved from the /admin editor (injected at the edge) replaces the built-in content above. */
 if (window.__SAVED && Array.isArray(window.__SAVED.work) && window.__SAVED.work.length) WORK = window.__SAVED.work;
 
+
+/* ------------------------------------------------------------------
+   HOME PAGE CONTENT (defaults). Anything saved from /admin replaces these.
+   Header, about, stats, services, banner and footer all live here.
+------------------------------------------------------------------- */
+const STAT_ICONS = ["users", "cal", "mic", "funnel", "chart", "heart", "globe", "star"];
+const BANNER_ICONS = ["search", "video", "target", "trophy", "star", "check", "chart"];
+const HOME_DEFAULT = {
+  header: {
+    eyebrow: "Marketing and communications leader",
+    nameFirst: "Joseph Daniel",
+    nameMark: "Gomez de la Mora",
+    lede: "Hi, I'm Joseph. A marketing and communications leader with 5+ years of experience supporting population health and health equity initiatives across Pierce County.",
+    es: "Campañas, video y diseño en inglés y español.",
+    btnPortfolio: "View portfolio",
+    btnResume: "Download resume",
+    based: "Tacoma, Washington\nPierce County",
+    languages: "English\nSpanish"
+  },
+  about: {
+    statement: "Campaigns that connect people to health services, in the languages they speak.",
+    paragraph: "I specialize in digital marketing, including creative strategy and paid media buying on Meta, Google, LinkedIn and TikTok. I pair that with content creation, cross-sector collaboration and multilingual community engagement to drive measurable service utilization for public benefit and private organizations.",
+    headshot: "/headshot.jpg",
+    pill1: "/rainier.jpg",
+    pill2: "/team.jpg"
+  },
+  stats: [
+    { value: "10,000+", label: "Pierce County residents engaged through programming", icon: "users" },
+    { value: "100+", label: "Pierce County events planned and managed", icon: "cal" },
+    { value: "50+", label: "live keynotes and presentations delivered", icon: "mic" },
+    { value: "1,000s", label: "of leads generated through paid ad strategy", icon: "funnel" }
+  ],
+  services: [
+    { title: "Paid media", text: "Campaigns on Meta, Google, LinkedIn and TikTok, built around measurable service utilization and reported on a steady cadence." },
+    { title: "Creative strategy and content", text: "Concepts, video, graphics and print materials that carry a campaign from idea to finished asset." },
+    { title: "Multilingual community engagement", text: "Outreach that meets people in their language, including a transit campaign across five languages." },
+    { title: "Reporting and automation", text: "Tracking dashboards, intake workflows and marketing automation that guide budget and staffing decisions." }
+  ],
+  /* Awards and certifications in the scrolling banner. Leave the Drive id empty for a badge with no link. */
+  banner: [
+    { top: "Google Ads", main: "Search Certification", icon: "search", type: "p", id: "" },
+    { top: "Google Ads", main: "Video Certification", icon: "video", type: "p", id: "1SoUQ_lkaOC24alWBHCUgAtRh8PASW8G4" },
+    { top: "Meta", main: "Certified Media Buying Professional", icon: "target", type: "p", id: "1rBZQz9ED8cthxfq0f7KhdVKdv_a5J1lE" },
+    { top: "South Sound Business", main: "40 Under 40 Honoree, 2025", icon: "trophy", type: "i", id: "1o50VhUOpHNvDtcc1aFs02Hse_CBb2BMn" }
+  ],
+  footer: {
+    heading: "Let's work together.",
+    tagline: "Campaigns, video, and design in English and Spanish.",
+    email: "hello@josephdanny.co",
+    linkedin: "https://linkedin.com/josephdgomez",
+    website: "",
+    owner: "Joseph Danny LLC",
+    note: "Every file opens from Google Drive"
+  }
+};
+
 /* ------------------------------------------------------------------ */
 const D = {
   preview: id => "https://drive.google.com/file/d/" + id + "/preview",
@@ -1033,21 +1090,23 @@ dlg.addEventListener("close", () => {
   if (state.opener) state.opener.focus();
 });
 
-/* Homepage content (from the resume and LinkedIn bio) */
-const SERVICES = [
-  ["Paid media", "Campaigns on Meta, Google, LinkedIn and TikTok, built around measurable service utilization and reported on a steady cadence."],
-  ["Creative strategy and content", "Concepts, video, graphics and print materials that carry a campaign from idea to finished asset."],
-  ["Multilingual community engagement", "Outreach that meets people in their language, including a transit campaign across five languages."],
-  ["Reporting and automation", "Tracking dashboards, intake workflows and marketing automation that guide budget and staffing decisions."]
-];
+/* Home page content: defaults in home_data.js, replaced by anything saved from /admin. */
+const HOME = (function () {
+  const d = HOME_DEFAULT, sv = (window.__SAVED && window.__SAVED.home) || {};
+  const obj = k => Object.assign({}, d[k], sv[k] && typeof sv[k] === "object" ? sv[k] : {});
+  const list = k => (Array.isArray(sv[k]) ? sv[k] : d[k]);
+  return { header: obj("header"), about: obj("about"), footer: obj("footer"), stats: list("stats"), services: list("services"), banner: list("banner") };
+})();
+Object.assign(CONTACT, { email: HOME.footer.email, linkedin: HOME.footer.linkedin, website: HOME.footer.website });
+const SERVICES = HOME.services.map(s => [s.title, s.text]);
 const JOBS = [
-  { when: "May 2025 to present", org: "Elevate Health of Pierce County", role: "Communications Manager",
+  { when: "May 2025 to present", logo: "/logo-elevate-health.png", org: "Elevate Health of Pierce County", role: "Communications Manager",
     sum: "Leads marketing and communications strategy for Pierce County's Accountable Community of Health, working with healthcare providers, tribal nations, community organizations, and public stakeholders.",
     pts: ["Launched a digital demand campaign that increased referrals by <b>250%+ in 10 days</b> using <b>less than 20% of budget</b>.", "Advised executive leadership on a phased digital demand framework, adopted as the primary county-wide campaign strategy.", "Directed a <b>multilingual transit campaign across five languages</b> to improve language access."] },
-  { when: "April 2023 to May 2025", org: "Blue Zones, Parkland, WA", role: "Marketing and Engagement Lead",
+  { when: "April 2023 to May 2025", logo: "/logo-blue-zones.png", logoH: 54, org: "Blue Zones, Parkland, WA", role: "Marketing and Engagement Lead",
     sum: "Led multi-channel marketing and community engagement across Parkland-Spanaway, working with local government, employers, schools, and nonprofits.",
     pts: ["Directed a <b>$120K annual marketing budget</b> across paid digital and social platforms.", "Engaged <b>10,000+ residents</b> and met 100% of monthly event registration targets for two years.", "Ran <b>72 community events</b>, earned <b>15 regional media placements</b>, and gave <b>50+ keynote presentations</b>."] },
-  { when: "July 2022 to April 2023", org: "El Centro de La Raza, Seattle, WA", role: "Marketing Program Manager",
+  { when: "July 2022 to April 2023", logo: "/logo-el-centro.png", logoH: 76, org: "El Centro de La Raza, Seattle, WA", role: "Marketing Program Manager",
     sum: "Led marketing and growth strategy for community-based social service programs serving historically underserved populations.",
     pts: ["Built a marketing automation system that took two programs to <b>117%</b> and <b>110%</b> of annual targets in six months with no ad spend.", "Automated intake with Salesforce, <b>saving 30+ hours a month</b> of manual work."] }
 ];
@@ -1062,13 +1121,8 @@ const MORE = [
   ["Platforms and tools", "Meta Ads Manager, LinkedIn Campaign Manager, Google Ads, Google Tag Manager, GA4, Looker Studio, HubSpot, Salesforce, GoHighLevel, Zapier, n8n, Adobe Premiere Pro, Photoshop, Illustrator, Canva, and more."]
 ];
 
-/* Awards and certifications shown in the hero. Leave id as "" until the file is in Drive (the badge then shows without a link). */
-const BADGES = [
-  { type: "p", id: "", title: "Google Ads Search Certification", top: "Google Ads", main: "Search Certification", icon: "search", mono: "G" },
-  { type: "p", id: "1SoUQ_lkaOC24alWBHCUgAtRh8PASW8G4", title: "Google Ads Video Certification", top: "Google Ads", main: "Video Certification", icon: "video", mono: "G" },
-  { type: "p", id: "1rBZQz9ED8cthxfq0f7KhdVKdv_a5J1lE", title: "Meta Certified Media Buying Professional", top: "Meta", main: "Certified Media Buying Professional", icon: "target", mono: "M" },
-  { type: "i", id: "1o50VhUOpHNvDtcc1aFs02Hse_CBb2BMn", title: "40 Under 40 Honoree, South Sound Business", top: "South Sound Business", main: "40 Under 40 Honoree, 2025", icon: "trophy", mono: "40" }
-];
+/* Awards and certifications in the scrolling banner (edited in /admin, defaults in home_data.js). */
+const BADGES = HOME.banner.map(b => ({ type: b.type || "p", id: b.id || "", title: (b.top + " " + b.main).trim(), top: b.top || "", main: b.main || "", icon: b.icon, mono: (b.top || b.main || "?").charAt(0).toUpperCase() }));
 const BADGE_STYLE = "pictogram"; /* pictogram | mono | medal | laurel | text */
 
 /*EMBLEMS*/
@@ -1076,7 +1130,10 @@ const PICTO = {
   search: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.2"/><path d="M15.3 15.3L21 21"/></svg>',
   video: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3.6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M10 9v6l5-3z" fill="currentColor"/></svg>',
   target: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.6"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>',
-  trophy: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h10V9a5 5 0 0 1-10 0z" fill="currentColor"/><path d="M7 5.5H3.8V7A3.4 3.4 0 0 0 7 10.4M17 5.5h3.2V7a3.4 3.4 0 0 1-3.2 3.4M12 14v4M8.2 20.5h7.6M9.6 18h4.8"/></svg>'
+  trophy: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h10V9a5 5 0 0 1-10 0z" fill="currentColor"/><path d="M7 5.5H3.8V7A3.4 3.4 0 0 0 7 10.4M17 5.5h3.2V7a3.4 3.4 0 0 1-3.2 3.4M12 14v4M8.2 20.5h7.6M9.6 18h4.8"/></svg>',
+  star: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/></svg>',
+  check: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7 5.5-5.7"/></svg>',
+  chart: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>'
 };
 function medalSvg(letter) {
   return '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M15 29l-5 15 8-4.5 5 4.5 2.5-15z" fill="#000"/><path d="M33 29l5 15-8-4.5-5 4.5-2.5-15z" fill="#000"/><circle cx="24" cy="19" r="15" fill="#FF9800"/><circle cx="24" cy="19" r="10.8" fill="none" stroke="#000" stroke-width="1.6"/><text x="24" y="24" text-anchor="middle" font-size="' + (letter.length > 1 ? 12 : 15) + '" font-weight="600" fill="#000" font-family="Outfit, sans-serif">' + letter + '</text></svg>';
@@ -1096,7 +1153,7 @@ function emblem(style, b) {
   if (style === "medal") return medalSvg(b.mono);
   if (style === "laurel") return laurelSvg(b.mono);
   if (style === "text") return "";
-  return PICTO[b.icon];
+  return PICTO[b.icon] || PICTO.star;
 }
 /*END EMBLEMS*/
 
@@ -1258,11 +1315,15 @@ function render() {
     users: '<circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.5c.4-3.3 3-5.3 6.2-5.3s5.8 2 6.2 5.3"/><circle cx="17.2" cy="9" r="2.6"/><path d="M16.4 14.4c2.6-.2 4.5 1.5 4.8 4.4"/>',
     cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M9 15.2l2.2 2.2 3.9-4.2"/>',
     mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3.2M8.5 21.2h7"/>',
-    funnel: '<path d="M3.5 5h17l-6.5 7.8v5.7l-4 2v-7.7z"/>'
+    funnel: '<path d="M3.5 5h17l-6.5 7.8v5.7l-4 2v-7.7z"/>',
+    chart: '<path d="M4 20.5h16M7 20.5v-7M12 20.5V5M17 20.5v-10"/>',
+    heart: '<path d="M12 20.5s-7.5-4.6-7.5-10.3A4.2 4.2 0 0 1 12 7.7a4.2 4.2 0 0 1 7.5 2.5c0 5.7-7.5 10.3-7.5 10.3z"/>',
+    globe: '<circle cx="12" cy="12" r="8.8"/><path d="M3.2 12h17.6M12 3.2c3.2 3.2 3.2 14.4 0 17.6M12 3.2c-3.2 3.2-3.2 14.4 0 17.6"/>',
+    star: '<path d="M12 3.6l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/>'
   };
-  [["10,000+", "Pierce County residents engaged through programming", "users"], ["100+", "Pierce County events planned and managed", "cal"], ["50+", "live keynotes and presentations delivered", "mic"], ["1,000s", "of leads generated through paid ad strategy", "funnel"]].forEach(([a, b, ic]) => {
-    const g = el("span", { class: "gi", "aria-hidden": "true", html: '<svg viewBox="0 0 24 24">' + GI[ic] + "</svg>" });
-    facts.appendChild(el("li", {}, [g, el("b", { text: String(a) }), el("span", { text: b })]));
+  HOME.stats.forEach(st => {
+    const g = el("span", { class: "gi", "aria-hidden": "true", html: '<svg viewBox="0 0 24 24">' + (GI[st.icon] || GI.star) + "</svg>" });
+    facts.appendChild(el("li", {}, [g, el("b", { text: String(st.value) }), el("span", { text: st.label })]));
   });
   }
 
@@ -1270,13 +1331,13 @@ function render() {
   const cx = document.getElementById("complex");
   if (cx) {
   const pill = el("span", { class: "pimg" });
-  const pimg = el("img", { src: "rainier.jpg", alt: "", width: 200, height: 64, loading: "lazy" });
+  const pimg = el("img", { src: HOME.about.pill1, alt: "", width: 200, height: 64, loading: "lazy" });
   pimg.addEventListener("error", () => pill.classList.add("nothumb"));
   pill.appendChild(pimg);
   cx.appendChild(pill);
-  cx.appendChild(document.createTextNode("Campaigns that connect people to health services, in the languages they speak. "));
+  cx.appendChild(document.createTextNode((HOME.about.statement || HOME_DEFAULT.about.statement) + " "));
   const pill2 = el("span", { class: "pimg end" });
-  const pimg2 = el("img", { src: "team.jpg", alt: "", width: 230, height: 64, loading: "lazy" });
+  const pimg2 = el("img", { src: HOME.about.pill2, alt: "", width: 230, height: 64, loading: "lazy" });
   pimg2.addEventListener("error", () => pill2.classList.add("nothumb"));
   pill2.appendChild(pimg2);
   cx.appendChild(pill2);
@@ -1292,6 +1353,29 @@ function render() {
   document.getElementById("yr").textContent = new Date().getFullYear();
 }
 render();
+
+/* Header, about and footer text that lives in the page markup (editable in /admin). */
+(function () {
+  const H = HOME.header, A = HOME.about, F = HOME.footer;
+  const q = id => document.getElementById(id);
+  const txt = (id, v) => { const n = q(id); if (n && typeof v === "string" && v.trim()) n.textContent = v; };
+  const lines = (id, v) => {
+    const n = q(id); if (!n || typeof v !== "string" || !v.trim()) return;
+    n.textContent = "";
+    v.split("\n").forEach((l, i) => { if (i) n.appendChild(document.createElement("br")); n.appendChild(document.createTextNode(l.trim())); });
+  };
+  txt("h-eyebrow", H.eyebrow); txt("h-lede", H.lede); txt("h-es", H.es); txt("h-btn1", H.btnPortfolio); txt("h-btn2", H.btnResume);
+  const nm = q("h-name");
+  if (nm && (H.nameFirst || H.nameMark)) {
+    nm.textContent = "";
+    if (H.nameFirst) nm.appendChild(document.createTextNode(H.nameFirst + " "));
+    if (H.nameMark) nm.appendChild(el("span", { class: "marker", text: H.nameMark }));
+  }
+  lines("m-based", H.based); lines("m-lang", H.languages);
+  txt("a-para", A.paragraph);
+  const hs = q("headshot"); if (hs && A.headshot && A.headshot !== "/headshot.jpg") hs.src = A.headshot;
+  txt("f-heading", F.heading); txt("f-tag", F.tagline); txt("f-owner", F.owner); txt("f-note", F.note);
+})();
 
 (function () {
   const h = decodeURIComponent(location.hash.slice(1));
@@ -1322,7 +1406,11 @@ render();
     ]);
     const body = el("div", { class: "jbody", id: uid }, [el("div", { class: "jin" }, [ul])]);
     const job = el("div", { class: "job rv" }, [
-      el("div", {}, [el("span", { class: "upper when", text: j.when }), el("span", { class: "org-n", text: j.org })]),
+      el("div", { class: "jhead" }, [
+        el("span", { class: "upper when", text: j.when }),
+        j.logo ? el("img", { class: "job-logo", src: j.logo, alt: "", style: j.logoH ? "height:" + j.logoH + "px" : "", loading: "lazy", decoding: "async" }) : null,
+        el("span", { class: "org-n", text: j.org })
+      ].filter(Boolean)),
       el("div", {}, [el("h4", { text: j.role }), el("p", { class: "sum", text: j.sum }), btn, body])
     ]);
     btn.addEventListener("click", () => {
@@ -1416,6 +1504,7 @@ render();
   (function () {
   const bl = document.getElementById("badges");
   if (!bl) return;
+  if (!BADGES.length) { const mq = bl.closest(".marquee"); if (mq) mq.hidden = true; return; }
   const qs = new URLSearchParams(location.search).get("badges");
   const bStyle = ["pictogram", "mono", "medal", "laurel", "text"].includes(qs) ? qs : BADGE_STYLE;
   bl.setAttribute("data-style", bStyle);

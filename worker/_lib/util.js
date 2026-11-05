@@ -150,6 +150,76 @@ function cleanSection(s, label) {
   return out;
 }
 
+const STAT_ICONS = new Set(["users", "cal", "mic", "funnel", "chart", "heart", "globe", "star"]);
+const BANNER_ICONS = new Set(["search", "video", "target", "trophy", "star", "check", "chart"]);
+const HOME_IMG_RE = /^(\/(headshot|rainier|team)\.jpg|\/api\/photo\/[a-f0-9]{16})$/;
+
+const linkStr = (v, label) => {
+  v = str(v, 300, label);
+  if (v && !/^https?:\/\/[^\s]+$/i.test(v)) throw new Error(label + " must start with https://");
+  return v;
+};
+const emailStr = (v, label) => {
+  v = str(v, 200, label);
+  if (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) throw new Error(label + " does not look like an email address.");
+  return v;
+};
+const imgStr = (v, label) => {
+  if (v === undefined || v === null || v === "") return "";
+  if (typeof v !== "string" || !HOME_IMG_RE.test(v)) throw new Error(label + " is not a valid image.");
+  return v;
+};
+
+function cleanHome(h) {
+  if (!h || typeof h !== "object") return undefined;
+  const H = h.header || {}, A = h.about || {}, F = h.footer || {};
+  const out = {
+    header: {
+      eyebrow: str(H.eyebrow, 120, "Header small line"),
+      nameFirst: str(H.nameFirst, 60, "Header name"),
+      nameMark: str(H.nameMark, 60, "Header highlighted name"),
+      lede: longStr(H.lede, 500, "Header intro"),
+      es: str(H.es, 200, "Header Spanish line"),
+      btnPortfolio: str(H.btnPortfolio, 40, "Portfolio button"),
+      btnResume: str(H.btnResume, 40, "Resume button"),
+      based: longStr(H.based, 120, "Menu location"),
+      languages: longStr(H.languages, 120, "Menu languages")
+    },
+    about: {
+      statement: str(A.statement, 300, "About statement"),
+      paragraph: longStr(A.paragraph, 1200, "About paragraph"),
+      headshot: imgStr(A.headshot, "About photo"),
+      pill1: imgStr(A.pill1, "About first strip photo"),
+      pill2: imgStr(A.pill2, "About second strip photo")
+    },
+    stats: arr(h.stats, 8, "Stats").map((x, i) => {
+      const icon = STAT_ICONS.has(x.icon) ? x.icon : "star";
+      return { value: str(x.value, 20, "Stat " + (i + 1) + " number", { required: true }), label: str(x.label, 120, "Stat " + (i + 1) + " description", { required: true }), icon };
+    }),
+    services: arr(h.services, 12, "Services").map((x, i) => ({
+      title: str(x.title, 100, "Service " + (i + 1) + " title", { required: true }),
+      text: str(x.text, 400, "Service " + (i + 1) + " description")
+    })),
+    banner: arr(h.banner, 20, "Banner").map((x, i) => {
+      const L = "Banner badge " + (i + 1);
+      const b = { top: str(x.top, 60, L + " top line"), main: str(x.main, 80, L + " main line", { required: true }), icon: BANNER_ICONS.has(x.icon) ? x.icon : "star", type: TYPES.has(x.type) ? x.type : "p", id: "" };
+      if (x.id) b.id = driveId(x.id, L + " link");
+      return b;
+    }),
+    footer: {
+      heading: str(F.heading, 80, "Footer heading"),
+      tagline: str(F.tagline, 200, "Footer line"),
+      email: emailStr(F.email, "Footer email"),
+      linkedin: linkStr(F.linkedin, "Footer LinkedIn link"),
+      website: linkStr(F.website, "Footer website link"),
+      owner: str(F.owner, 80, "Footer business name"),
+      note: str(F.note, 120, "Footer note")
+    }
+  };
+  for (const k of ["headshot", "pill1", "pill2"]) if (!out.about[k]) delete out.about[k];
+  return out;
+}
+
 export function cleanContent(c) {
   if (!c || typeof c !== "object") throw new Error("Nothing to save.");
   const seen = new Set();
@@ -189,5 +259,8 @@ export function cleanContent(c) {
     }
     return out;
   });
-  return { work, testimonials, updated: new Date().toISOString() };
+  const home = cleanHome(c.home);
+  const res = { work, testimonials, updated: new Date().toISOString() };
+  if (home) res.home = home;
+  return res;
 }

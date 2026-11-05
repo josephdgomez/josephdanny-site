@@ -350,6 +350,7 @@ h4 { font-size: 28px; }
 .job { display: grid; grid-template-columns: 4fr 8fr; gap: 20px 60px; border-top: 1px solid var(--line); padding: 40px 0 50px; }
 .job .when { color: var(--dark); display: block; margin-bottom: 8px; }
 .job .org-n { font-size: 18px; color: var(--text); }
+.job .job-logo { display: block; height: 44px; width: auto; max-width: 100%; margin: 16px 0 14px; object-fit: contain; object-position: left center; }
 .job h4 { margin-bottom: 14px; }
 .job p.sum { max-width: 60ch; font-size: 17px; line-height: 170%; margin-bottom: 18px; }
 .job ul { list-style: none; max-width: 60ch; }
@@ -599,8 +600,8 @@ body.sub .ph .container { position: relative; z-index: 1; }
       </div>
       <div class="mrule"></div>
       <div class="minfo">
-        <div><h6>Based in</h6><p>Tacoma, Washington<br>Pierce County</p></div>
-        <div><h6>Languages</h6><p>English<br>Spanish</p></div>
+        <div><h6>Based in</h6><p id="m-based">Tacoma, Washington<br>Pierce County</p></div>
+        <div><h6>Languages</h6><p id="m-lang">English<br>Spanish</p></div>
       </div>
     </aside>
   </div>
@@ -614,15 +615,15 @@ body.sub .ph .container { position: relative; z-index: 1; }
       <div class="gem g3" data-n="5" data-speed=".3" data-scale="1"></div>
     </div>
     <div class="container">
-      <span class="upper rv">Marketing and communications leader</span>
-      <h1 class="rv">Joseph Daniel <span class="marker">Gomez de la Mora</span></h1>
+      <span class="upper rv" id="h-eyebrow">Marketing and communications leader</span>
+      <h1 class="rv" id="h-name">Joseph Daniel <span class="marker">Gomez de la Mora</span></h1>
       <div class="grid2 rv">
         <div>
-          <p class="lede">Hi, I'm Joseph. A marketing and communications leader with 5+ years of experience supporting population health and health equity initiatives across Pierce County.</p>
-          <p class="es">Campañas, video y diseño en inglés y español.</p>
+          <p class="lede" id="h-lede">Hi, I'm Joseph. A marketing and communications leader with 5+ years of experience supporting population health and health equity initiatives across Pierce County.</p>
+          <p class="es" id="h-es">Campañas, video y diseño en inglés y español.</p>
           <div class="cta">
-            <a class="btn" href="/portfolio"><span>View portfolio</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg></a>
-            <a class="btn alt" href="https://docs.google.com/document/d/1kia_8wKuOrGpDp3uzUiFT2xI9fVxtSvapqBMX_5C3LM/export?format=pdf" target="_blank" rel="noopener" download="Joseph-Gomez-de-la-Mora-Resume.pdf"><span>Download resume</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg></a>
+            <a class="btn" href="/portfolio"><span id="h-btn1">View portfolio</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 5l-1.4 1.4 4.6 4.6H4v2h12.2l-4.6 4.6L13 19l7-7z"/></svg></a>
+            <a class="btn alt" href="https://docs.google.com/document/d/1kia_8wKuOrGpDp3uzUiFT2xI9fVxtSvapqBMX_5C3LM/export?format=pdf" target="_blank" rel="noopener" download="Joseph-Gomez-de-la-Mora-Resume.pdf"><span id="h-btn2">Download resume</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg></a>
           </div>
         </div>
       </div>
@@ -657,7 +658,7 @@ body.sub .ph .container { position: relative; z-index: 1; }
         <div class="atext rv">
           <span class="upper sup">About</span>
           <p class="complex" id="complex"></p>
-          <p class="lede" style="margin-top:40px;max-width:58ch;font-size:18px;line-height:170%">I specialize in digital marketing, including creative strategy and paid media buying on Meta, Google, LinkedIn and TikTok. I pair that with content creation, cross-sector collaboration and multilingual community engagement to drive measurable service utilization for public benefit and private organizations.</p>
+          <p class="lede" id="a-para" style="margin-top:40px;max-width:58ch;font-size:18px;line-height:170%">I specialize in digital marketing, including creative strategy and paid media buying on Meta, Google, LinkedIn and TikTok. I pair that with content creation, cross-sector collaboration and multilingual community engagement to drive measurable service utilization for public benefit and private organizations.</p>
         </div>
       </div>
       <ul class="stats rv" id="facts"></ul>
@@ -719,15 +720,15 @@ body.sub .ph .container { position: relative; z-index: 1; }
   <div class="container">
     <div class="foot">
       <div class="rv">
-        <h2>Let's work together.</h2>
-        <p class="ftag">Campaigns, video, and design in English and Spanish.</p>
+        <h2 id="f-heading">Let's work together.</h2>
+        <p class="ftag" id="f-tag">Campaigns, video, and design in English and Spanish.</p>
         <ul class="contacts" id="contactlist"></ul>
       </div>
       <div class="fmenu rv"><ul id="footlist"></ul></div>
     </div>
     <div class="copy">
-      <span>© <span id="yr"></span> Joseph Danny LLC</span>
-      <span>Every file opens from Google Drive</span>
+      <span>© <span id="yr"></span> <span id="f-owner">Joseph Danny LLC</span></span>
+      <span id="f-note">Every file opens from Google Drive</span>
     </div>
   </div>
 </footer>

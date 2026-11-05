@@ -435,7 +435,7 @@ dialog .nudge { display:flex; gap:6px; justify-content:center; margin-top:10px; 
     const box = h("div");
     S.testimonials.forEach((t, i) => {
       const av = t.photo ? h("img", { class: "avatar", alt: "", src: t.photo }) : h("div", { class: "avatar", text: initials(t.name) });
-      const pickBtn = h("button", { class: "btn small", type: "button", text: t.photo ? "Change photo" : "Add photo", onClick: () => pickPhoto(t) });
+      const pickBtn = h("button", { class: "btn small", type: "button", text: t.photo ? "Change photo" : "Add photo", onClick: () => pickPhoto({ w: 360, h: 360, round: true, onUrl: u => { t.photo = u; } }) });
       const src = t.src || (t.src = { type: "i", id: "", title: "" });
       const thumb = h("img", { class: "thumb", alt: "", referrerpolicy: "no-referrer", src: src.id ? thumbUrl(src.id) : "" });
       thumb.addEventListener("error", () => thumb.classList.add("none"));
@@ -474,23 +474,27 @@ dialog .nudge { display:flex; gap:6px; justify-content:center; margin-top:10px; 
     return box;
   }
 
-  /* ---------- photo picker (crop to a square, upload) ---------- */
-  function pickPhoto(t) {
+  /* ---------- photo picker (crop to a given shape, upload) ---------- */
+  // cfg: { w, h (output pixels), round (circle preview), onUrl(url) }
+  function pickPhoto(cfg) {
     const file = h("input", { type: "file", accept: "image/*" });
-    file.addEventListener("change", () => { if (file.files[0]) cropDialog(file.files[0], t); });
+    file.addEventListener("change", () => { if (file.files[0]) cropDialog(file.files[0], cfg); });
     file.click();
   }
-  function cropDialog(file, t) {
+  function cropDialog(file, cfg) {
+    const W = cfg.w || 360, Hh = cfg.h || 360;
     const url = URL.createObjectURL(file);
     const img = new Image();
     img.onload = () => {
-      const cv = h("canvas", { width: 360, height: 360 });
+      const cv = h("canvas", { width: W, height: Hh });
+      const dw = Math.min(320, W);
+      cv.style.cssText = "width:" + dw + "px;height:" + Math.round(dw * Hh / W) + "px;border-radius:" + (cfg.round ? "50%" : "10px");
       const st = { zoom: 1, x: 50, y: 30 };
       const draw = () => {
-        const c = cv.getContext("2d"); const sc = Math.max(360 / img.naturalWidth, 360 / img.naturalHeight) * st.zoom;
+        const c = cv.getContext("2d"); const sc = Math.max(W / img.naturalWidth, Hh / img.naturalHeight) * st.zoom;
         const w = img.naturalWidth * sc, hh = img.naturalHeight * sc;
-        c.fillStyle = "#eee"; c.fillRect(0, 0, 360, 360);
-        c.drawImage(img, -(w - 360) * st.x / 100, -(hh - 360) * st.y / 100, w, hh);
+        c.fillStyle = "#eee"; c.fillRect(0, 0, W, Hh);
+        c.drawImage(img, -(w - W) * st.x / 100, -(hh - Hh) * st.y / 100, w, hh);
       };
       const slider = (label, key, min, max, step) => h("div", { class: "sl" }, [h("span", { text: label }), h("input", { type: "range", min, max, step, value: st[key], "aria-label": label, onInput: e => { st[key] = parseFloat(e.target.value); draw(); } })]);
       const dlg = h("dialog", {}, [
@@ -500,10 +504,11 @@ dialog .nudge { display:flex; gap:6px; justify-content:center; margin-top:10px; 
           h("button", { class: "btn", type: "button", text: "Cancel", onClick: () => { dlg.close(); } }),
           h("button", { class: "btn primary", type: "button", text: "Use photo", onClick: async (e) => {
             e.target.disabled = true; e.target.textContent = "Uploading…";
-            const blob = await new Promise(r => cv.toBlob(r, "image/jpeg", 0.86));
+            let blob = await new Promise(r => cv.toBlob(r, "image/jpeg", 0.86));
+            if (blob && blob.size > 650000) blob = await new Promise(r => cv.toBlob(r, "image/jpeg", 0.6));
             const r = await api("/api/admin/photo", { method: "POST", headers: { "Content-Type": "image/jpeg" }, body: blob });
             if (!r.ok) { toast(r.data.message || "Could not upload that photo.", true); e.target.disabled = false; e.target.textContent = "Use photo"; return; }
-            t.photo = r.data.url; markDirty(); dlg.close(); render();
+            cfg.onUrl(r.data.url); markDirty(); dlg.close(); render();
           } })
         ])
       ]);
@@ -512,6 +517,122 @@ dialog .nudge { display:flex; gap:6px; justify-content:center; margin-top:10px; 
     };
     img.onerror = () => toast("Could not read that image.", true);
     img.src = url;
+  }
+
+  /* ---------- home page tab ---------- */
+  const ICON_LABEL = { users: "People", cal: "Calendar", mic: "Microphone", funnel: "Funnel", chart: "Bar chart", heart: "Heart", globe: "Globe", star: "Star" };
+  const BANNER_ICON_LABEL = { search: "Magnifier", video: "Video", target: "Target", trophy: "Trophy", star: "Star", check: "Check mark", chart: "Bar chart" };
+  const mergeHome = saved => {
+    const d = clone(HOME_DEFAULT); if (!saved) return d;
+    ["header", "about", "footer"].forEach(k => { d[k] = Object.assign(d[k], saved[k] || {}); });
+    ["stats", "services", "banner"].forEach(k => { if (Array.isArray(saved[k])) d[k] = clone(saved[k]); });
+    return d;
+  };
+  function plainSelect(options, value, onChange, label) {
+    const sel = h("select", { "aria-label": label, onChange: e => { onChange(e.target.value); markDirty(); } }, Object.entries(options).map(([k, v]) => h("option", { value: k, text: v })));
+    sel.value = value; return sel;
+  }
+  function listItemBox(list, i, tag, kids, what) {
+    return h("div", { class: "sub" }, [h("div", { class: "hd" }, [h("div", { class: "tt" }, [h("p", { class: "tag", text: tag })]), actions(list, i, what)])].concat(kids));
+  }
+  function photoField(label, hint, obj, key, dflt, cfg) {
+    const prev = h("img", { class: "thumb", alt: "", src: obj[key] || dflt, style: "width:" + (cfg.w === cfg.h ? 64 : 120) + "px;height:64px;border-radius:" + (cfg.w === cfg.h ? "10px" : "999px") });
+    return field(label, h("div", { style: "display:flex;gap:10px;align-items:center;flex-wrap:wrap" }, [
+      prev,
+      h("button", { class: "btn small", type: "button", text: "Replace photo", onClick: () => pickPhoto(Object.assign({ onUrl: u => { obj[key] = u; } }, cfg)) }),
+      h("button", { class: "btn small", type: "button", text: "Use the original", disabled: (obj[key] || dflt) === dflt, onClick: () => { obj[key] = dflt; markDirty(); render(); } })
+    ]), hint);
+  }
+  function homePanel() {
+    const Hm = S.home, O = Hm._o || (Hm._o = {});
+    const sec = (key, title, count, kids) => card(O[key] || (O[key] = {}), title, count, kids);
+    const box = h("div");
+    const H = Hm.header, A = Hm.about, F = Hm.footer;
+
+    box.appendChild(sec("header", "Header (top of the home page)", "", [
+      h("div", { class: "row" }, [field("Small line above the name", text(H.eyebrow, v => { H.eyebrow = v; }, "Marketing and communications leader"))]),
+      h("div", { class: "row two" }, [
+        field("Name", text(H.nameFirst, v => { H.nameFirst = v; }, "Joseph Daniel")),
+        field("Highlighted part of the name", text(H.nameMark, v => { H.nameMark = v; }, "Gomez de la Mora"), "Shown with the colored marker behind it.")
+      ]),
+      h("div", { class: "row" }, [field("Intro", area(H.lede, v => { H.lede = v; }, "", 3))]),
+      h("div", { class: "row" }, [field("Spanish line", text(H.es, v => { H.es = v; }))]),
+      h("div", { class: "row two" }, [
+        field("Portfolio button", text(H.btnPortfolio, v => { H.btnPortfolio = v; })),
+        field("Resume button", text(H.btnResume, v => { H.btnResume = v; }))
+      ]),
+      h("div", { class: "row two" }, [
+        field("Menu: based in", area(H.based, v => { H.based = v; }, "", 2), "One line per row."),
+        field("Menu: languages", area(H.languages, v => { H.languages = v; }, "", 2), "One line per row.")
+      ])
+    ]));
+
+    box.appendChild(sec("about", "About", "", [
+      h("div", { class: "row" }, [field("Statement", area(A.statement, v => { A.statement = v; }, "", 2), "The large sentence. The two photo strips sit before and after it.")]),
+      h("div", { class: "row" }, [field("Paragraph", area(A.paragraph, v => { A.paragraph = v; }, "", 5))]),
+      h("div", { class: "row" }, [photoField("Portrait", "Shown beside the About text.", A, "headshot", "/headshot.jpg", { w: 800, h: 800, round: false })]),
+      h("div", { class: "row two" }, [
+        photoField("Photo strip before the sentence", "A wide, short strip.", A, "pill1", "/rainier.jpg", { w: 1000, h: 320, round: false }),
+        photoField("Photo strip after the sentence", "A wide, short strip.", A, "pill2", "/team.jpg", { w: 920, h: 256, round: false })
+      ])
+    ]));
+
+    const statKids = Hm.stats.map((st, i) => listItemBox(Hm.stats, i, "Stat " + (i + 1), [
+      h("div", { class: "row two", style: "margin-top:0" }, [
+        field("Number", text(st.value, v => { st.value = v; }, "10,000+")),
+        field("Icon", plainSelect(ICON_LABEL, st.icon, v => { st.icon = v; }, "Icon"))
+      ]),
+      h("div", { class: "row" }, [field("Description", text(st.label, v => { st.label = v; }, "what the number counts"))])
+    ], "this stat"));
+    statKids.push(h("div", { class: "addrow" }, [h("button", { class: "btn small", type: "button", text: "+ Add stat", disabled: Hm.stats.length >= 8, onClick: () => { Hm.stats.push({ value: "", label: "", icon: "star" }); markDirty(); render(); } })]));
+    box.appendChild(sec("stats", "Stats", Hm.stats.length + " stats", statKids));
+
+    const svcKids = Hm.services.map((sv, i) => listItemBox(Hm.services, i, "Service " + (i + 1), [
+      h("div", { class: "row", style: "margin-top:0" }, [field("Title", text(sv.title, v => { sv.title = v; }))]),
+      h("div", { class: "row" }, [field("Description", area(sv.text, v => { sv.text = v; }, "Shown when someone hovers or taps the card.", 2))])
+    ], "this service"));
+    svcKids.push(h("div", { class: "addrow" }, [h("button", { class: "btn small", type: "button", text: "+ Add service", onClick: () => { Hm.services.push({ title: "", text: "" }); markDirty(); render(); } })]));
+    box.appendChild(sec("services", "Services", Hm.services.length + " services", svcKids));
+
+    const banKids = Hm.banner.map((b, i) => {
+      const link = h("input", { type: "text", value: b.id ? fileUrl(b.id) : "", placeholder: "Optional: link to the certificate or award in Drive", autocomplete: "off", "aria-label": "Drive link" });
+      link.addEventListener("change", () => {
+        if (!link.value.trim()) { b.id = ""; link.classList.remove("bad"); markDirty(); return; }
+        const id = driveId(link.value);
+        if (!id) { link.classList.add("bad"); toast("That does not look like a Google Drive link.", true); return; }
+        link.classList.remove("bad"); b.id = id; link.value = fileUrl(id); markDirty();
+      });
+      return listItemBox(Hm.banner, i, "Badge " + (i + 1), [
+        h("div", { class: "row two", style: "margin-top:0" }, [
+          field("Small line", text(b.top, v => { b.top = v; }, "e.g. Google Ads")),
+          field("Main line", text(b.main, v => { b.main = v; }, "e.g. Search Certification"))
+        ]),
+        h("div", { class: "row two" }, [
+          field("Icon", plainSelect(BANNER_ICON_LABEL, b.icon, v => { b.icon = v; }, "Icon")),
+          field("Opens as", typeSelect(b.type === "i" ? "i" : "p", v => { b.type = v; }), "PDF or image.")
+        ]),
+        h("div", { class: "row" }, [field("Drive link (optional)", link, "With a link, visitors can click the badge to see it.")])
+      ], "this badge");
+    });
+    banKids.push(h("div", { class: "addrow" }, [h("button", { class: "btn small", type: "button", text: "+ Add badge", onClick: () => { Hm.banner.push({ top: "", main: "", icon: "star", type: "p", id: "" }); markDirty(); render(); } })]));
+    box.appendChild(sec("banner", "Scrolling banner", Hm.banner.length + " badges", banKids));
+
+    box.appendChild(sec("footer", "Footer", "", [
+      h("div", { class: "row two" }, [
+        field("Heading", text(F.heading, v => { F.heading = v; })),
+        field("Line under the heading", text(F.tagline, v => { F.tagline = v; }))
+      ]),
+      h("div", { class: "row two" }, [
+        field("Email", text(F.email, v => { F.email = v; }, "hello@example.com"), "Leave blank to hide the contact list."),
+        field("LinkedIn link", text(F.linkedin, v => { F.linkedin = v; }, "https://linkedin.com/in/..."))
+      ]),
+      h("div", { class: "row" }, [field("Website link (optional)", text(F.website, v => { F.website = v; }, "https://"))]),
+      h("div", { class: "row two" }, [
+        field("Business name in the copyright line", text(F.owner, v => { F.owner = v; })),
+        field("Right-hand note", text(F.note, v => { F.note = v; }))
+      ])
+    ]));
+    return box;
   }
 
   /* ---------- shell ---------- */
@@ -526,12 +647,14 @@ dialog .nudge { display:flex; gap:6px; justify-content:center; margin-top:10px; 
     const y = window.scrollY;
     const app = document.getElementById("app"); if (!app) return;
     app.textContent = "";
-    if (usingDefaults) app.appendChild(h("p", { class: "note", text: "You are looking at the content that came with the site. Nothing has been saved from this editor yet. Your first save makes this editor the source for the portfolio and testimonials." }));
+    if (usingDefaults) app.appendChild(h("p", { class: "note", text: "You are looking at the content that came with the site. Nothing has been saved from this editor yet. Your first save makes this editor the source for the portfolio, testimonials and home page." }));
     app.appendChild(h("div", { class: "tabs", role: "tablist" }, [
       h("button", { class: "tab", role: "tab", "aria-selected": String(tab === "work"), text: "Portfolio", onClick: () => { tab = "work"; render(); } }),
-      h("button", { class: "tab", role: "tab", "aria-selected": String(tab === "tests"), text: "Testimonials", onClick: () => { tab = "tests"; render(); } })
+      h("button", { class: "tab", role: "tab", "aria-selected": String(tab === "tests"), text: "Testimonials", onClick: () => { tab = "tests"; render(); } }),
+      h("button", { class: "tab", role: "tab", "aria-selected": String(tab === "home"), text: "Home page", onClick: () => { tab = "home"; render(); } })
     ]));
-    app.appendChild(tab === "work" ? workPanel() : testimonialsPanel());
+    app.appendChild(tab === "work" ? workPanel() : tab === "tests" ? testimonialsPanel() : homePanel());
+    const vs = document.getElementById("viewsite"); if (vs) vs.href = tab === "work" ? "/portfolio" : "/";
     app.appendChild(h("div", { class: "foot" }, [
       h("button", { class: "btn", type: "button", text: "Go back to the previous saved version", disabled: !hasPrev, onClick: undo }),
       h("button", { class: "btn danger", type: "button", text: "Reset to the original content", onClick: resetAll })
@@ -554,13 +677,13 @@ dialog .nudge { display:flex; gap:6px; justify-content:center; margin-top:10px; 
     if (!confirm("Go back to the version saved before this one?")) return;
     const r = await api("/api/admin/undo", { method: "POST" });
     if (!r.ok) { toast(r.data.message || "Could not go back.", true); return; }
-    S = clone(r.data.content); hasPrev = !!r.data.hasPrev; dirty = false; toast("Went back one version."); render();
+    S = clone(r.data.content); S.home = mergeHome(S.home); hasPrev = !!r.data.hasPrev; dirty = false; toast("Went back one version."); render();
   }
   async function resetAll() {
     if (!confirm("Reset the portfolio and testimonials to the content that came with the site? You can undo this once from the button next to it.")) return;
     const r = await api("/api/admin/content", { method: "DELETE" });
     if (!r.ok) { toast(r.data.message || "Could not reset.", true); return; }
-    S = { work: clone(DEFAULT_WORK), testimonials: clone(DEFAULT_TESTS) }; usingDefaults = true; hasPrev = !!r.data.hasPrev; dirty = false;
+    S = { work: clone(DEFAULT_WORK), testimonials: clone(DEFAULT_TESTS), home: clone(HOME_DEFAULT) }; usingDefaults = true; hasPrev = !!r.data.hasPrev; dirty = false;
     toast("Reset to the original content."); render();
   }
   async function signOut() { await api("/api/admin/logout", { method: "POST" }); location.reload(); }
@@ -571,7 +694,7 @@ dialog .nudge { display:flex; gap:6px; justify-content:center; margin-top:10px; 
       h("strong", { text: "Site editor" }),
       h("span", { id: "status", class: "status", text: "All changes saved" }),
       h("span", { class: "grow" }),
-      h("a", { class: "btn small", href: "/portfolio", target: "_blank", rel: "noopener", text: "View site" }),
+      h("a", { id: "viewsite", class: "btn small", href: "/portfolio", target: "_blank", rel: "noopener", text: "View site" }),
       h("button", { class: "btn small", type: "button", text: "Sign out", onClick: signOut }),
       h("button", { id: "save", class: "btn primary small", type: "button", text: "Save changes", disabled: true, onClick: save })
     ])]));
@@ -622,8 +745,8 @@ dialog .nudge { display:flex; gap:6px; justify-content:center; margin-top:10px; 
     const c = await api("/api/admin/content");
     if (c.status === 401) { showLogin(); return; }
     if (!c.ok) { root.textContent = ""; root.appendChild(h("div", { class: "center" }, [h("div", { class: "panel" }, [h("h1", { text: "Something went wrong" }), h("p", { text: c.data.message || "Could not load the content." })])])); return; }
-    if (c.data.content) { S = clone(c.data.content); usingDefaults = false; }
-    else { S = { work: clone(DEFAULT_WORK), testimonials: clone(DEFAULT_TESTS) }; usingDefaults = true; }
+    if (c.data.content) { S = clone(c.data.content); usingDefaults = false; S.home = mergeHome(S.home); }
+    else { S = { work: clone(DEFAULT_WORK), testimonials: clone(DEFAULT_TESTS), home: clone(HOME_DEFAULT) }; usingDefaults = true; }
     S.work.forEach(o => o.groups.forEach(g => g.sections.forEach(s => { if (!s.subs && !s.items) s.items = []; })));
     hasPrev = !!c.data.hasPrev; dirty = false;
     showApp();
