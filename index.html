@@ -346,7 +346,12 @@ h4 { font-size: 28px; }
 
 /* Experience */
 .exp { padding: 120px 0; background: var(--soft); }
-.exp h2 { margin-bottom: 80px; }
+.exp-head { display: flex; align-items: center; gap: 24px 44px; margin-bottom: 80px; }
+.exp-head h2 { margin: 0; flex: none; max-width: 100%; }
+.exp-pill { flex: 1 1 200px; min-width: 200px; max-width: 520px; height: 104px; border-radius: 104px; overflow: hidden; background: var(--line); display: block; }
+.exp-pill img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; display: block; transition: transform var(--ease); }
+.exp-pill:hover img { transform: scale(1.05); }
+.exp-pill.nothumb { display: none; }
 .job { display: grid; grid-template-columns: 4fr 8fr; gap: 20px 60px; border-top: 1px solid var(--line); padding: 40px 0 50px; }
 .job .when { color: var(--dark); display: block; margin-bottom: 8px; }
 .job .org-n { font-size: 18px; color: var(--text); }
@@ -376,7 +381,7 @@ h4 { font-size: 28px; }
 .more .upper { display: block; color: var(--dark); margin-bottom: 14px; }
 .more p { font-size: 16px; line-height: 165%; }
 .exp .rbtn { margin-top: 60px; }
-@media (max-width: 992px) { .exp { padding: 90px 0; } .exp h2 { margin-bottom: 50px; } .job { grid-template-columns: 1fr; } .early, .more { grid-template-columns: 1fr; } }
+@media (max-width: 992px) { .exp { padding: 90px 0; } .exp-head { flex-wrap: wrap; margin-bottom: 50px; } .exp-pill { flex: 1 1 100%; max-width: none; height: 84px; border-radius: 84px; } .job { grid-template-columns: 1fr; } .early, .more { grid-template-columns: 1fr; } }
 
 
 /* Small-screen polish */
@@ -385,7 +390,7 @@ h4 { font-size: 28px; }
   .ph { padding: 64px 0 40px; }
   .org { padding: 64px 0 20px; }
   .org-head { margin-bottom: 44px; }
-  .svc h2, .exp h2 { margin-bottom: 36px; }
+  .svc h2 { margin-bottom: 36px; } .exp-head { margin-bottom: 36px; } .exp-pill { height: 64px; border-radius: 64px; }
   .sup { margin-bottom: 36px; }
   .about .stats b { font-size: 34px; }
   .svc-card { grid-template-columns: 52px 1fr; padding: 26px 0 36px; }
@@ -719,7 +724,7 @@ body.sub .card:focus-visible { outline-color: var(--accent); }
   <section class="exp" id="experience">
     <div class="container">
       <span class="upper sup rv">Experience</span>
-      <h2 class="rv">Where I've done the work.</h2>
+      <div class="exp-head rv"><h2>Where I've done the work.</h2><span class="pimg exp-pill" id="exp-pill"><img src="/tacoma.jpg" alt="" width="460" height="110" loading="lazy"></span></div>
       <div id="jobs"></div>
       <div class="early rv" id="early"></div>
       <div class="more rv" id="more"></div>
@@ -1010,7 +1015,8 @@ const HOME_DEFAULT = {
     paragraph: "I specialize in digital marketing, including creative strategy and paid media buying on Meta, Google, LinkedIn and TikTok. I pair that with content creation, cross-sector collaboration and multilingual community engagement to drive measurable service utilization for public benefit and private organizations.",
     headshot: "/headshot.jpg",
     pill1: "/rainier.jpg",
-    pill2: "/team.jpg"
+    pill2: "/team.jpg",
+    pill3: "/tacoma.jpg"
   },
   stats: [
     { value: "10,000+", label: "Pierce County residents engaged through programming", icon: "users" },
@@ -1430,6 +1436,12 @@ function render() {
   }
 
   /* Intro line with a small pill image pulled from Drive */
+  const ep = document.getElementById("exp-pill");
+  if (ep) {
+    const ei = ep.querySelector("img");
+    ei.addEventListener("error", () => ep.classList.add("nothumb"));
+    ei.src = HOME.about.pill3 || HOME_DEFAULT.about.pill3;
+  }
   const cx = document.getElementById("complex");
   if (cx) {
   const pill = el("span", { class: "pimg" });

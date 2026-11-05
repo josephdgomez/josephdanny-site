@@ -387,6 +387,12 @@ function render() {
   }
 
   /* Intro line with a small pill image pulled from Drive */
+  const ep = document.getElementById("exp-pill");
+  if (ep) {
+    const ei = ep.querySelector("img");
+    ei.addEventListener("error", () => ep.classList.add("nothumb"));
+    ei.src = HOME.about.pill3 || HOME_DEFAULT.about.pill3;
+  }
   const cx = document.getElementById("complex");
   if (cx) {
   const pill = el("span", { class: "pimg" });

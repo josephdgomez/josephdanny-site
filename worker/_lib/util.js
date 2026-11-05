@@ -152,7 +152,7 @@ function cleanSection(s, label) {
 
 const STAT_ICONS = new Set(["users", "cal", "mic", "funnel", "chart", "heart", "globe", "star"]);
 const BANNER_ICONS = new Set(["search", "video", "target", "trophy", "star", "check", "chart"]);
-const HOME_IMG_RE = /^(\/(headshot|rainier|team)\.jpg|\/api\/photo\/[a-f0-9]{16})$/;
+const HOME_IMG_RE = /^(\/(headshot|rainier|team|tacoma)\.jpg|\/api\/photo\/[a-f0-9]{16})$/;
 
 const linkStr = (v, label) => {
   v = str(v, 300, label);
@@ -190,7 +190,8 @@ function cleanHome(h) {
       paragraph: longStr(A.paragraph, 1200, "About paragraph"),
       headshot: imgStr(A.headshot, "About photo"),
       pill1: imgStr(A.pill1, "About first strip photo"),
-      pill2: imgStr(A.pill2, "About second strip photo")
+      pill2: imgStr(A.pill2, "About second strip photo"),
+      pill3: imgStr(A.pill3, "Experience strip photo")
     },
     stats: arr(h.stats, 8, "Stats").map((x, i) => {
       const icon = STAT_ICONS.has(x.icon) ? x.icon : "star";
@@ -216,7 +217,7 @@ function cleanHome(h) {
       note: str(F.note, 120, "Footer note")
     }
   };
-  for (const k of ["headshot", "pill1", "pill2"]) if (!out.about[k]) delete out.about[k];
+  for (const k of ["headshot", "pill1", "pill2", "pill3"]) if (!out.about[k]) delete out.about[k];
   return out;
 }
 

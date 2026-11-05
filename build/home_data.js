@@ -22,7 +22,8 @@ const HOME_DEFAULT = {
     paragraph: "I specialize in digital marketing, including creative strategy and paid media buying on Meta, Google, LinkedIn and TikTok. I pair that with content creation, cross-sector collaboration and multilingual community engagement to drive measurable service utilization for public benefit and private organizations.",
     headshot: "/headshot.jpg",
     pill1: "/rainier.jpg",
-    pill2: "/team.jpg"
+    pill2: "/team.jpg",
+    pill3: "/tacoma.jpg"
   },
   stats: [
     { value: "10,000+", label: "Pierce County residents engaged through programming", icon: "users" },
