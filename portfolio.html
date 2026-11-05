@@ -421,7 +421,10 @@ dialog::backdrop { background: rgba(0,0,0,.86); }
 .dlg iframe { width: 100%; height: min(72vh, 700px); border: 0; background: #000; display: block; }
 .dlg-bot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; border-top: 1px solid rgba(255,255,255,.1); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--on-dark-soft); }
 .dlg-bot button:disabled { opacity: .3; cursor: default; }
-@media (max-width: 560px) { .dlg-top a { display: none; } .dlg iframe { height: 62vh; } }
+.dlg-top #vdl { background: var(--accent); border-color: var(--accent); color: var(--dark); }
+.dlg-top #vdl:hover { background: var(--light); border-color: var(--light); }
+.dlg-top #vdl[hidden] { display: none; }
+@media (max-width: 560px) { .dlg-top a:not(#vdl) { display: none; } .dlg-top a, .dlg-top button { padding: 10px 14px; } .dlg iframe { height: 62vh; } }
 .dlg.pv iframe { display: none; }
 .vposter { position: relative; display: block; height: min(72vh, 700px); background: #000; overflow: hidden; }
 .vposter[hidden] { display: none; }
@@ -664,6 +667,7 @@ body.sub .card:focus-visible { outline-color: var(--accent); }
   <div class="dlg">
     <div class="dlg-top">
       <h5 id="vtitle"></h5>
+      <a id="vdl" href="#" target="_blank" rel="noopener" download hidden>Download</a>
       <a id="vopen" href="#" target="_blank" rel="noopener">Open in Drive</a>
       <button type="button" id="vclose" aria-label="Close viewer">Close</button>
     </div>
@@ -962,7 +966,8 @@ const D = {
   folderEmbed: id => "https://drive.google.com/embeddedfolderview?id=" + id + "#grid",
   folder: id => "https://drive.google.com/drive/folders/" + id,
   docPreview: id => "https://docs.google.com/document/d/" + id + "/preview",
-  docView: id => "https://docs.google.com/document/d/" + id + "/edit"
+  docView: id => "https://docs.google.com/document/d/" + id + "/edit",
+  docPdf: id => "https://docs.google.com/document/d/" + id + "/export?format=pdf"
 };
 const RESUME_ID = "1kia_8wKuOrGpDp3uzUiFT2xI9fVxtSvapqBMX_5C3LM";
 const KIND = { v: "Video", p: "PDF", i: "Image", f: "Folder", d: "Resume" };
@@ -1009,6 +1014,9 @@ function show() {
   const it = state.list[state.i];
   document.getElementById("vtitle").textContent = it.title;
   document.getElementById("vopen").href = it.type === "f" ? D.folder(it.id) : it.type === "d" ? D.docView(it.id) : D.view(it.id);
+  const dl = document.getElementById("vdl");
+  dl.hidden = it.type !== "d";
+  if (it.type === "d") { dl.href = D.docPdf(it.id); dl.setAttribute("download", "Joseph-Gomez-de-la-Mora-Resume.pdf"); }
   if (NATIVE && it.type === "v") usePoster(it);
   else useFrame(it.type === "f" ? D.folderEmbed(it.id) : it.type === "d" ? D.docPreview(it.id) : D.preview(it.id));
   document.getElementById("vpos").textContent = state.list.length > 1 ? (state.i + 1) + " of " + state.list.length : KIND[it.type];
@@ -1496,6 +1504,8 @@ render();
   let rzT; addEventListener("resize", () => { clearTimeout(rzT); rzT = setTimeout(fillBanner, 250); });
   })();
 
+  const dr = document.getElementById("dlresume");
+  if (dr) dr.addEventListener("click", e => { e.preventDefault(); openViewer([{ type: "d", id: RESUME_ID, title: "Resume" }], 0, dr); });
   const rb = document.getElementById("resumebtn");
   if (rb) rb.addEventListener("click", () => openViewer([{ type: "d", id: RESUME_ID, title: "Resume" }], 0, rb));
 
